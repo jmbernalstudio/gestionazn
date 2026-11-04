@@ -33,9 +33,7 @@ const I = {
   undo: '<path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',
   play: '<path d="M8 5v14l11-7z"/>',
   stop: '<rect x="6" y="6" width="12" height="12" rx="2"/>',
-  whistle: '<circle cx="9" cy="14" r="5"/><path d="M12.5 10.5L20 6v4l-5 2"/>',
-  dl: '<path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/>',
-  image: '<rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="M4 17.5l5-4.5 3.5 3 3-2.5 4.5 4"/>'
+  whistle: '<circle cx="9" cy="14" r="5"/><path d="M12.5 10.5L20 6v4l-5 2"/>'
 };
 const ic = n => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${I[n]}</svg>`;
 
@@ -711,133 +709,6 @@ function shareMatch(e, p) {
   return shareImage({ title: 'Enviar el partido', wait: 'Preparando la imagen…', build: () => matchPoster(e, p), name: fileName('partido', e.nombre, p.fecha),
     alt: `Partido del ${e.nombre} contra ${nice(p.rival)}, ${longDate(p.fecha)}`, msg: mapsMsg(p), what: 'la imagen' });
 }
-/* ===== Partidos de la cantera para las redes sociales (solo la junta) =====
-   Copia el diseño que usa el club: fondo claro, franjas de cuadros azules arriba y abajo y 3 partidos como mucho por imagen.
-   Sin el Senior ni el C.D. Internacional de Sevilla. El nombre corto de cada equipo, como en las redes */
-const RED_NOMBRE = { juvenil: 'Juvenil', cadete: 'Cadete F-7', infantil: 'Infantil', alevin2: 'Alevín 2', alevin1: 'Alevín 1', benjamin2: 'Benjamín 2', benjamin1: 'Benjamín 1', prebenjamin: 'Prebenjamín', minis: 'Mini' };
-const RED_DIAS = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO'];
-const UP = t => t.toLocaleUpperCase('es-ES');
-const canteraGames = wk => allGames().filter(g => g.wk === wk && !g.p.descansa && RED_NOMBRE[g.e.id])
-  .sort((a, b) => a.p.fecha.localeCompare(b.p.fecha) || (a.p.hora || '99').localeCompare(b.p.hora || '99') || ORDEN.indexOf(a.e.id) - ORDEN.indexOf(b.e.id));
-/* "C.D.TORRE REINA \"B\"" -> "C.D. TORRE REINA"; las siglas del principio van en letra recta y el resto en cursiva */
-function redRival(n) {
-  const t = UP(n.replace(/\s*"[^"]*"/g, '').replace(/\s*\((fem|femenino)\)/i, '').replace(/^((?:[A-Z]{1,2}\.)+)(?=[A-ZÁÉÍÓÚÑ]{2})/, '$1 ').replace(/\s+/g, ' ').trim()).split(' ');
-  let k = 0; while (k < t.length - 1 && (/\./.test(t[k]) || /^(RCD|CD|CF|UD|AD|SD|JD|EF|FB|CA|CMD|CDM|EDM|EEMM|FBJD|PD|AA|AAVV)$/.test(t[k]))) k++;
-  return [k && { t: t.slice(0, k).join(' '), i: false }, { t: (k ? ' ' : '') + t.slice(k).join(' '), i: true }].filter(Boolean);
-}
-/* "4ª Andaluza Juvenil · Grupo 11" -> "4ª ANDALUZA G11"; "Liga Educa · Minis · Grupo 1" -> "LIGA EDUCA G1" */
-const redComp = cat => { const g = (/Grupo\s*(\d+)/i.exec(cat) || [])[1], c = cat.split(' · ')[0].replace(/^(\d+ª Andaluza).*/i, '$1'); return UP(c + (g ? ' G' + g : '')); };
-const redFecha = p => { const d = toDate(p.fecha); return `${RED_DIAS[d.getDay()]} ${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')} - ${p.estado ? UP(p.estado) : p.hora ? p.hora + 'H' : 'HORA POR CONFIRMAR'}`; };
-/* Las fuentes del diseño (DM Serif Display e Instrument Sans) solo se cargan al exportar */
-async function redFonts() {
-  if (!document.getElementById('red-fonts')) {
-    const l = document.createElement('link'); l.id = 'red-fonts'; l.rel = 'stylesheet';
-    l.href = 'https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Instrument+Sans:wght@400;600&display=swap';
-    await new Promise(ok => { l.onload = l.onerror = ok; document.head.append(l); });
-  }
-  await Promise.all(['400 100px "DM Serif Display"', 'italic 400 100px "DM Serif Display"', '400 100px "Instrument Sans"', '600 100px "Instrument Sans"'].map(f => document.fonts.load(f, 'AÁVS1ª').catch(() => {})));
-}
-/* El escudo en azul del club sobre blanco, como en las imágenes de las redes */
-function redCrest(img) {
-  const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
-  const x = c.getContext('2d'); x.drawImage(img, 0, 0);
-  const d = x.getImageData(0, 0, c.width, c.height), a = d.data;
-  for (let i = 0; i < a.length; i += 4) {
-    if (!a[i + 3]) continue;
-    const mx = Math.max(a[i], a[i + 1], a[i + 2]), mn = Math.min(a[i], a[i + 1], a[i + 2]), white = mn > 200 && mx - mn < 40;
-    if (white) { a[i] = a[i + 1] = a[i + 2] = 255; } else { a[i] = 0; a[i + 1] = 0x34; a[i + 2] = 0xDF; }
-  }
-  x.putImageData(d, 0, 0); return c;
-}
-const RED_AVION = new Path2D('M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z');
-async function canteraPoster(games, page, pages, crest) {
-  /* Todo se dibuja con las medidas del diseño original (4320 × 5400) y se guarda a la mitad (2160 × 2700) */
-  const W = 4320, H = 5400, K = .5, BLUE = '#0034DF', BG = '#F0F3FF', GOLD = '#B8902A', SEP = '#BDD6FF';
-  const SERIF = '"DM Serif Display", Georgia, serif', SANS = '"Instrument Sans", "Helvetica Neue", Arial, sans-serif';
-  const cv = document.createElement('canvas'); cv.width = W * K; cv.height = H * K;
-  const x = cv.getContext('2d'); x.scale(K, K);
-  x.fillStyle = BG; x.fillRect(0, 0, W, H);
-  /* Franjas de cuadros: 23 cuadros por fila; arriba fila llena (menos las esquinas) y fila alterna, abajo al revés */
-  const q = W / 23; x.fillStyle = BLUE;
-  for (let i = 0; i < 23; i++) {
-    const full = i > 0 && i < 22, alt = i % 2 === 0;
-    if (full) { x.fillRect(i * q, 0, q + 1, q + 1); x.fillRect(i * q, H - q, q + 1, q); }
-    if (alt) { x.fillRect(i * q, q, q + 1, q); x.fillRect(i * q, H - 2 * q, q + 1, q + 1); }
-  }
-  /* Tamaño de letra para que las mayúsculas midan lo mismo que en el diseño */
-  const capPx = (fam, style, cap) => { x.font = `${style} 400 1000px ${fam}`; const m = x.measureText('H'); return Math.round(cap / ((m.actualBoundingBoxAscent || 700) / 1000)); };
-  const SANS_PX = capPx(SANS, 'normal', 94), SERIF_PX = capPx(SERIF, 'italic', 227);
-  x.textBaseline = 'alphabetic'; x.fillStyle = BLUE;
-  const sans = (t, cx, y) => { x.font = `400 ${SANS_PX}px ${SANS}`; x.textAlign = 'center'; x.fillText(t, cx, y); return x.measureText(t).width; };
-  const runsW = (runs, px) => runs.reduce((a, r) => { x.font = `${r.i ? 'italic ' : ''}400 ${px}px ${SERIF}`; return a + x.measureText(r.t).width; }, 0);
-  const drawRuns = (runs, px, y) => {
-    let cx = W / 2 - runsW(runs, px) / 2; x.textAlign = 'left';
-    for (const r of runs) { x.font = `${r.i ? 'italic ' : ''}400 ${px}px ${SERIF}`; x.fillText(r.t, cx, y); cx += x.measureText(r.t).width; }
-  };
-  const stadium = (ix, iy, s) => {   /* estadio dorado: tres banderines, la grada y la puerta */
-    const u = s / 24; x.save(); x.translate(ix, iy); x.scale(u, u); x.fillStyle = GOLD;
-    [[3, 0], [10.5, 0], [18, 0]].forEach(([fx, fy]) => { x.beginPath(); x.moveTo(fx, fy); x.lineTo(fx + 3.6, fy + 1.6); x.lineTo(fx, fy + 3.2); x.closePath(); x.fill(); });
-    x.beginPath(); x.ellipse(12, 9.5, 10.5, 3.2, 0, 0, Math.PI * 2); x.fill();
-    x.fillRect(1.5, 9.5, 21, 11.5); x.beginPath(); x.ellipse(12, 21, 10.5, 3, 0, 0, Math.PI); x.fill();
-    x.fillStyle = BG; x.beginPath(); x.ellipse(12, 9.5, 8, 1.8, 0, 0, Math.PI * 2); x.fill();
-    x.beginPath(); x.moveTo(9.3, 24.5); x.lineTo(9.3, 18.5); x.arc(12, 18.5, 2.7, Math.PI, 0); x.lineTo(14.7, 24.5); x.closePath(); x.fill();
-    x.restore();
-  };
-  const plane = (ix, iy, s) => { const u = s / 24; x.save(); x.translate(ix + s, iy); x.rotate(Math.PI / 2); x.scale(u, u); x.fillStyle = GOLD; x.fill(RED_AVION); x.restore(); };
-  /* Cada partido: fecha y hora, "LOCAL VS VISITANTE" en dos líneas (el VS va con nuestro equipo) y la jornada con el icono */
-  const BLOCK = 1216, top0 = 2451 - (games.length * BLOCK - 336) / 2;
-  games.forEach((g, n) => {
-    const t = top0 + n * BLOCK, p = g.p, us = { t: UP(RED_NOMBRE[g.e.id]), i: true }, rv = redRival(p.rival);
-    sans(redFecha(p), W / 2, t + 94);
-    const l1 = p.casa ? [{ t: us.t + ' VS', i: true }] : rv, l2 = p.casa ? rv : [{ t: 'VS ' + us.t, i: true }];
-    let px = SERIF_PX; const maxW = 3580; px = Math.floor(px * Math.min(1, maxW / runsW(l1, px), maxW / runsW(l2, px)));
-    drawRuns(l1, px, t + 391); drawRuns(l2, px, t + 679);
-    const comp = `JORNADA ${p.j} - ${redComp(g.e.cat)}`; x.font = `400 ${SANS_PX}px ${SANS}`;
-    const cw = x.measureText(comp).width, IS = 140, GAP = 70, y = t + 874;
-    if (p.casa) { const sx = W / 2 - (cw + IS + GAP) / 2; stadium(sx, y - 122, IS); x.textAlign = 'left'; x.fillStyle = BLUE; x.fillText(comp, sx + IS + GAP, y); }
-    else { const sx = W / 2 - (cw + IS + GAP) / 2; x.textAlign = 'left'; x.fillStyle = BLUE; x.fillText(comp, sx, y); plane(sx + cw + GAP, y - 115, IS); }
-    if (n < games.length - 1) { x.fillStyle = SEP; x.fillRect(W / 2 - 321, t + 1032, 642, 6); x.fillStyle = BLUE; }
-  });
-  /* Abajo: el contador "1/3" en su recuadro; en la última, además, el escudo × 1952-2027 */
-  const box = (cx) => { x.strokeStyle = BLUE; x.lineWidth = 7; x.strokeRect(cx - 171, 4508, 342, 207); x.fillStyle = BLUE; sans(`${page}/${pages}`, cx, 4611 + 47); };
-  if (page < pages) box(W / 2);
-  else {
-    box(1707);
-    if (crest) { const h = 384, w = crest.width * h / crest.height; x.drawImage(crest, 2228 - w / 2, 4418, w, h); }
-    x.font = `400 ${Math.round(SANS_PX * .9)}px ${SERIF}`; x.textAlign = 'center'; x.fillStyle = BLUE; x.fillText('x', 2457, 4640);
-    /* Logo del 75º aniversario: 1952 / 2027 en dorado con los picos arriba y abajo */
-    const lx = 2666; x.fillStyle = GOLD;
-    x.beginPath(); x.moveTo(lx - 110, 4480); x.lineTo(lx, 4455); x.lineTo(lx + 110, 4480); x.lineTo(lx + 60, 4495); x.lineTo(lx, 4482); x.lineTo(lx - 60, 4495); x.closePath(); x.fill();
-    x.beginPath(); x.moveTo(lx - 22, 4722); x.lineTo(lx + 22, 4722); x.lineTo(lx, 4752); x.closePath(); x.fill();
-    x.font = `600 ${Math.round(SANS_PX * .9)}px ${SANS}`; x.textAlign = 'center'; x.fillText('1952', lx, 4600); x.fillText('2027', lx, 4700);
-  }
-  return new Promise(ok => cv.toBlob(b => ok(b), 'image/png'));
-}
-/* Ventana con las imágenes: se comparten todas a la vez (WhatsApp, Instagram…) o se descargan */
-async function exportCantera(wk) {
-  const games = canteraGames(wk);
-  if (!games.length) return say('No hay partidos de la cantera este fin de semana.');
-  const pages = Math.ceil(games.length / 3), urls = [];
-  const m = modal(`<h2 id="mdl-t">Partidos para redes</h2><p id="pst-w">Preparando ${pages === 1 ? 'la imagen' : `las ${pages} imágenes`}…</p><div id="pst"></div>`, 'dialog', () => urls.forEach(u => URL.revokeObjectURL(u)));
-  await redFonts();
-  const img = await loadImg('icons/escudo.png'), crest = img ? redCrest(img) : null;
-  const files = [];
-  for (let i = 0; i < pages; i++) {
-    const blob = await canteraPoster(games.slice(i * 3, i * 3 + 3), i + 1, pages, crest);
-    files.push(new File([blob], `partidos-cantera-${wk}-${i + 1}.png`, { type: 'image/png' }));
-  }
-  if (!document.body.contains(m.el)) return;
-  files.forEach(f => urls.push(URL.createObjectURL(f)));
-  const canShare = !!(navigator.canShare && navigator.canShare({ files }));
-  m.el.classList.add('rx');
-  $('#pst-w').textContent = `${games.length} partido${games.length === 1 ? '' : 's'} de la cantera, ${pages === 1 ? 'en 1 imagen' : `en ${pages} imágenes`}.`;
-  $('#pst').outerHTML = `<div class="rx-imgs" style="--n:${pages}">${urls.map((u, i) => `<img class="rx-img" src="${u}" alt="Imagen ${i + 1} de ${pages} con los partidos de la cantera">`).join('')}</div>
-    ${canShare ? `<button type="button" class="btn blue block" id="rx-sh">${ic('send')} Compartir ${pages === 1 ? 'la imagen' : 'las imágenes'}</button>` : ''}
-    <button type="button" class="btn ${canShare ? 'outline' : 'blue'} block" id="rx-dl">${ic('dl')} Descargar ${pages === 1 ? 'la imagen' : 'las imágenes'}</button>`;
-  const sh = $('#rx-sh'); if (sh) sh.onclick = () => navigator.share({ files }).catch(() => {});
-  $('#rx-dl').onclick = () => files.forEach((f, i) => setTimeout(() => { const a = document.createElement('a'); a.href = urls[i]; a.download = f.name; document.body.append(a); a.click(); a.remove(); }, i * 400));
-  (sh || $('#rx-dl')).focus();
-}
 function bindMatches() {
   document.querySelectorAll('#main [data-match]').forEach(el => {
     const go = () => { const [id, j] = el.dataset.match.split('|'), e = D.equipos.concat(EXT).find(x => x.id === id), p = e && e.partidos.find(x => String(x.j) === j); if (p) openMatch(e, p); };
@@ -878,9 +749,7 @@ function gamesView() {
       <button type="button" data-gs="all" aria-pressed="${!mineOnly}">Todo el club</button></div>` : '';
   const venueSeg = `<div class="seg g-scope g-venue" role="group" aria-label="Local o visitante">${VENUES.map(([k, l]) =>
       `<button type="button" data-gv="${k}" aria-pressed="${venue === k}">${l}</button>`).join('')}</div>`;
-  /* La junta puede sacar las imágenes de los partidos de la cantera para las redes */
-  const rx = !coach && canteraGames(wk).length ? `<button type="button" class="btn blue block" id="rx-go" data-wk="${wk}">${ic('image')} Exportar partidos para redes</button>` : '';
-  return `<div class="stack"><div class="g-filters ${coach ? '' : 'only-v'}">${scope}${venueSeg}</div>${nav}${stats}${rx}${body}</div>`;
+  return `<div class="stack"><div class="g-filters ${coach ? '' : 'only-v'}">${scope}${venueSeg}</div>${nav}${stats}${body}</div>`;
 }
 /* Un partido de la temporada: fecha, rival con escudo, resultado o hora */
 function matchRow(e, p) {
@@ -2833,7 +2702,6 @@ function gamesScreen() {
       document.querySelectorAll('[data-wk]').forEach(b => b.onclick = () => { if (b.dataset.wk) { S.wk = b.dataset.wk; render(); } });
       document.querySelectorAll('[data-gs]').forEach(b => b.onclick = () => { S.gscope = b.dataset.gs; S.wk = null; render(); });
       document.querySelectorAll('[data-gv]').forEach(b => b.onclick = () => { S.gvenue = b.dataset.gv; render(); });
-      const rx = $('#rx-go'); if (rx) rx.onclick = () => exportCantera(rx.dataset.wk);
     } };
 }
 const BOARD = {
