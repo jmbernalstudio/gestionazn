@@ -1295,7 +1295,3 @@ select, .rq .ctl select { -webkit-appearance: none; appearance: none; padding-ri
 .st-kpis { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 @media (max-width: 520px) { .st-kpis { grid-template-columns: repeat(6, minmax(0, 1fr)); } .st-kpis div { grid-column: span 2; } .st-kpis div:nth-child(n+4) { grid-column: span 3; } }
 @media (max-width: 400px) { .st-head.st5, .st-row.st5 { grid-template-columns: 36px minmax(0, 1fr) 1.5rem 1.5rem 2.6rem 2.6rem; gap: 5px; } .st-row.st5 .k { width: 36px; height: 36px; border-radius: 12px; } .st-head.st5 { font-size: .72rem; } }
-/* Imágenes de los partidos de la cantera para las redes (junta) */
-.rx-imgs { display: grid; grid-template-columns: 1fr; gap: 12px; }
-@media (min-width: 720px) { .rx-imgs { grid-template-columns: repeat(var(--n, 1), minmax(0, 1fr)); } .rx-img { max-height: 70vh; max-height: 70dvh; width: auto; max-width: 100%; margin: 0 auto; } }
-.rx-img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; border-radius: 14px; box-shadow: 0 1px 3px rgba(0, 0, 0, .12); }
