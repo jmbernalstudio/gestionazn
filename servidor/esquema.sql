@@ -343,3 +343,5 @@ drop policy if exists anulados_ver on public.entrenos_anulados;
 create policy anulados_ver on public.entrenos_anulados for select to authenticated using (true);
 drop policy if exists anulados_junta on public.entrenos_anulados;
 create policy anulados_junta on public.entrenos_anulados for all to authenticated using (public.es_junta()) with check (public.es_junta());
+
+-- Familias y tienda (cuentas de familia, productos y pedidos): ver servidor/familias.sql
