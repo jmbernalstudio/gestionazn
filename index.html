@@ -16,6 +16,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="theme-color" content="#F3F5FA">
 <link rel="manifest" href="manifest.webmanifest">
+<script>/* Enlace de las familias: su app instalada abre directamente la entrada de familias */ if (/[?&]familias\b/.test(location.search)) document.querySelector('link[rel=manifest]').href = 'manifest-familias.webmanifest';</script>
 <link rel="icon" href="icons/escudo-160.png" type="image/png">
 <link rel="apple-touch-icon" sizes="180x180" href="icons/icono-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -57,7 +58,9 @@
 <script src="js/config.js"></script>
 <script src="js/vendor/supabase.js"></script>
 <script src="js/datos.js"></script>
+<script src="js/instalar.js"></script>
 <script src="js/servidor.js"></script>
 <script src="js/app.js"></script>
+<script src="js/familias.js"></script>
 </body>
 </html>
