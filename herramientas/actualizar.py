@@ -41,7 +41,19 @@ EQUIPOS = [
     dict(id='minis', nombre='Minis', cat='Liga Educa · Minis · Grupo 1', web='educa', age=72, gro1=474, sea=1828, sta=2244, jornadas=15),
 ]
 
+# Equipos de la estructura del club que no son del C.D. Aznalcóllar Fútbol Base: solo salen en Partidos ("Todo el club").
+# No tienen entrenadores, plantilla ni entrenamientos. 'nos' es cómo se reconoce al equipo en la web.
+EXTERNOS = [
+    dict(id='internacional', nombre='Internacional', club='C.D. Internacional de Sevilla', cat='División de Honor Sénior · Grupo 1',
+         web='rfaf', comp=48466530, grupo=49641343, jornadas=38, nos=re.compile(r'INTERNACIONAL\s+DE\s+SEVILLA', re.I)),
+]
+
 NOSOTROS = re.compile(r'AZNALC[OÓ]LLAR', re.I)  # nunca solo 'AZNALC': coincidiría con el C.A. AZNALCÁZAR
+
+
+def nos(eq):
+    """Cómo se reconoce en la web al equipo que seguimos (el nuestro o uno de EXTERNOS)"""
+    return eq.get('nos') or NOSOTROS
 CTX = ssl.create_default_context()
 # La RFAF necesita una sesión (cookie) antes de enseñar las jornadas
 ABRIDOR = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()),
@@ -228,12 +240,15 @@ def equipo_rfaf(eq, pool):
             for l in (f['local'], f['visitante']):
                 if l['nombre'] and l['escudo'] and 'escudo_sm_resultados' not in l['escudo'] and l['nombre'] != 'Descansa':
                     escudos[l['nombre']] = l['escudo']
-        m = next((f for f in filas if NOSOTROS.search(f['local']['nombre']) or NOSOTROS.search(f['visitante']['nombre'])), None)
-        casa = bool(m and NOSOTROS.search(m['local']['nombre']))
+        m = next((f for f in filas if nos(eq).search(f['local']['nombre']) or nos(eq).search(f['visitante']['nombre'])), None)
+        casa = bool(m and nos(eq).search(m['local']['nombre']))
         otro = m and (m['visitante'] if casa else m['local'])
         if not m or re.fullmatch(r'Descansa', otro['nombre'], re.I):
             partidos.append(dict(j=n, fecha=fecha, descansa=True))
             continue
+        if m['hora'] and not fecha_iso(m['fecha']):
+            # Nunca dar por buena la fecha de la jornada si el partido ya tiene hora: su día puede ser otro
+            AVISOS_FECHA.append(f'{eq.get("nombre", eq["id"])}: J{n} tiene hora ({m["hora"]}) pero no su día ("{m["fecha"]}")')
         partidos.append(dict(j=n, fecha=fecha_iso(m['fecha']) or fecha, hora=m['hora'], casa=casa, rival=otro['nombre'],
                              campo=m['campo'], superficie=m['superficie'], goles=m['goles']))
         # Solo hace falta de visitante: de local jugamos siempre de azul
@@ -441,13 +456,58 @@ def corregir(eq, partidos, grupo):
         p.update({k: c[k] for k in ('fecha', 'hora') if k in c})
         for jr in grupo:
             for m in jr['partidos'] if jr['j'] == int(j) else []:
-                if NOSOTROS.search(m['l']) or NOSOTROS.search(m['v']):
+                if nos(eq).search(m['l']) or nos(eq).search(m['v']):
                     m.update({'f': c.get('fecha', m.get('f')), 'h': c.get('hora', m.get('h'))})
+
+
+def procesar(eq, pool, avisos):
+    t = time.time()
+    partidos, tabla, escudos, grupo = (equipo_rfaf if eq['web'] == 'rfaf' else equipo_educa)(eq, pool)
+    corregir(eq, partidos, grupo)
+    locales = dict(pool.map(bajar_escudo, [(k, v if v.startswith('http') else 'https://www.rfaf.es' + v, eq['web'])
+                                            for k, v in escudos.items()]))
+    if len(partidos) != eq['jornadas']:
+        avisos.append(f'{eq["nombre"]}: {len(partidos)} jornadas en la web (se esperaban {eq["jornadas"]})')
+    nuestras = [r for r in tabla if nos(eq).search(r['equipo'])]
+    if len(nuestras) != 1:
+        avisos.append(f'{eq["nombre"]}: {len(nuestras)} filas de la clasificación parecen nuestras (debe ser 1)')
+    fila = nuestras[0] if nuestras else None
+    jug = [p for p in partidos if p.get('goles')]
+    gf = sum(p['goles'][0 if p['casa'] else 1] for p in jug)
+    gc = sum(p['goles'][1 if p['casa'] else 0] for p in jug)
+    if fila and 'gf' in fila and (gf, gc) != (fila['gf'], fila['gc']):
+        avisos.append(f'{eq["nombre"]}: goles {gf}-{gc} en los partidos y {fila["gf"]}-{fila["gc"]} en la clasificación')
+    if fila and 'dif' in fila and gf - gc != fila['dif']:
+        avisos.append(f'{eq["nombre"]}: diferencia {gf - gc} en los partidos y {fila["dif"]} en la clasificación')
+    if fila and fila['j'] != len(jug):
+        avisos.append(f'{eq["nombre"]}: {len(jug)} partidos con resultado y {fila["j"]} jugados en la clasificación')
+    revisar_fechas(eq, partidos, avisos)
+    out = dict(id=eq['id'], nombre=eq['nombre'], cat=eq['cat'], fuente='RFAF' if eq['web'] == 'rfaf' else 'Liga Educa',
+               partidos=partidos, tabla=tabla, escudos=locales, grupo=grupo)
+    if eq.get('club'):
+        out.update(externo=True, club=eq['club'], nombre_web=fila['equipo'] if fila else None)
+    print(f'{eq["nombre"]}: {sum(1 for p in partidos if not p.get("descansa"))} partidos, '
+          f'{len(tabla)} equipos en la tabla, {sum(1 for v in locales.values() if v)}/{len(locales)} escudos '
+          f'({time.time() - t:.0f}s)', flush=True)
+    return out
+
+
+def revisar_fechas(eq, partidos, avisos):
+    """El día de cada partido tiene que ser el suyo y no el de la jornada: un día mal puesto no puede volver a pasar.
+    Se avisa (y así no se publica) si la fecha no es válida. Que un partido con hora no traiga día propio
+    se comprueba al leer cada web (AVISOS_FECHA)."""
+    for p in partidos:
+        if p.get('descansa') or not p.get('fecha'):
+            continue
+        try:
+            datetime.strptime(p['fecha'], '%Y-%m-%d')
+        except ValueError:
+            avisos.append(f'{eq["nombre"]}: J{p["j"]} tiene una fecha que no se entiende ({p["fecha"]})')
 
 
 def main():
     DIR_ESCUDOS.mkdir(parents=True, exist_ok=True)
-    salida = dict(actualizado=datetime.now(timezone.utc).isoformat(timespec='seconds'), equipos=[])
+    salida = dict(actualizado=datetime.now(timezone.utc).isoformat(timespec='seconds'), equipos=[], externos=[])
     avisos = []
     # Con nombres de equipo (p. ej. "infantil") solo se repiten esos y se conservan los demás
     solo = set(sys.argv[1:])
@@ -455,38 +515,16 @@ def main():
     fichero = RAIZ / 'js' / 'datos.js'
     if solo and fichero.exists():
         txt = fichero.read_text(encoding='utf-8')
-        previo = {e['id']: e for e in json.loads(txt[txt.index('{'):txt.rindex('}') + 1])['equipos']}
+        viejo = json.loads(txt[txt.index('{'):txt.rindex('}') + 1])
+        previo = {e['id']: e for e in viejo['equipos'] + viejo.get('externos', [])}
     bajar('https://www.rfaf.es/pnfg/')
     with ThreadPoolExecutor(6) as pool:
-        for eq in EQUIPOS:
-            if solo and eq['id'] not in solo and eq['id'] in previo:
-                salida['equipos'].append(previo[eq['id']])
-                continue
-            t = time.time()
-            partidos, tabla, escudos, grupo = (equipo_rfaf if eq['web'] == 'rfaf' else equipo_educa)(eq, pool)
-            corregir(eq, partidos, grupo)
-            locales = dict(pool.map(bajar_escudo, [(k, v if v.startswith('http') else 'https://www.rfaf.es' + v, eq['web'])
-                                                    for k, v in escudos.items()]))
-            if len(partidos) != eq['jornadas']:
-                avisos.append(f'{eq["nombre"]}: {len(partidos)} jornadas en la web (se esperaban {eq["jornadas"]})')
-            nuestras = [r for r in tabla if NOSOTROS.search(r['equipo'])]
-            if len(nuestras) != 1:
-                avisos.append(f'{eq["nombre"]}: {len(nuestras)} filas de la clasificación parecen nuestras (debe ser 1)')
-            fila = next((r for r in tabla if NOSOTROS.search(r['equipo'])), None)
-            jug = [p for p in partidos if p.get('goles')]
-            gf = sum(p['goles'][0 if p['casa'] else 1] for p in jug)
-            gc = sum(p['goles'][1 if p['casa'] else 0] for p in jug)
-            if fila and 'gf' in fila and (gf, gc) != (fila['gf'], fila['gc']):
-                avisos.append(f'{eq["nombre"]}: goles {gf}-{gc} en los partidos y {fila["gf"]}-{fila["gc"]} en la clasificación')
-            if fila and 'dif' in fila and gf - gc != fila['dif']:
-                avisos.append(f'{eq["nombre"]}: diferencia {gf - gc} en los partidos y {fila["dif"]} en la clasificación')
-            if fila and fila['j'] != len(jug):
-                avisos.append(f'{eq["nombre"]}: {len(jug)} partidos con resultado y {fila["j"]} jugados en la clasificación')
-            salida['equipos'].append(dict(id=eq['id'], nombre=eq['nombre'], cat=eq['cat'], fuente='RFAF' if eq['web'] == 'rfaf' else 'Liga Educa',
-                                          partidos=partidos, tabla=tabla, escudos=locales, grupo=grupo))
-            print(f'{eq["nombre"]}: {sum(1 for p in partidos if not p.get("descansa"))} partidos, '
-                  f'{len(tabla)} equipos en la tabla, {sum(1 for v in locales.values() if v)}/{len(locales)} escudos '
-                  f'({time.time() - t:.0f}s)', flush=True)
+        for lista, clave in ((EQUIPOS, 'equipos'), (EXTERNOS, 'externos')):
+            for eq in lista:
+                if solo and eq['id'] not in solo and eq['id'] in previo:
+                    salida[clave].append(previo[eq['id']])
+                    continue
+                salida[clave].append(procesar(eq, pool, avisos))
     avisos += list(dict.fromkeys(AVISOS_FECHA))
     salida['avisos'] = avisos
     js = ('/* Generado por herramientas/actualizar.py desde rfaf.es y educationleague.es. No editar a mano. */\n'

@@ -42,9 +42,16 @@ const STATES = ['Enviada', 'Vista', 'En marcha', 'Resuelta'];
 /* Equipos, partidos y clasificaciones reales (js/datos.js, sacado de rfaf.es y educationleague.es) */
 const D = window.DATOS || { equipos: [] };
 /* Orden del club: de mayores a pequeños */
-const ORDEN = ['senior', 'juvenil', 'cadete', 'infantil', 'alevin2', 'alevin1', 'benjamin2', 'benjamin1', 'prebenjamin', 'minis'];
+const ORDEN = ['senior', 'internacional', 'juvenil', 'cadete', 'infantil', 'alevin2', 'alevin1', 'benjamin2', 'benjamin1', 'prebenjamin', 'minis'];
 D.equipos.sort((a, b) => (ORDEN.indexOf(a.id) + 1 || 99) - (ORDEN.indexOf(b.id) + 1 || 99));
 const EQ = Object.fromEntries(D.equipos.map(e => [e.nombre, e]));
+/* Equipos de la estructura del club que no son del C.D. Aznalcóllar Fútbol Base (el C.D. Internacional de Sevilla):
+   solo salen en Partidos, con todo el club. No tienen entrenadores, plantilla ni entrenamientos */
+const EXT = D.externos || [];
+/* El equipo que juega cada partido: el nuestro o el externo, con su escudo */
+const sideName = e => e.externo ? e.nombre : 'Aznalcóllar';
+const sideCrest = e => e.externo ? crestOf(e, e.nombre_web) : crestSm();
+const sideCrestBig = e => e.externo ? crestOf(e, e.nombre_web) : crestBig();
 const US = /AZNALC[OÓ]LLAR/i; /* nunca solo "AZNALC": coincidiría con el C.A. Aznalcázar */
 const ISO = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 const TODAY = ISO(new Date());
@@ -394,7 +401,7 @@ function buildAgenda() {
 }
 /* Un partido que pasado el miércoles de su semana sigue sin hora (ni resultado) no se juega: casi siempre
    es contra un rival que se ha retirado y la federación lo deja en el calendario. No sale como próximo ni en agendas */
-for (const e of D.equipos) for (const p of e.partidos)
+for (const e of D.equipos.concat(EXT)) for (const p of e.partidos)
   if (!p.descansa && p.fecha && !p.hora && !p.goles && !p.estado && TODAY > addDays(p.fecha, 3 - dow(p.fecha))) { p.nojuega = true; p.estado = 'No se juega'; }
 let AGENDA = buildAgenda();
 
@@ -533,15 +540,17 @@ function agendaRow(e, withAct) {
 /* Partidos de todos los equipos, agrupados por fin de semana (semana de lunes a domingo) */
 const weekOf = iso => addDays(iso, 1 - dow(iso));
 function allGames() {
-  return D.equipos.flatMap(e => e.partidos.filter(p => p.fecha && !p.nojuega).map(p => ({ e, p, wk: weekOf(p.fecha) })));
+  return D.equipos.concat(EXT).flatMap(e => e.partidos.filter(p => p.fecha && !p.nojuega).map(p => ({ e, p, wk: weekOf(p.fecha) })));
 }
 function weekLbl(wk, first) {
   const sa = toDate(first && first < addDays(wk, 5) ? first : addDays(wk, 5)), su = toDate(addDays(wk, 6));
   if (first && first < addDays(wk, 5)) return sa.getMonth() === su.getMonth() ? `${sa.getDate()} – ${su.getDate()} ${MES[su.getMonth()]}` : `${sa.getDate()} ${MES[sa.getMonth()]} – ${su.getDate()} ${MES[su.getMonth()]}`;
   return sa.getMonth() === su.getMonth() ? `${sa.getDate()} y ${su.getDate()} ${MES[su.getMonth()]}` : `${sa.getDate()} ${MES[sa.getMonth()]} y ${su.getDate()} ${MES[su.getMonth()]}`;
 }
+/* Escudo del equipo que seguimos; sin escudo, sus iniciales */
+const ownCrest = (e, cls) => e.externo ? (sideCrest(e) ? `<img class="${cls}" src="${sideCrest(e)}" alt="">` : `<span class="${cls} rv" aria-hidden="true">${initials(e.nombre)}</span>`) : crestImg(cls);
 function gameCard(e, p, mine) {
-  const us = `<span class="gs">${crestImg('gcr')}<b>Aznalcóllar</b></span>`;
+  const us = `<span class="gs">${ownCrest(e, 'gcr')}<b>${esc(sideName(e))}</b></span>`;
   const src = crestOf(e, p.rival);
   const them = `<span class="gs">${src ? `<img class="gcr" src="${src}" alt="" loading="lazy">` : `<span class="gcr rv" aria-hidden="true">${initials(nice(p.rival).replace(/^[A-Z.]+\s/, '').replace(/"/g, ''))}</span>`}<b title="${esc(nice(p.rival))}">${esc(nice(p.rival))}</b></span>`;
   const res = p.goles ? outcome(p) : null;
@@ -567,7 +576,7 @@ function kitColors(txt) {
 const swatch = txt => { const cs = kitColors(txt); return `<span class="sw" aria-hidden="true">${(cs.length ? cs : ['#E3E6EE']).map(c => `<i style="background:${c}"></i>`).join('')}</span>`; };
 function openMatch(e, p) {
   const res = p.goles ? outcome(p) : null, src = crestOf(e, p.rival), rv = nice(p.rival);
-  const us = `<div class="mx-t">${crestImg('mx-cr')}<b>Aznalcóllar</b></div>`;
+  const us = `<div class="mx-t">${ownCrest(e, 'mx-cr')}<b>${esc(sideName(e))}</b></div>`;
   const them = `<div class="mx-t">${src ? `<img class="mx-cr" src="${src}" alt="">` : `<span class="mx-cr rv" aria-hidden="true">${initials(rv.replace(/^[A-Z.]+\s/, '').replace(/"/g, ''))}</span>`}<b title="${esc(rv)}">${esc(rv)}</b></div>`;
   const mid = res ? `<div class="mx-m"><span class="res ${res}">${scoreTxt(p)}</span><small>${res === 'G' ? 'Ganado' : res === 'P' ? 'Perdido' : 'Empatado'}</small></div>`
     : `<div class="mx-m"><b class="mx-h">${p.estado ? esc(p.estado) : p.hora || '--:--'}</b><small>${p.estado ? '' : p.hora ? 'Hora' : 'Hora por confirmar'}</small></div>`;
@@ -577,10 +586,10 @@ function openMatch(e, p) {
     : `<p class="muted" style="margin:0">Todavía no tenemos los colores de este equipo.</p>`;
   const m = modal(`<div class="rqd-h"><span class="pill ${S.teams[e.nombre] && S.role === 'coach' ? 'gold' : 'blue'}">${esc(e.nombre)}</span><div class="grow"><small>Jornada ${p.j}</small></div>
       <button type="button" class="iconbtn" data-v="0" aria-label="Cerrar">${ic('x')}</button></div>
-    <h2 id="mdl-t" class="sr">${p.casa ? 'Aznalcóllar contra ' + esc(rv) : esc(rv) + ' contra Aznalcóllar'}</h2>
+    <h2 id="mdl-t" class="sr">${p.casa ? esc(sideName(e)) + ' contra ' + esc(rv) : esc(rv) + ' contra ' + esc(sideName(e))}</h2>
     <div class="mx-s">${p.casa ? us : them}${mid}${p.casa ? them : us}</div>
     <dl class="facts mx-f"><div class="wide"><dt>Fecha</dt><dd>${longDate(p.fecha)}${p.hora && res ? ` · ${p.hora}` : ''}</dd></div>
-      <div><dt>Jugamos</dt><dd>${p.casa ? 'De local' : 'De visitante'}</dd></div><div><dt>Césped</dt><dd>${p.superficie ? esc(/artificial/i.test(p.superficie) ? 'Artificial' : /natural/i.test(p.superficie) ? 'Natural' : p.superficie) : 'Sin datos'}</dd></div>
+      <div><dt>${e.externo ? 'Juega' : 'Jugamos'}</dt><dd>${p.casa ? 'De local' : 'De visitante'}</dd></div><div><dt>Césped</dt><dd>${p.superficie ? esc(/artificial/i.test(p.superficie) ? 'Artificial' : /natural/i.test(p.superficie) ? 'Natural' : p.superficie) : 'Sin datos'}</dd></div>
       <div class="wide"><dt>Rival</dt><dd>${esc(rv)}</dd></div>
       <div class="wide"><dt>Campo</dt><dd>${placeOf(p) ? esc(placeOf(p)) : 'Por confirmar'}</dd></div>
       <div class="wide"><dt>Competición</dt><dd>${esc(e.cat)}</dd></div></dl>
@@ -588,7 +597,7 @@ function openMatch(e, p) {
     ${needMaps(p) ? `<a class="btn blue block" target="_blank" rel="noopener" href="${esc(mapsUrl(p))}">${ic('pin')} Cómo llegar</a>` : ''}
     ${lvAvail(e, p) ? `<button type="button" class="btn blue block" id="mx-lv">${ic(actaOf(e.nombre, p.fecha) && actaOf(e.nombre, p.fecha).fase === 'fin' ? 'list' : (actaOf(e.nombre, p.fecha) || {}).fase && actaOf(e.nombre, p.fecha).fase !== 'previa' ? 'play' : 'pen')} ${(() => { const a = actaOf(e.nombre, p.fecha); return !a || a.fase === 'previa' ? 'Rellenar datos' : a.fase === 'fin' ? 'Ver acta del partido' : 'Seguir el directo'; })()}</button>` : ''}
     ${fichaAvail(e, p) ? `<button type="button" class="btn outline block" id="mx-fp">${ic('list')} Ficha del partido</button>` : ''}
-    ${p.goles && S.teams[e.nombre] && statsOn() && !stFilled(e.nombre, p.fecha) ? `<button type="button" class="btn outline block" id="mx-st">${ic('clock')} Apuntar minutos y goles</button>` : ''}
+    ${p.goles && !e.externo && S.teams[e.nombre] && statsOn() && !stFilled(e.nombre, p.fecha) ? `<button type="button" class="btn outline block" id="mx-st">${ic('clock')} Apuntar minutos y goles</button>` : ''}
     <button type="button" class="btn outline block" id="mx-wa">${ic('send')} Enviar por WhatsApp</button>`, 'dialog', () => {});
   m.el.classList.add('rqd', 'mx');
   const fp = m.el.querySelector('#mx-fp'); if (fp) fp.onclick = () => { m.close(false); openFicha(e.nombre, p.fecha); };
@@ -616,7 +625,7 @@ async function matchPoster(e, p) {
   const res = p.goles ? outcome(p) : null, rv = nice(p.rival), kit = !p.casa && p.equipacion;
   const campo = placeOf(p) ? placeOf(p).replace(/ · /g, ' - ') : 'Por confirmar';
   x.font = font(700, 36); const campoL = lines(campo, 700, 36, W - 192);
-  const facts = [['Fecha', longDate(p.fecha)], ['Hora', p.hora || 'Por confirmar'], ['Jugamos', p.casa ? 'De local' : 'De visitante'], ['Campo', campoL], ['Competición', e.cat]];
+  const facts = [['Fecha', longDate(p.fecha)], ['Hora', p.hora || 'Por confirmar'], [e.externo ? 'Juega' : 'Jugamos', p.casa ? 'De local' : 'De visitante'], ['Campo', campoL], ['Competición', e.cat]];
   const factsH = 60 + facts.reduce((a, f) => a + (Array.isArray(f[1]) ? 64 + 44 * f[1].length : 108), 0);
   const kitRows = kit ? [['Camiseta', kit.camiseta], ['Pantalón', kit.pantalon], ['Medias', kit.medias]].filter(r => r[1]) : [];
   const kitH = kitRows.length ? 130 + kitRows.length * 96 : 0;
@@ -628,13 +637,13 @@ async function matchPoster(e, p) {
   x.font = font(700, 30); const pw = Math.min(x.measureText(e.nombre).width + 44, 560);
   rr(96, 92, pw, 56, 28, GOLD); text(e.nombre, 96 + pw / 2, 121, 700, 30, INK, pw - 44);
   text(`Jornada ${p.j}`, W - 96, 121, 500, 30, MUTED, 380, 'right');
-  const src = crestOf(e, p.rival), [ours, theirs] = await Promise.all([loadImg(crestBig()), src ? loadImg(src) : null]);
+  const src = crestOf(e, p.rival), [ours, theirs] = await Promise.all([sideCrestBig(e) ? loadImg(sideCrestBig(e)) : null, src ? loadImg(src) : null]);
   const side = (img, name, mine, cx) => {
     if (img) fitImg(img, cx, 260, 150);
     else { x.beginPath(); x.arc(cx, 260, 70, 0, Math.PI * 2); x.fillStyle = BLUE; x.fill(); text(initials(name.replace(/^[A-Z.]+\s/, '').replace(/"/g, '')), cx, 262, 800, 48, '#FFFFFF'); }
-    text(mine ? 'Aznalcóllar' : name, cx, 385, 700, 34, INK, 360);
+    text(mine ? sideName(e) : name, cx, 385, 700, 34, INK, 360);
   };
-  const us = [ours, 'Aznalcóllar', true], them = [theirs, rv, false];
+  const us = [ours, sideName(e), true], them = [theirs, rv, false];
   side(...(p.casa ? us : them), 270); side(...(p.casa ? them : us), 810);
   if (res) text(scoreTxt(p), W / 2, 265, 800, 76, INK, 240);
   else if (p.hora) text(p.hora, W / 2, 265, 800, 76, INK, 240);
@@ -702,7 +711,7 @@ function shareMatch(e, p) {
 }
 function bindMatches() {
   document.querySelectorAll('#main [data-match]').forEach(el => {
-    const go = () => { const [id, j] = el.dataset.match.split('|'), e = D.equipos.find(x => x.id === id), p = e && e.partidos.find(x => String(x.j) === j); if (p) openMatch(e, p); };
+    const go = () => { const [id, j] = el.dataset.match.split('|'), e = D.equipos.concat(EXT).find(x => x.id === id), p = e && e.partidos.find(x => String(x.j) === j); if (p) openMatch(e, p); };
     el.onclick = go;
     el.onkeydown = ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); go(); } };
   });
@@ -1250,7 +1259,7 @@ const lvYellow = (L, id) => L.ev.filter(x => x.t === 'ama' && x.id === id).lengt
 const parteLbl = n => `${n}ª parte`;
 function openLv(team, fecha) { S.lvFrom = S.tab; S.lvSub = S.sub; S.lvDate = fecha; S.lv = null; if (S.role === 'coach') S.team = team; go('team', S.role === 'coach' ? 'lv' : 'lv:' + team); }
 /* Un partido tiene directo si es el próximo, si es de hoy o de ayer, o si ya se empezó */
-const lvAvail = (e, p) => !!S.teams[e.nombre] && !p.descansa && (!!actaOf(e.nombre, p.fecha) || p.fecha <= TODAY || p === nextMatch(e));
+const lvAvail = (e, p) => !e.externo && !!S.teams[e.nombre] && !p.descansa && (!!actaOf(e.nombre, p.fecha) || p.fecha <= TODAY || p === nextMatch(e));
 /* Pizarra: el campo a pantalla completa con la formación, para colocar a cada jugador en su sitio.
    Va aparte de la formación de las estadísticas: solo guarda quién va en cada hueco (L.pz). Antes del partido se colocan
    los titulares; durante el partido, los que están en el campo (el que entra en un cambio ocupa el hueco del que sale) */
@@ -1956,7 +1965,7 @@ function lvScreen(team, back) {
    goles minuto a minuto (con cómo fue cada uno) y los minutos y goles de cada jugador */
 function openFicha(team, fecha) { S.fpFrom = S.tab; S.fpSub = S.sub; S.fpDate = fecha; S.fpView = 'res'; if (S.role === 'coach') S.team = team; go('team', S.role === 'coach' ? 'fp' : 'fp:' + team); }
 /* Hay ficha si el partido ya se ha jugado o se hizo el directo */
-const fichaAvail = (e, p) => !!S.teams[e.nombre] && !p.descansa && (!!p.goles || (actaOf(e.nombre, p.fecha) || {}).fase === 'fin');
+const fichaAvail = (e, p) => !e.externo && !!S.teams[e.nombre] && !p.descansa && (!!p.goles || (actaOf(e.nombre, p.fecha) || {}).fase === 'fin');
 function fpScreen(team, back) {
   const e = EQ[team], t = S.teams[team], p = e && e.partidos.find(x => x.fecha === S.fpDate && !x.descansa);
   if (!p) return { kicker: 'Ficha del partido', title: esc(team), back, body: emptyPage('cal', 'No encontramos ese partido', 'Vuelve atrás y elige otro partido.') };

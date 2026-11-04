@@ -1,6 +1,6 @@
 /* Generado por herramientas/actualizar.py desde rfaf.es y educationleague.es. No editar a mano. */
 window.DATOS = {
- "actualizado": "2026-11-04T13:35:26+00:00",
+ "actualizado": "2026-11-04T13:53:08+00:00",
  "equipos": [
   {
    "id": "senior",
@@ -15132,6 +15132,3198 @@ window.DATOS = {
      ]
     }
    ]
+  }
+ ],
+ "externos": [
+  {
+   "id": "internacional",
+   "nombre": "Internacional",
+   "cat": "División de Honor Sénior · Grupo 1",
+   "fuente": "RFAF",
+   "partidos": [
+    {
+     "j": 1,
+     "fecha": "2026-09-13",
+     "hora": "19:00",
+     "casa": false,
+     "rival": "ARCOS C.F.",
+     "campo": "Arcos De La Frontera - ANTONIO GALLARDO ESTADIO MUNCIPAL",
+     "superficie": "Hierba Natural",
+     "goles": [
+      5,
+      0
+     ],
+     "equipacion": {
+      "camiseta": "Blanca",
+      "pantalon": "Blanco",
+      "medias": "Blancas"
+     }
+    },
+    {
+     "j": 2,
+     "fecha": "2026-09-20",
+     "hora": "19:00",
+     "casa": true,
+     "rival": "C.D. ATLETICO ESPELEÑO",
+     "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": [
+      1,
+      4
+     ]
+    },
+    {
+     "j": 3,
+     "fecha": "2026-09-27",
+     "hora": "12:03",
+     "casa": false,
+     "rival": "CADIZ C.F., S.A.D.",
+     "campo": "Puerto Real - MIRANDILLA (EL ROSAL Nº 3)",
+     "superficie": "Hierba Artificial",
+     "goles": [
+      3,
+      3
+     ],
+     "equipacion": {
+      "camiseta": "Amarilla",
+      "pantalon": "Azul",
+      "medias": "Azules"
+     }
+    },
+    {
+     "j": 4,
+     "fecha": "2026-10-01",
+     "hora": "20:30",
+     "casa": true,
+     "rival": "C.D. MOGUER",
+     "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": [
+      0,
+      3
+     ]
+    },
+    {
+     "j": 5,
+     "fecha": "2026-10-04",
+     "descansa": true
+    },
+    {
+     "j": 6,
+     "fecha": "2026-10-11",
+     "hora": "17:00",
+     "casa": true,
+     "rival": "CASTILLEJA C.F.",
+     "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": [
+      0,
+      3
+     ]
+    },
+    {
+     "j": 7,
+     "fecha": "2026-10-18",
+     "hora": "12:00",
+     "casa": false,
+     "rival": "U.D. RINCONADA",
+     "campo": "Rinconada (La) - LEONARDO RAMOS NUEVO (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": [
+      2,
+      1
+     ],
+     "equipacion": {
+      "camiseta": "Azul royal / blanco",
+      "pantalon": "Azul royal",
+      "medias": "Azul royal"
+     }
+    },
+    {
+     "j": 8,
+     "fecha": "2026-10-25",
+     "hora": "12:00",
+     "casa": true,
+     "rival": "LA PALMA C.F.",
+     "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": [
+      1,
+      0
+     ]
+    },
+    {
+     "j": 9,
+     "fecha": "2026-11-01",
+     "hora": "17:30",
+     "casa": false,
+     "rival": "C.D. MONTALBEÑO",
+     "campo": "Montalbán De Córdoba - NUEVO CALVARIO MUNICIPAL (F-11, F-7)",
+     "superficie": "Hierba Artificial",
+     "goles": [
+      1,
+      0
+     ],
+     "equipacion": {
+      "camiseta": "Roja",
+      "pantalon": "Azul",
+      "medias": "Rojas"
+     }
+    },
+    {
+     "j": 10,
+     "fecha": "2026-11-08",
+     "hora": "12:00",
+     "casa": true,
+     "rival": "ALMODOVAR DEL RIO C.F.",
+     "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": null
+    },
+    {
+     "j": 11,
+     "fecha": "2026-11-15",
+     "hora": null,
+     "casa": false,
+     "rival": "AROCHE C.F.",
+     "campo": "NUEVO CAMPO DE FUTBOL SAN MAMES",
+     "superficie": "Hierba Artificial",
+     "goles": null,
+     "equipacion": {
+      "camiseta": "Roja",
+      "pantalon": "Rojo",
+      "medias": "Rojas"
+     }
+    },
+    {
+     "j": 12,
+     "fecha": "2026-11-22",
+     "hora": null,
+     "casa": true,
+     "rival": "RAYO SANLUQUEÑO C.D.",
+     "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": null
+    },
+    {
+     "j": 13,
+     "fecha": "2026-11-29",
+     "hora": null,
+     "casa": false,
+     "rival": "ISLA CRISTINA C.F.",
+     "campo": "ISLA CRISTINA, CAMPO MPAL.",
+     "superficie": "Hierba Natural",
+     "goles": null,
+     "equipacion": {
+      "camiseta": "Amarilla",
+      "pantalon": "Amarillo",
+      "medias": "Azules"
+     }
+    },
+    {
+     "j": 14,
+     "fecha": "2026-12-06",
+     "hora": null,
+     "casa": true,
+     "rival": "MONTILLA C.F.",
+     "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": null
+    },
+    {
+     "j": 15,
+     "fecha": "2026-12-08",
+     "hora": null,
+     "casa": true,
+     "rival": "UNION BALOMPEDICA LEBRIJANA",
+     "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": null
+    },
+    {
+     "j": 16,
+     "fecha": "2026-12-13",
+     "hora": null,
+     "casa": false,
+     "rival": "PALMA DEL RIO ATLETICO C.F.",
+     "campo": "Palma Del Río - ESTADIO MUNICIPAL SERGIO LEON. PALMA DEL RIO (F-11,F-7 2)",
+     "superficie": "Hierba Artificial",
+     "goles": null,
+     "equipacion": {
+      "camiseta": "Amarilla",
+      "pantalon": "Azul",
+      "medias": "Amarillas"
+     }
+    },
+    {
+     "j": 17,
+     "fecha": "2026-12-20",
+     "hora": null,
+     "casa": true,
+     "rival": "U.P. VISO",
+     "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": null
+    },
+    {
+     "j": 18,
+     "fecha": "2027-01-03",
+     "hora": null,
+     "casa": false,
+     "rival": "CORIA C.F.",
+     "campo": "Coria - GUADALQUIVIR ESTADIO (F11)",
+     "superficie": "Hierba Natural",
+     "goles": null,
+     "equipacion": {
+      "camiseta": "Amarilla",
+      "pantalon": "Blanco",
+      "medias": "Amarillas"
+     }
+    },
+    {
+     "j": 19,
+     "fecha": "2027-01-10",
+     "hora": null,
+     "casa": true,
+     "rival": "C.D. CABECENSE",
+     "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": null
+    },
+    {
+     "j": 20,
+     "fecha": "2027-01-17",
+     "hora": null,
+     "casa": true,
+     "rival": "ARCOS C.F.",
+     "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": null
+    },
+    {
+     "j": 21,
+     "fecha": "2027-01-20",
+     "hora": null,
+     "casa": false,
+     "rival": "C.D. ATLETICO ESPELEÑO",
+     "campo": "Espiel - ESPIEL CAMPO MUNICIPAL DE (F-11, F-7)",
+     "superficie": "Hierba Artificial",
+     "goles": null,
+     "equipacion": {
+      "camiseta": "Roja",
+      "pantalon": "Blanco",
+      "medias": "Blancas"
+     }
+    },
+    {
+     "j": 22,
+     "fecha": "2027-01-24",
+     "hora": null,
+     "casa": true,
+     "rival": "CADIZ C.F., S.A.D.",
+     "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": null
+    },
+    {
+     "j": 23,
+     "fecha": "2027-01-31",
+     "hora": null,
+     "casa": false,
+     "rival": "C.D. MOGUER",
+     "campo": "Moguer - LAS DELICIAS, ESTADIO MUNICIPAL",
+     "superficie": "Hierba Artificial",
+     "goles": null,
+     "equipacion": {
+      "camiseta": "Amarilla",
+      "pantalon": "Azul",
+      "medias": "Azules"
+     }
+    },
+    {
+     "j": 24,
+     "fecha": "2027-02-07",
+     "descansa": true
+    },
+    {
+     "j": 25,
+     "fecha": "2027-02-14",
+     "hora": null,
+     "casa": false,
+     "rival": "CASTILLEJA C.F.",
+     "campo": "Castilleja de la Cuesta - ANTONIO ALMENDRO MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": null,
+     "equipacion": {
+      "camiseta": "Blanca",
+      "pantalon": "Azul",
+      "medias": "Blancas"
+     }
+    },
+    {
+     "j": 26,
+     "fecha": "2027-02-21",
+     "hora": null,
+     "casa": true,
+     "rival": "U.D. RINCONADA",
+     "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": null
+    },
+    {
+     "j": 27,
+     "fecha": "2027-02-28",
+     "hora": null,
+     "casa": false,
+     "rival": "LA PALMA C.F.",
+     "campo": "La Palma Polideportivo Municipal Nuevo",
+     "superficie": "Hierba Artificial",
+     "goles": null,
+     "equipacion": {
+      "camiseta": "Blanca",
+      "pantalon": "Blanco",
+      "medias": "Blancas"
+     }
+    },
+    {
+     "j": 28,
+     "fecha": "2027-03-03",
+     "hora": null,
+     "casa": true,
+     "rival": "C.D. MONTALBEÑO",
+     "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": null
+    },
+    {
+     "j": 29,
+     "fecha": "2027-03-07",
+     "hora": null,
+     "casa": false,
+     "rival": "ALMODOVAR DEL RIO C.F.",
+     "campo": "Almodóvar Del Río - PEÑA DEL AGUILA CAMPO MUNICIPAL (F-11, F-7)",
+     "superficie": "Hierba Artificial",
+     "goles": null,
+     "equipacion": {
+      "camiseta": "Verde",
+      "pantalon": "Azul marino",
+      "medias": "Azules marino"
+     }
+    },
+    {
+     "j": 30,
+     "fecha": "2027-03-14",
+     "hora": null,
+     "casa": true,
+     "rival": "AROCHE C.F.",
+     "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": null
+    },
+    {
+     "j": 31,
+     "fecha": "2027-03-21",
+     "hora": null,
+     "casa": false,
+     "rival": "RAYO SANLUQUEÑO C.D.",
+     "campo": "Sanlúcar de Barrameda - EL PICACHO",
+     "superficie": "Hierba Natural",
+     "goles": null,
+     "equipacion": {
+      "camiseta": "Azul",
+      "pantalon": "Azul",
+      "medias": "Azules"
+     }
+    },
+    {
+     "j": 32,
+     "fecha": "2027-03-28",
+     "hora": null,
+     "casa": true,
+     "rival": "ISLA CRISTINA C.F.",
+     "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": null
+    },
+    {
+     "j": 33,
+     "fecha": "2027-04-04",
+     "hora": null,
+     "casa": false,
+     "rival": "MONTILLA C.F.",
+     "campo": "Montilla - MONTILLA ESTADIO MUNICIPAL DE (F-11, F-7)",
+     "superficie": "Hierba Artificial",
+     "goles": null,
+     "equipacion": {
+      "camiseta": "Amarilla",
+      "pantalon": "Verde",
+      "medias": "Verdes"
+     }
+    },
+    {
+     "j": 34,
+     "fecha": "2027-04-11",
+     "hora": null,
+     "casa": false,
+     "rival": "UNION BALOMPEDICA LEBRIJANA",
+     "campo": "Lebrija - CAMPO MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": null,
+     "equipacion": {
+      "camiseta": "Celeste",
+      "pantalon": "Blanco",
+      "medias": "Celeste"
+     }
+    },
+    {
+     "j": 35,
+     "fecha": "2027-04-18",
+     "hora": null,
+     "casa": true,
+     "rival": "PALMA DEL RIO ATLETICO C.F.",
+     "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": null
+    },
+    {
+     "j": 36,
+     "fecha": "2027-04-25",
+     "hora": null,
+     "casa": false,
+     "rival": "U.P. VISO",
+     "campo": "Viso (El) - SAN SEBASTIAN DEL VISO CAMPO MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": null,
+     "equipacion": {
+      "camiseta": "Azul / blanca rayas",
+      "pantalon": "Azul",
+      "medias": "Azules"
+     }
+    },
+    {
+     "j": 37,
+     "fecha": "2027-05-02",
+     "hora": null,
+     "casa": true,
+     "rival": "CORIA C.F.",
+     "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": null
+    },
+    {
+     "j": 38,
+     "fecha": "2027-05-09",
+     "hora": null,
+     "casa": false,
+     "rival": "C.D. CABECENSE",
+     "campo": "Cabezas de San Juan (Las) - CARLOS MARCHENA MUNICIPAL (F11-F7)",
+     "superficie": "Hierba Artificial",
+     "goles": null,
+     "equipacion": {
+      "camiseta": "Roja",
+      "pantalon": "Negro",
+      "medias": "Negras"
+     }
+    }
+   ],
+   "tabla": [
+    {
+     "pos": 1,
+     "equipo": "PALMA DEL RIO ATLETICO C.F.",
+     "pts": 19,
+     "j": 8,
+     "g": 6,
+     "e": 1,
+     "p": 1,
+     "gf": 18,
+     "gc": 5
+    },
+    {
+     "pos": 2,
+     "equipo": "LA PALMA C.F.",
+     "pts": 18,
+     "j": 9,
+     "g": 6,
+     "e": 0,
+     "p": 3,
+     "gf": 17,
+     "gc": 9
+    },
+    {
+     "pos": 3,
+     "equipo": "MONTILLA C.F.",
+     "pts": 17,
+     "j": 9,
+     "g": 5,
+     "e": 2,
+     "p": 2,
+     "gf": 18,
+     "gc": 11
+    },
+    {
+     "pos": 4,
+     "equipo": "C.D. CABECENSE",
+     "pts": 16,
+     "j": 9,
+     "g": 4,
+     "e": 4,
+     "p": 1,
+     "gf": 20,
+     "gc": 11
+    },
+    {
+     "pos": 5,
+     "equipo": "ARCOS C.F.",
+     "pts": 16,
+     "j": 9,
+     "g": 4,
+     "e": 4,
+     "p": 1,
+     "gf": 16,
+     "gc": 8
+    },
+    {
+     "pos": 6,
+     "equipo": "C.D. MONTALBEÑO",
+     "pts": 15,
+     "j": 9,
+     "g": 4,
+     "e": 3,
+     "p": 2,
+     "gf": 15,
+     "gc": 10
+    },
+    {
+     "pos": 7,
+     "equipo": "ALMODOVAR DEL RIO C.F.",
+     "pts": 15,
+     "j": 8,
+     "g": 4,
+     "e": 3,
+     "p": 1,
+     "gf": 18,
+     "gc": 16
+    },
+    {
+     "pos": 8,
+     "equipo": "CORIA C.F.",
+     "pts": 14,
+     "j": 8,
+     "g": 4,
+     "e": 2,
+     "p": 2,
+     "gf": 12,
+     "gc": 9
+    },
+    {
+     "pos": 9,
+     "equipo": "CASTILLEJA C.F.",
+     "pts": 13,
+     "j": 9,
+     "g": 3,
+     "e": 4,
+     "p": 2,
+     "gf": 12,
+     "gc": 9
+    },
+    {
+     "pos": 10,
+     "equipo": "UNION BALOMPEDICA LEBRIJANA",
+     "pts": 11,
+     "j": 7,
+     "g": 3,
+     "e": 2,
+     "p": 2,
+     "gf": 12,
+     "gc": 8
+    },
+    {
+     "pos": 11,
+     "equipo": "U.D. RINCONADA",
+     "pts": 10,
+     "j": 9,
+     "g": 3,
+     "e": 1,
+     "p": 5,
+     "gf": 11,
+     "gc": 17
+    },
+    {
+     "pos": 12,
+     "equipo": "RAYO SANLUQUEÑO C.D.",
+     "pts": 9,
+     "j": 8,
+     "g": 2,
+     "e": 3,
+     "p": 3,
+     "gf": 14,
+     "gc": 12
+    },
+    {
+     "pos": 13,
+     "equipo": "ISLA CRISTINA C.F.",
+     "pts": 9,
+     "j": 8,
+     "g": 2,
+     "e": 3,
+     "p": 3,
+     "gf": 15,
+     "gc": 16
+    },
+    {
+     "pos": 14,
+     "equipo": "U.P. VISO",
+     "pts": 8,
+     "j": 8,
+     "g": 2,
+     "e": 2,
+     "p": 4,
+     "gf": 8,
+     "gc": 13
+    },
+    {
+     "pos": 15,
+     "equipo": "C.D. MOGUER",
+     "pts": 7,
+     "j": 8,
+     "g": 2,
+     "e": 1,
+     "p": 5,
+     "gf": 14,
+     "gc": 19
+    },
+    {
+     "pos": 16,
+     "equipo": "CADIZ C.F., S.A.D.",
+     "pts": 7,
+     "j": 9,
+     "g": 1,
+     "e": 4,
+     "p": 4,
+     "gf": 10,
+     "gc": 16
+    },
+    {
+     "pos": 17,
+     "equipo": "C.D. ATLETICO ESPELEÑO",
+     "pts": 6,
+     "j": 9,
+     "g": 1,
+     "e": 3,
+     "p": 5,
+     "gf": 8,
+     "gc": 17
+    },
+    {
+     "pos": 18,
+     "equipo": "C.D. INTERNACIONAL DE SEVILLA",
+     "pts": 4,
+     "j": 8,
+     "g": 1,
+     "e": 1,
+     "p": 6,
+     "gf": 6,
+     "gc": 21
+    },
+    {
+     "pos": 19,
+     "equipo": "AROCHE C.F.",
+     "pts": 3,
+     "j": 8,
+     "g": 0,
+     "e": 3,
+     "p": 5,
+     "gf": 9,
+     "gc": 26
+    }
+   ],
+   "escudos": {
+    "ALMODOVAR DEL RIO C.F.": "icons/escudos/rfaf-almodovar-del-rio-c-f.png",
+    "U.D. RINCONADA": "icons/escudos/rfaf-u-d-rinconada.png",
+    "LA PALMA C.F.": "icons/escudos/rfaf-la-palma-c-f.png",
+    "CASTILLEJA C.F.": "icons/escudos/rfaf-castilleja-c-f.png",
+    "C.D. MONTALBEÑO": "icons/escudos/rfaf-c-d-montalbeno.png",
+    "CADIZ C.F., S.A.D.": "icons/escudos/rfaf-cadiz-c-f-s-a-d.png",
+    "RAYO SANLUQUEÑO C.D.": "icons/escudos/rfaf-rayo-sanluqueno-c-d.png",
+    "CORIA C.F.": "icons/escudos/rfaf-coria-c-f.png",
+    "PALMA DEL RIO ATLETICO C.F.": "icons/escudos/rfaf-palma-del-rio-atletico-c-f.png",
+    "MONTILLA C.F.": "icons/escudos/rfaf-montilla-c-f.png",
+    "U.P. VISO": "icons/escudos/rfaf-u-p-viso.png",
+    "C.D. MOGUER": "icons/escudos/rfaf-c-d-moguer.png",
+    "AROCHE C.F.": "icons/escudos/rfaf-aroche-c-f.png",
+    "C.D. ATLETICO ESPELEÑO": "icons/escudos/rfaf-c-d-atletico-espeleno.png",
+    "ISLA CRISTINA C.F.": "icons/escudos/rfaf-isla-cristina-c-f.png",
+    "ARCOS C.F.": "icons/escudos/rfaf-arcos-c-f.png",
+    "C.D. INTERNACIONAL DE SEVILLA": "icons/escudos/rfaf-c-d-internacional-de-sevilla.png",
+    "C.D. CABECENSE": "icons/escudos/rfaf-c-d-cabecense.png",
+    "UNION BALOMPEDICA LEBRIJANA": "icons/escudos/rfaf-union-balompedica-lebrijana.png"
+   },
+   "grupo": [
+    {
+     "j": 1,
+     "fecha": "2026-09-13",
+     "partidos": [
+      {
+       "l": "U.D. RINCONADA",
+       "v": "LA PALMA C.F.",
+       "g": [
+        1,
+        4
+       ],
+       "f": "2026-09-13",
+       "h": "12:00"
+      },
+      {
+       "l": "CASTILLEJA C.F.",
+       "v": "C.D. MONTALBEÑO",
+       "g": [
+        1,
+        1
+       ],
+       "f": "2026-09-13",
+       "h": "12:00"
+      },
+      {
+       "l": "CADIZ C.F., S.A.D.",
+       "v": "RAYO SANLUQUEÑO C.D.",
+       "g": [
+        2,
+        0
+       ],
+       "f": "2026-09-13",
+       "h": "12:00"
+      },
+      {
+       "l": "CORIA C.F.",
+       "v": "PALMA DEL RIO ATLETICO C.F.",
+       "g": [
+        2,
+        1
+       ],
+       "f": "2026-09-13",
+       "h": "12:00"
+      },
+      {
+       "l": "MONTILLA C.F.",
+       "v": "U.P. VISO",
+       "g": [
+        2,
+        1
+       ],
+       "f": "2026-09-13",
+       "h": "12:00"
+      },
+      {
+       "l": "C.D. MOGUER",
+       "v": "AROCHE C.F.",
+       "g": [
+        6,
+        3
+       ],
+       "f": "2026-09-13",
+       "h": "19:00"
+      },
+      {
+       "l": "C.D. ATLETICO ESPELEÑO",
+       "v": "ISLA CRISTINA C.F.",
+       "g": [
+        1,
+        2
+       ],
+       "f": "2026-09-13",
+       "h": "19:00"
+      },
+      {
+       "l": "ARCOS C.F.",
+       "v": "C.D. INTERNACIONAL DE SEVILLA",
+       "g": [
+        5,
+        0
+       ],
+       "f": "2026-09-13",
+       "h": "19:00"
+      },
+      {
+       "l": "C.D. CABECENSE",
+       "v": "UNION BALOMPEDICA LEBRIJANA",
+       "g": [
+        2,
+        2
+       ],
+       "f": "2026-09-15",
+       "h": "20:30"
+      }
+     ],
+     "descansa": [
+      "ALMODOVAR DEL RIO C.F."
+     ]
+    },
+    {
+     "j": 2,
+     "fecha": "2026-09-20",
+     "partidos": [
+      {
+       "l": "LA PALMA C.F.",
+       "v": "MONTILLA C.F.",
+       "g": [
+        3,
+        1
+       ],
+       "f": "2026-09-20",
+       "h": "12:00"
+      },
+      {
+       "l": "RAYO SANLUQUEÑO C.D.",
+       "v": "C.D. MOGUER",
+       "g": [
+        3,
+        1
+       ],
+       "f": "2026-09-20",
+       "h": "12:00"
+      },
+      {
+       "l": "ISLA CRISTINA C.F.",
+       "v": "CADIZ C.F., S.A.D.",
+       "g": [
+        1,
+        1
+       ],
+       "f": "2026-09-20",
+       "h": "12:00"
+      },
+      {
+       "l": "UNION BALOMPEDICA LEBRIJANA",
+       "v": "ARCOS C.F.",
+       "g": [
+        0,
+        1
+       ],
+       "f": "2026-09-20",
+       "h": "12:00"
+      },
+      {
+       "l": "U.P. VISO",
+       "v": "CORIA C.F.",
+       "g": [
+        0,
+        3
+       ],
+       "f": "2026-09-20",
+       "h": "12:00"
+      },
+      {
+       "l": "C.D. MONTALBEÑO",
+       "v": "U.D. RINCONADA",
+       "g": [
+        1,
+        2
+       ],
+       "f": "2026-09-20",
+       "h": "19:00"
+      },
+      {
+       "l": "ALMODOVAR DEL RIO C.F.",
+       "v": "CASTILLEJA C.F.",
+       "g": [
+        1,
+        1
+       ],
+       "f": "2026-09-20",
+       "h": "19:00"
+      },
+      {
+       "l": "C.D. INTERNACIONAL DE SEVILLA",
+       "v": "C.D. ATLETICO ESPELEÑO",
+       "g": [
+        1,
+        4
+       ],
+       "f": "2026-09-20",
+       "h": "19:00"
+      },
+      {
+       "l": "PALMA DEL RIO ATLETICO C.F.",
+       "v": "C.D. CABECENSE",
+       "g": [
+        2,
+        1
+       ],
+       "f": "2026-09-20",
+       "h": "19:00"
+      }
+     ],
+     "descansa": [
+      "AROCHE C.F."
+     ]
+    },
+    {
+     "j": 3,
+     "fecha": "2026-09-27",
+     "partidos": [
+      {
+       "l": "ARCOS C.F.",
+       "v": "PALMA DEL RIO ATLETICO C.F.",
+       "g": [
+        1,
+        1
+       ],
+       "f": "2026-09-26",
+       "h": "18:30"
+      },
+      {
+       "l": "U.D. RINCONADA",
+       "v": "ALMODOVAR DEL RIO C.F.",
+       "g": [
+        1,
+        2
+       ],
+       "f": "2026-09-27",
+       "h": "12:00"
+      },
+      {
+       "l": "CASTILLEJA C.F.",
+       "v": "AROCHE C.F.",
+       "g": [
+        3,
+        3
+       ],
+       "f": "2026-09-27",
+       "h": "12:00"
+      },
+      {
+       "l": "C.D. CABECENSE",
+       "v": "U.P. VISO",
+       "g": [
+        3,
+        2
+       ],
+       "f": "2026-09-27",
+       "h": "12:00"
+      },
+      {
+       "l": "MONTILLA C.F.",
+       "v": "CORIA C.F.",
+       "g": [
+        3,
+        1
+       ],
+       "f": "2026-09-27",
+       "h": "12:00"
+      },
+      {
+       "l": "CADIZ C.F., S.A.D.",
+       "v": "C.D. INTERNACIONAL DE SEVILLA",
+       "g": [
+        3,
+        3
+       ],
+       "f": "2026-09-27",
+       "h": "12:03"
+      },
+      {
+       "l": "LA PALMA C.F.",
+       "v": "C.D. MONTALBEÑO",
+       "g": [
+        0,
+        2
+       ],
+       "f": "2026-09-27",
+       "h": "19:00"
+      },
+      {
+       "l": "C.D. MOGUER",
+       "v": "ISLA CRISTINA C.F.",
+       "g": [
+        2,
+        2
+       ],
+       "f": "2026-09-27",
+       "h": "19:00"
+      },
+      {
+       "l": "C.D. ATLETICO ESPELEÑO",
+       "v": "UNION BALOMPEDICA LEBRIJANA",
+       "g": [
+        1,
+        1
+       ],
+       "f": "2026-10-14",
+       "h": "20:00"
+      }
+     ],
+     "descansa": [
+      "RAYO SANLUQUEÑO C.D."
+     ]
+    },
+    {
+     "j": 4,
+     "fecha": "2026-09-30",
+     "partidos": [
+      {
+       "l": "ALMODOVAR DEL RIO C.F.",
+       "v": "LA PALMA C.F.",
+       "g": [
+        2,
+        0
+       ],
+       "f": "2026-09-30",
+       "h": "20:00"
+      },
+      {
+       "l": "AROCHE C.F.",
+       "v": "U.D. RINCONADA",
+       "g": [
+        0,
+        2
+       ],
+       "f": "2026-09-30",
+       "h": "20:30"
+      },
+      {
+       "l": "RAYO SANLUQUEÑO C.D.",
+       "v": "CASTILLEJA C.F.",
+       "g": [
+        0,
+        1
+       ],
+       "f": "2026-09-30",
+       "h": "20:30"
+      },
+      {
+       "l": "UNION BALOMPEDICA LEBRIJANA",
+       "v": "CADIZ C.F., S.A.D.",
+       "g": [
+        3,
+        1
+       ],
+       "f": "2026-09-30",
+       "h": "20:30"
+      },
+      {
+       "l": "PALMA DEL RIO ATLETICO C.F.",
+       "v": "C.D. ATLETICO ESPELEÑO",
+       "g": [
+        4,
+        1
+       ],
+       "f": "2026-09-30",
+       "h": "20:30"
+      },
+      {
+       "l": "CORIA C.F.",
+       "v": "C.D. CABECENSE",
+       "g": [
+        1,
+        1
+       ],
+       "f": "2026-09-30",
+       "h": "20:30"
+      },
+      {
+       "l": "C.D. MONTALBEÑO",
+       "v": "MONTILLA C.F.",
+       "g": [
+        1,
+        2
+       ],
+       "f": "2026-09-30",
+       "h": "21:00"
+      },
+      {
+       "l": "U.P. VISO",
+       "v": "ARCOS C.F.",
+       "g": [
+        2,
+        2
+       ],
+       "f": "2026-09-30",
+       "h": "21:00"
+      },
+      {
+       "l": "C.D. INTERNACIONAL DE SEVILLA",
+       "v": "C.D. MOGUER",
+       "g": [
+        0,
+        3
+       ],
+       "f": "2026-10-01",
+       "h": "20:30"
+      }
+     ],
+     "descansa": [
+      "ISLA CRISTINA C.F."
+     ]
+    },
+    {
+     "j": 5,
+     "fecha": "2026-10-04",
+     "partidos": [
+      {
+       "l": "LA PALMA C.F.",
+       "v": "AROCHE C.F.",
+       "g": [
+        4,
+        0
+       ],
+       "f": "2026-10-04",
+       "h": "12:00"
+      },
+      {
+       "l": "U.D. RINCONADA",
+       "v": "RAYO SANLUQUEÑO C.D.",
+       "g": [
+        1,
+        1
+       ],
+       "f": "2026-10-04",
+       "h": "12:00"
+      },
+      {
+       "l": "CASTILLEJA C.F.",
+       "v": "ISLA CRISTINA C.F.",
+       "g": [
+        1,
+        1
+       ],
+       "f": "2026-10-04",
+       "h": "12:00"
+      },
+      {
+       "l": "MONTILLA C.F.",
+       "v": "C.D. CABECENSE",
+       "g": [
+        1,
+        1
+       ],
+       "f": "2026-10-04",
+       "h": "12:30"
+      },
+      {
+       "l": "CADIZ C.F., S.A.D.",
+       "v": "PALMA DEL RIO ATLETICO C.F.",
+       "g": [
+        0,
+        4
+       ],
+       "f": "2026-10-04",
+       "h": "18:00"
+      },
+      {
+       "l": "C.D. ATLETICO ESPELEÑO",
+       "v": "U.P. VISO",
+       "g": [
+        0,
+        0
+       ],
+       "f": "2026-10-04",
+       "h": "18:00"
+      },
+      {
+       "l": "ARCOS C.F.",
+       "v": "CORIA C.F.",
+       "g": [
+        2,
+        1
+       ],
+       "f": "2026-10-04",
+       "h": "18:00"
+      },
+      {
+       "l": "C.D. MONTALBEÑO",
+       "v": "ALMODOVAR DEL RIO C.F.",
+       "g": [
+        2,
+        2
+       ],
+       "f": "2026-10-04",
+       "h": "18:45"
+      },
+      {
+       "l": "C.D. MOGUER",
+       "v": "UNION BALOMPEDICA LEBRIJANA",
+       "f": "2026-11-11"
+      }
+     ],
+     "descansa": [
+      "C.D. INTERNACIONAL DE SEVILLA"
+     ]
+    },
+    {
+     "j": 6,
+     "fecha": "2026-10-11",
+     "partidos": [
+      {
+       "l": "RAYO SANLUQUEÑO C.D.",
+       "v": "LA PALMA C.F.",
+       "g": [
+        1,
+        3
+       ],
+       "f": "2026-10-10",
+       "h": "18:30"
+      },
+      {
+       "l": "ISLA CRISTINA C.F.",
+       "v": "U.D. RINCONADA",
+       "g": [
+        4,
+        1
+       ],
+       "f": "2026-10-11",
+       "h": "12:00"
+      },
+      {
+       "l": "U.P. VISO",
+       "v": "CADIZ C.F., S.A.D.",
+       "g": [
+        1,
+        0
+       ],
+       "f": "2026-10-11",
+       "h": "12:00"
+      },
+      {
+       "l": "CORIA C.F.",
+       "v": "C.D. ATLETICO ESPELEÑO",
+       "g": [
+        1,
+        1
+       ],
+       "f": "2026-10-11",
+       "h": "12:00"
+      },
+      {
+       "l": "C.D. CABECENSE",
+       "v": "ARCOS C.F.",
+       "g": [
+        2,
+        1
+       ],
+       "f": "2026-10-11",
+       "h": "12:00"
+      },
+      {
+       "l": "C.D. INTERNACIONAL DE SEVILLA",
+       "v": "CASTILLEJA C.F.",
+       "g": [
+        0,
+        3
+       ],
+       "f": "2026-10-11",
+       "h": "17:00"
+      },
+      {
+       "l": "PALMA DEL RIO ATLETICO C.F.",
+       "v": "C.D. MOGUER",
+       "g": [
+        4,
+        0
+       ],
+       "f": "2026-10-11",
+       "h": "17:30"
+      },
+      {
+       "l": "AROCHE C.F.",
+       "v": "C.D. MONTALBEÑO",
+       "g": [
+        0,
+        3
+       ],
+       "f": "2026-10-11",
+       "h": "18:00"
+      },
+      {
+       "l": "ALMODOVAR DEL RIO C.F.",
+       "v": "MONTILLA C.F.",
+       "g": [
+        3,
+        2
+       ],
+       "f": "2026-10-11",
+       "h": "19:00"
+      }
+     ],
+     "descansa": [
+      "UNION BALOMPEDICA LEBRIJANA"
+     ]
+    },
+    {
+     "j": 7,
+     "fecha": "2026-10-18",
+     "partidos": [
+      {
+       "l": "LA PALMA C.F.",
+       "v": "ISLA CRISTINA C.F.",
+       "g": [
+        1,
+        0
+       ],
+       "f": "2026-10-18",
+       "h": "12:00"
+      },
+      {
+       "l": "U.D. RINCONADA",
+       "v": "C.D. INTERNACIONAL DE SEVILLA",
+       "g": [
+        2,
+        1
+       ],
+       "f": "2026-10-18",
+       "h": "12:00"
+      },
+      {
+       "l": "CASTILLEJA C.F.",
+       "v": "UNION BALOMPEDICA LEBRIJANA",
+       "g": [
+        0,
+        2
+       ],
+       "f": "2026-10-18",
+       "h": "12:00"
+      },
+      {
+       "l": "CADIZ C.F., S.A.D.",
+       "v": "CORIA C.F.",
+       "g": [
+        1,
+        2
+       ],
+       "f": "2026-10-18",
+       "h": "12:00"
+      },
+      {
+       "l": "MONTILLA C.F.",
+       "v": "ARCOS C.F.",
+       "g": [
+        1,
+        1
+       ],
+       "f": "2026-10-18",
+       "h": "17:00"
+      },
+      {
+       "l": "C.D. MOGUER",
+       "v": "U.P. VISO",
+       "g": [
+        1,
+        2
+       ],
+       "f": "2026-10-18",
+       "h": "18:00"
+      },
+      {
+       "l": "C.D. ATLETICO ESPELEÑO",
+       "v": "C.D. CABECENSE",
+       "g": [
+        0,
+        5
+       ],
+       "f": "2026-10-18",
+       "h": "18:00"
+      },
+      {
+       "l": "C.D. MONTALBEÑO",
+       "v": "RAYO SANLUQUEÑO C.D.",
+       "g": [
+        2,
+        2
+       ],
+       "f": "2026-10-18",
+       "h": "18:05"
+      },
+      {
+       "l": "ALMODOVAR DEL RIO C.F.",
+       "v": "AROCHE C.F.",
+       "g": [
+        1,
+        1
+       ],
+       "f": "2026-10-18",
+       "h": "18:30"
+      }
+     ],
+     "descansa": [
+      "PALMA DEL RIO ATLETICO C.F."
+     ]
+    },
+    {
+     "j": 8,
+     "fecha": "2026-10-25",
+     "partidos": [
+      {
+       "l": "C.D. CABECENSE",
+       "v": "CADIZ C.F., S.A.D.",
+       "g": [
+        1,
+        1
+       ],
+       "f": "2026-10-24",
+       "h": "18:30"
+      },
+      {
+       "l": "AROCHE C.F.",
+       "v": "MONTILLA C.F.",
+       "g": [
+        0,
+        5
+       ],
+       "f": "2026-10-25",
+       "h": "12:00"
+      },
+      {
+       "l": "RAYO SANLUQUEÑO C.D.",
+       "v": "ALMODOVAR DEL RIO C.F.",
+       "g": [
+        5,
+        0
+       ],
+       "f": "2026-10-25",
+       "h": "12:00"
+      },
+      {
+       "l": "ISLA CRISTINA C.F.",
+       "v": "C.D. MONTALBEÑO",
+       "g": [
+        1,
+        2
+       ],
+       "f": "2026-10-25",
+       "h": "12:00"
+      },
+      {
+       "l": "C.D. INTERNACIONAL DE SEVILLA",
+       "v": "LA PALMA C.F.",
+       "g": [
+        1,
+        0
+       ],
+       "f": "2026-10-25",
+       "h": "12:00"
+      },
+      {
+       "l": "CORIA C.F.",
+       "v": "C.D. MOGUER",
+       "g": [
+        1,
+        0
+       ],
+       "f": "2026-10-25",
+       "h": "12:00"
+      },
+      {
+       "l": "UNION BALOMPEDICA LEBRIJANA",
+       "v": "U.D. RINCONADA",
+       "g": [
+        3,
+        1
+       ],
+       "f": "2026-10-25",
+       "h": "12:30"
+      },
+      {
+       "l": "ARCOS C.F.",
+       "v": "C.D. ATLETICO ESPELEÑO",
+       "g": [
+        2,
+        0
+       ],
+       "f": "2026-10-25",
+       "h": "12:30"
+      },
+      {
+       "l": "PALMA DEL RIO ATLETICO C.F.",
+       "v": "CASTILLEJA C.F.",
+       "g": [
+        1,
+        0
+       ],
+       "f": "2026-10-25",
+       "h": "17:00"
+      }
+     ],
+     "descansa": [
+      "U.P. VISO"
+     ]
+    },
+    {
+     "j": 9,
+     "fecha": "2026-11-01",
+     "partidos": [
+      {
+       "l": "MONTILLA C.F.",
+       "v": "C.D. ATLETICO ESPELEÑO",
+       "g": [
+        1,
+        0
+       ],
+       "f": "2026-10-30",
+       "h": "20:15"
+      },
+      {
+       "l": "LA PALMA C.F.",
+       "v": "UNION BALOMPEDICA LEBRIJANA",
+       "g": [
+        2,
+        1
+       ],
+       "f": "2026-11-01",
+       "h": "12:00"
+      },
+      {
+       "l": "CASTILLEJA C.F.",
+       "v": "U.P. VISO",
+       "g": [
+        2,
+        0
+       ],
+       "f": "2026-11-01",
+       "h": "12:00"
+      },
+      {
+       "l": "CADIZ C.F., S.A.D.",
+       "v": "ARCOS C.F.",
+       "g": [
+        1,
+        1
+       ],
+       "f": "2026-11-01",
+       "h": "12:00"
+      },
+      {
+       "l": "C.D. MOGUER",
+       "v": "C.D. CABECENSE",
+       "g": [
+        1,
+        4
+       ],
+       "f": "2026-11-01",
+       "h": "12:30"
+      },
+      {
+       "l": "AROCHE C.F.",
+       "v": "RAYO SANLUQUEÑO C.D.",
+       "g": [
+        2,
+        2
+       ],
+       "f": "2026-11-01",
+       "h": "17:30"
+      },
+      {
+       "l": "C.D. MONTALBEÑO",
+       "v": "C.D. INTERNACIONAL DE SEVILLA",
+       "g": [
+        1,
+        0
+       ],
+       "f": "2026-11-01",
+       "h": "17:30"
+      },
+      {
+       "l": "ALMODOVAR DEL RIO C.F.",
+       "v": "ISLA CRISTINA C.F.",
+       "g": [
+        7,
+        4
+       ],
+       "f": "2026-11-01",
+       "h": "18:00"
+      },
+      {
+       "l": "U.D. RINCONADA",
+       "v": "PALMA DEL RIO ATLETICO C.F.",
+       "g": [
+        0,
+        1
+       ],
+       "f": "2026-11-01",
+       "h": "18:00"
+      }
+     ],
+     "descansa": [
+      "CORIA C.F."
+     ]
+    },
+    {
+     "j": 10,
+     "fecha": "2026-11-08",
+     "partidos": [
+      {
+       "l": "RAYO SANLUQUEÑO C.D.",
+       "v": "MONTILLA C.F.",
+       "f": "2026-11-08",
+       "h": "12:00"
+      },
+      {
+       "l": "ISLA CRISTINA C.F.",
+       "v": "AROCHE C.F.",
+       "f": "2026-11-08",
+       "h": "12:00"
+      },
+      {
+       "l": "C.D. INTERNACIONAL DE SEVILLA",
+       "v": "ALMODOVAR DEL RIO C.F.",
+       "f": "2026-11-08",
+       "h": "12:00"
+      },
+      {
+       "l": "CORIA C.F.",
+       "v": "CASTILLEJA C.F.",
+       "f": "2026-11-08",
+       "h": "12:00"
+      },
+      {
+       "l": "U.P. VISO",
+       "v": "U.D. RINCONADA",
+       "f": "2026-11-08",
+       "h": "12:15"
+      },
+      {
+       "l": "UNION BALOMPEDICA LEBRIJANA",
+       "v": "C.D. MONTALBEÑO",
+       "f": "2026-11-08",
+       "h": "12:30"
+      },
+      {
+       "l": "PALMA DEL RIO ATLETICO C.F.",
+       "v": "LA PALMA C.F.",
+       "f": "2026-11-08",
+       "h": "17:00"
+      },
+      {
+       "l": "ARCOS C.F.",
+       "v": "C.D. MOGUER",
+       "f": "2026-11-08",
+       "h": "17:30"
+      },
+      {
+       "l": "C.D. ATLETICO ESPELEÑO",
+       "v": "CADIZ C.F., S.A.D.",
+       "f": "2026-11-08",
+       "h": "17:30"
+      }
+     ],
+     "descansa": [
+      "C.D. CABECENSE"
+     ]
+    },
+    {
+     "j": 11,
+     "fecha": "2026-11-15",
+     "partidos": [
+      {
+       "l": "RAYO SANLUQUEÑO C.D.",
+       "v": "ISLA CRISTINA C.F.",
+       "f": "2026-11-15"
+      },
+      {
+       "l": "AROCHE C.F.",
+       "v": "C.D. INTERNACIONAL DE SEVILLA",
+       "f": "2026-11-15"
+      },
+      {
+       "l": "ALMODOVAR DEL RIO C.F.",
+       "v": "UNION BALOMPEDICA LEBRIJANA",
+       "f": "2026-11-15"
+      },
+      {
+       "l": "C.D. MONTALBEÑO",
+       "v": "PALMA DEL RIO ATLETICO C.F.",
+       "f": "2026-11-15"
+      },
+      {
+       "l": "LA PALMA C.F.",
+       "v": "U.P. VISO",
+       "f": "2026-11-15"
+      },
+      {
+       "l": "U.D. RINCONADA",
+       "v": "CORIA C.F.",
+       "f": "2026-11-15"
+      },
+      {
+       "l": "CASTILLEJA C.F.",
+       "v": "C.D. CABECENSE",
+       "f": "2026-11-15"
+      },
+      {
+       "l": "C.D. MOGUER",
+       "v": "C.D. ATLETICO ESPELEÑO",
+       "f": "2026-11-15"
+      },
+      {
+       "l": "MONTILLA C.F.",
+       "v": "CADIZ C.F., S.A.D.",
+       "f": "2026-11-15"
+      }
+     ],
+     "descansa": [
+      "ARCOS C.F."
+     ]
+    },
+    {
+     "j": 12,
+     "fecha": "2026-11-22",
+     "partidos": [
+      {
+       "l": "ISLA CRISTINA C.F.",
+       "v": "MONTILLA C.F.",
+       "f": "2026-11-22"
+      },
+      {
+       "l": "C.D. INTERNACIONAL DE SEVILLA",
+       "v": "RAYO SANLUQUEÑO C.D.",
+       "f": "2026-11-22"
+      },
+      {
+       "l": "UNION BALOMPEDICA LEBRIJANA",
+       "v": "AROCHE C.F.",
+       "f": "2026-11-22"
+      },
+      {
+       "l": "PALMA DEL RIO ATLETICO C.F.",
+       "v": "ALMODOVAR DEL RIO C.F.",
+       "f": "2026-11-22"
+      },
+      {
+       "l": "U.P. VISO",
+       "v": "C.D. MONTALBEÑO",
+       "f": "2026-11-22"
+      },
+      {
+       "l": "CORIA C.F.",
+       "v": "LA PALMA C.F.",
+       "f": "2026-11-22"
+      },
+      {
+       "l": "C.D. CABECENSE",
+       "v": "U.D. RINCONADA",
+       "f": "2026-11-22"
+      },
+      {
+       "l": "ARCOS C.F.",
+       "v": "CASTILLEJA C.F.",
+       "f": "2026-11-22"
+      },
+      {
+       "l": "CADIZ C.F., S.A.D.",
+       "v": "C.D. MOGUER",
+       "f": "2026-11-22"
+      }
+     ],
+     "descansa": [
+      "C.D. ATLETICO ESPELEÑO"
+     ]
+    },
+    {
+     "j": 13,
+     "fecha": "2026-11-29",
+     "partidos": [
+      {
+       "l": "ISLA CRISTINA C.F.",
+       "v": "C.D. INTERNACIONAL DE SEVILLA",
+       "f": "2026-11-29"
+      },
+      {
+       "l": "RAYO SANLUQUEÑO C.D.",
+       "v": "UNION BALOMPEDICA LEBRIJANA",
+       "f": "2026-11-29"
+      },
+      {
+       "l": "AROCHE C.F.",
+       "v": "PALMA DEL RIO ATLETICO C.F.",
+       "f": "2026-11-29"
+      },
+      {
+       "l": "ALMODOVAR DEL RIO C.F.",
+       "v": "U.P. VISO",
+       "f": "2026-11-29"
+      },
+      {
+       "l": "C.D. MONTALBEÑO",
+       "v": "CORIA C.F.",
+       "f": "2026-11-29"
+      },
+      {
+       "l": "LA PALMA C.F.",
+       "v": "C.D. CABECENSE",
+       "f": "2026-11-29"
+      },
+      {
+       "l": "U.D. RINCONADA",
+       "v": "ARCOS C.F.",
+       "f": "2026-11-29"
+      },
+      {
+       "l": "CASTILLEJA C.F.",
+       "v": "C.D. ATLETICO ESPELEÑO",
+       "f": "2026-11-29"
+      },
+      {
+       "l": "MONTILLA C.F.",
+       "v": "C.D. MOGUER",
+       "f": "2026-11-29"
+      }
+     ],
+     "descansa": [
+      "CADIZ C.F., S.A.D."
+     ]
+    },
+    {
+     "j": 14,
+     "fecha": "2026-12-06",
+     "partidos": [
+      {
+       "l": "C.D. INTERNACIONAL DE SEVILLA",
+       "v": "MONTILLA C.F.",
+       "f": "2026-12-06"
+      },
+      {
+       "l": "UNION BALOMPEDICA LEBRIJANA",
+       "v": "ISLA CRISTINA C.F.",
+       "f": "2026-12-06"
+      },
+      {
+       "l": "PALMA DEL RIO ATLETICO C.F.",
+       "v": "RAYO SANLUQUEÑO C.D.",
+       "f": "2026-12-06"
+      },
+      {
+       "l": "U.P. VISO",
+       "v": "AROCHE C.F.",
+       "f": "2026-12-06"
+      },
+      {
+       "l": "CORIA C.F.",
+       "v": "ALMODOVAR DEL RIO C.F.",
+       "f": "2026-12-06"
+      },
+      {
+       "l": "C.D. CABECENSE",
+       "v": "C.D. MONTALBEÑO",
+       "f": "2026-12-06"
+      },
+      {
+       "l": "ARCOS C.F.",
+       "v": "LA PALMA C.F.",
+       "f": "2026-12-06"
+      },
+      {
+       "l": "C.D. ATLETICO ESPELEÑO",
+       "v": "U.D. RINCONADA",
+       "f": "2026-12-06"
+      },
+      {
+       "l": "CADIZ C.F., S.A.D.",
+       "v": "CASTILLEJA C.F.",
+       "f": "2026-12-06"
+      }
+     ],
+     "descansa": [
+      "C.D. MOGUER"
+     ]
+    },
+    {
+     "j": 15,
+     "fecha": "2026-12-08",
+     "partidos": [
+      {
+       "l": "C.D. INTERNACIONAL DE SEVILLA",
+       "v": "UNION BALOMPEDICA LEBRIJANA",
+       "f": "2026-12-08"
+      },
+      {
+       "l": "ISLA CRISTINA C.F.",
+       "v": "PALMA DEL RIO ATLETICO C.F.",
+       "f": "2026-12-08"
+      },
+      {
+       "l": "RAYO SANLUQUEÑO C.D.",
+       "v": "U.P. VISO",
+       "f": "2026-12-08"
+      },
+      {
+       "l": "AROCHE C.F.",
+       "v": "CORIA C.F.",
+       "f": "2026-12-08"
+      },
+      {
+       "l": "ALMODOVAR DEL RIO C.F.",
+       "v": "C.D. CABECENSE",
+       "f": "2026-12-08"
+      },
+      {
+       "l": "C.D. MONTALBEÑO",
+       "v": "ARCOS C.F.",
+       "f": "2026-12-08"
+      },
+      {
+       "l": "LA PALMA C.F.",
+       "v": "C.D. ATLETICO ESPELEÑO",
+       "f": "2026-12-08"
+      },
+      {
+       "l": "U.D. RINCONADA",
+       "v": "CADIZ C.F., S.A.D.",
+       "f": "2026-12-08"
+      },
+      {
+       "l": "CASTILLEJA C.F.",
+       "v": "C.D. MOGUER",
+       "f": "2026-12-08"
+      }
+     ],
+     "descansa": [
+      "MONTILLA C.F."
+     ]
+    },
+    {
+     "j": 16,
+     "fecha": "2026-12-13",
+     "partidos": [
+      {
+       "l": "UNION BALOMPEDICA LEBRIJANA",
+       "v": "MONTILLA C.F.",
+       "f": "2026-12-13"
+      },
+      {
+       "l": "PALMA DEL RIO ATLETICO C.F.",
+       "v": "C.D. INTERNACIONAL DE SEVILLA",
+       "f": "2026-12-13"
+      },
+      {
+       "l": "U.P. VISO",
+       "v": "ISLA CRISTINA C.F.",
+       "f": "2026-12-13"
+      },
+      {
+       "l": "CORIA C.F.",
+       "v": "RAYO SANLUQUEÑO C.D.",
+       "f": "2026-12-13"
+      },
+      {
+       "l": "C.D. CABECENSE",
+       "v": "AROCHE C.F.",
+       "f": "2026-12-13"
+      },
+      {
+       "l": "ARCOS C.F.",
+       "v": "ALMODOVAR DEL RIO C.F.",
+       "f": "2026-12-13"
+      },
+      {
+       "l": "C.D. ATLETICO ESPELEÑO",
+       "v": "C.D. MONTALBEÑO",
+       "f": "2026-12-13"
+      },
+      {
+       "l": "CADIZ C.F., S.A.D.",
+       "v": "LA PALMA C.F.",
+       "f": "2026-12-13"
+      },
+      {
+       "l": "C.D. MOGUER",
+       "v": "U.D. RINCONADA",
+       "f": "2026-12-13"
+      }
+     ],
+     "descansa": [
+      "CASTILLEJA C.F."
+     ]
+    },
+    {
+     "j": 17,
+     "fecha": "2026-12-20",
+     "partidos": [
+      {
+       "l": "UNION BALOMPEDICA LEBRIJANA",
+       "v": "PALMA DEL RIO ATLETICO C.F.",
+       "f": "2026-12-20"
+      },
+      {
+       "l": "C.D. INTERNACIONAL DE SEVILLA",
+       "v": "U.P. VISO",
+       "f": "2026-12-20"
+      },
+      {
+       "l": "ISLA CRISTINA C.F.",
+       "v": "CORIA C.F.",
+       "f": "2026-12-20"
+      },
+      {
+       "l": "RAYO SANLUQUEÑO C.D.",
+       "v": "C.D. CABECENSE",
+       "f": "2026-12-20"
+      },
+      {
+       "l": "AROCHE C.F.",
+       "v": "ARCOS C.F.",
+       "f": "2026-12-20"
+      },
+      {
+       "l": "ALMODOVAR DEL RIO C.F.",
+       "v": "C.D. ATLETICO ESPELEÑO",
+       "f": "2026-12-20"
+      },
+      {
+       "l": "C.D. MONTALBEÑO",
+       "v": "CADIZ C.F., S.A.D.",
+       "f": "2026-12-20"
+      },
+      {
+       "l": "LA PALMA C.F.",
+       "v": "C.D. MOGUER",
+       "f": "2026-12-20"
+      },
+      {
+       "l": "MONTILLA C.F.",
+       "v": "CASTILLEJA C.F.",
+       "f": "2026-12-20"
+      }
+     ],
+     "descansa": [
+      "U.D. RINCONADA"
+     ]
+    },
+    {
+     "j": 18,
+     "fecha": "2027-01-03",
+     "partidos": [
+      {
+       "l": "MONTILLA C.F.",
+       "v": "PALMA DEL RIO ATLETICO C.F.",
+       "f": "2027-01-03"
+      },
+      {
+       "l": "U.P. VISO",
+       "v": "UNION BALOMPEDICA LEBRIJANA",
+       "f": "2027-01-03"
+      },
+      {
+       "l": "CORIA C.F.",
+       "v": "C.D. INTERNACIONAL DE SEVILLA",
+       "f": "2027-01-03"
+      },
+      {
+       "l": "C.D. CABECENSE",
+       "v": "ISLA CRISTINA C.F.",
+       "f": "2027-01-03"
+      },
+      {
+       "l": "ARCOS C.F.",
+       "v": "RAYO SANLUQUEÑO C.D.",
+       "f": "2027-01-03"
+      },
+      {
+       "l": "C.D. ATLETICO ESPELEÑO",
+       "v": "AROCHE C.F.",
+       "f": "2027-01-03"
+      },
+      {
+       "l": "CADIZ C.F., S.A.D.",
+       "v": "ALMODOVAR DEL RIO C.F.",
+       "f": "2027-01-03"
+      },
+      {
+       "l": "C.D. MOGUER",
+       "v": "C.D. MONTALBEÑO",
+       "f": "2027-01-03"
+      },
+      {
+       "l": "CASTILLEJA C.F.",
+       "v": "U.D. RINCONADA",
+       "f": "2027-01-03"
+      }
+     ],
+     "descansa": [
+      "LA PALMA C.F."
+     ]
+    },
+    {
+     "j": 19,
+     "fecha": "2027-01-10",
+     "partidos": [
+      {
+       "l": "PALMA DEL RIO ATLETICO C.F.",
+       "v": "U.P. VISO",
+       "f": "2027-01-10"
+      },
+      {
+       "l": "UNION BALOMPEDICA LEBRIJANA",
+       "v": "CORIA C.F.",
+       "f": "2027-01-10"
+      },
+      {
+       "l": "C.D. INTERNACIONAL DE SEVILLA",
+       "v": "C.D. CABECENSE",
+       "f": "2027-01-10"
+      },
+      {
+       "l": "ISLA CRISTINA C.F.",
+       "v": "ARCOS C.F.",
+       "f": "2027-01-10"
+      },
+      {
+       "l": "RAYO SANLUQUEÑO C.D.",
+       "v": "C.D. ATLETICO ESPELEÑO",
+       "f": "2027-01-10"
+      },
+      {
+       "l": "AROCHE C.F.",
+       "v": "CADIZ C.F., S.A.D.",
+       "f": "2027-01-10"
+      },
+      {
+       "l": "ALMODOVAR DEL RIO C.F.",
+       "v": "C.D. MOGUER",
+       "f": "2027-01-10"
+      },
+      {
+       "l": "LA PALMA C.F.",
+       "v": "CASTILLEJA C.F.",
+       "f": "2027-01-10"
+      },
+      {
+       "l": "U.D. RINCONADA",
+       "v": "MONTILLA C.F.",
+       "f": "2027-01-10"
+      }
+     ],
+     "descansa": [
+      "C.D. MONTALBEÑO"
+     ]
+    },
+    {
+     "j": 20,
+     "fecha": "2027-01-17",
+     "partidos": [
+      {
+       "l": "LA PALMA C.F.",
+       "v": "U.D. RINCONADA",
+       "f": "2027-01-17"
+      },
+      {
+       "l": "C.D. MONTALBEÑO",
+       "v": "CASTILLEJA C.F.",
+       "f": "2027-01-17"
+      },
+      {
+       "l": "AROCHE C.F.",
+       "v": "C.D. MOGUER",
+       "f": "2027-01-17"
+      },
+      {
+       "l": "RAYO SANLUQUEÑO C.D.",
+       "v": "CADIZ C.F., S.A.D.",
+       "f": "2027-01-17"
+      },
+      {
+       "l": "ISLA CRISTINA C.F.",
+       "v": "C.D. ATLETICO ESPELEÑO",
+       "f": "2027-01-17"
+      },
+      {
+       "l": "C.D. INTERNACIONAL DE SEVILLA",
+       "v": "ARCOS C.F.",
+       "f": "2027-01-17"
+      },
+      {
+       "l": "UNION BALOMPEDICA LEBRIJANA",
+       "v": "C.D. CABECENSE",
+       "f": "2027-01-17"
+      },
+      {
+       "l": "PALMA DEL RIO ATLETICO C.F.",
+       "v": "CORIA C.F.",
+       "f": "2027-01-17"
+      },
+      {
+       "l": "U.P. VISO",
+       "v": "MONTILLA C.F.",
+       "f": "2027-01-17"
+      }
+     ],
+     "descansa": [
+      "ALMODOVAR DEL RIO C.F."
+     ]
+    },
+    {
+     "j": 21,
+     "fecha": "2027-01-20",
+     "partidos": [
+      {
+       "l": "MONTILLA C.F.",
+       "v": "LA PALMA C.F.",
+       "f": "2027-01-20"
+      },
+      {
+       "l": "U.D. RINCONADA",
+       "v": "C.D. MONTALBEÑO",
+       "f": "2027-01-20"
+      },
+      {
+       "l": "CASTILLEJA C.F.",
+       "v": "ALMODOVAR DEL RIO C.F.",
+       "f": "2027-01-20"
+      },
+      {
+       "l": "C.D. MOGUER",
+       "v": "RAYO SANLUQUEÑO C.D.",
+       "f": "2027-01-20"
+      },
+      {
+       "l": "CADIZ C.F., S.A.D.",
+       "v": "ISLA CRISTINA C.F.",
+       "f": "2027-01-20"
+      },
+      {
+       "l": "C.D. ATLETICO ESPELEÑO",
+       "v": "C.D. INTERNACIONAL DE SEVILLA",
+       "f": "2027-01-20"
+      },
+      {
+       "l": "ARCOS C.F.",
+       "v": "UNION BALOMPEDICA LEBRIJANA",
+       "f": "2027-01-20"
+      },
+      {
+       "l": "C.D. CABECENSE",
+       "v": "PALMA DEL RIO ATLETICO C.F.",
+       "f": "2027-01-20"
+      },
+      {
+       "l": "CORIA C.F.",
+       "v": "U.P. VISO",
+       "f": "2027-01-20"
+      }
+     ],
+     "descansa": [
+      "AROCHE C.F."
+     ]
+    },
+    {
+     "j": 22,
+     "fecha": "2027-01-24",
+     "partidos": [
+      {
+       "l": "C.D. MONTALBEÑO",
+       "v": "LA PALMA C.F.",
+       "f": "2027-01-24"
+      },
+      {
+       "l": "ALMODOVAR DEL RIO C.F.",
+       "v": "U.D. RINCONADA",
+       "f": "2027-01-24"
+      },
+      {
+       "l": "AROCHE C.F.",
+       "v": "CASTILLEJA C.F.",
+       "f": "2027-01-24"
+      },
+      {
+       "l": "ISLA CRISTINA C.F.",
+       "v": "C.D. MOGUER",
+       "f": "2027-01-24"
+      },
+      {
+       "l": "C.D. INTERNACIONAL DE SEVILLA",
+       "v": "CADIZ C.F., S.A.D.",
+       "f": "2027-01-24"
+      },
+      {
+       "l": "UNION BALOMPEDICA LEBRIJANA",
+       "v": "C.D. ATLETICO ESPELEÑO",
+       "f": "2027-01-24"
+      },
+      {
+       "l": "PALMA DEL RIO ATLETICO C.F.",
+       "v": "ARCOS C.F.",
+       "f": "2027-01-24"
+      },
+      {
+       "l": "U.P. VISO",
+       "v": "C.D. CABECENSE",
+       "f": "2027-01-24"
+      },
+      {
+       "l": "CORIA C.F.",
+       "v": "MONTILLA C.F.",
+       "f": "2027-01-24"
+      }
+     ],
+     "descansa": [
+      "RAYO SANLUQUEÑO C.D."
+     ]
+    },
+    {
+     "j": 23,
+     "fecha": "2027-01-31",
+     "partidos": [
+      {
+       "l": "MONTILLA C.F.",
+       "v": "C.D. MONTALBEÑO",
+       "f": "2027-01-31"
+      },
+      {
+       "l": "LA PALMA C.F.",
+       "v": "ALMODOVAR DEL RIO C.F.",
+       "f": "2027-01-31"
+      },
+      {
+       "l": "U.D. RINCONADA",
+       "v": "AROCHE C.F.",
+       "f": "2027-01-31"
+      },
+      {
+       "l": "CASTILLEJA C.F.",
+       "v": "RAYO SANLUQUEÑO C.D.",
+       "f": "2027-01-31"
+      },
+      {
+       "l": "C.D. MOGUER",
+       "v": "C.D. INTERNACIONAL DE SEVILLA",
+       "f": "2027-01-31"
+      },
+      {
+       "l": "CADIZ C.F., S.A.D.",
+       "v": "UNION BALOMPEDICA LEBRIJANA",
+       "f": "2027-01-31"
+      },
+      {
+       "l": "C.D. ATLETICO ESPELEÑO",
+       "v": "PALMA DEL RIO ATLETICO C.F.",
+       "f": "2027-01-31"
+      },
+      {
+       "l": "ARCOS C.F.",
+       "v": "U.P. VISO",
+       "f": "2027-01-31"
+      },
+      {
+       "l": "C.D. CABECENSE",
+       "v": "CORIA C.F.",
+       "f": "2027-01-31"
+      }
+     ],
+     "descansa": [
+      "ISLA CRISTINA C.F."
+     ]
+    },
+    {
+     "j": 24,
+     "fecha": "2027-02-07",
+     "partidos": [
+      {
+       "l": "ALMODOVAR DEL RIO C.F.",
+       "v": "C.D. MONTALBEÑO",
+       "f": "2027-02-07"
+      },
+      {
+       "l": "AROCHE C.F.",
+       "v": "LA PALMA C.F.",
+       "f": "2027-02-07"
+      },
+      {
+       "l": "RAYO SANLUQUEÑO C.D.",
+       "v": "U.D. RINCONADA",
+       "f": "2027-02-07"
+      },
+      {
+       "l": "ISLA CRISTINA C.F.",
+       "v": "CASTILLEJA C.F.",
+       "f": "2027-02-07"
+      },
+      {
+       "l": "UNION BALOMPEDICA LEBRIJANA",
+       "v": "C.D. MOGUER",
+       "f": "2027-02-07"
+      },
+      {
+       "l": "PALMA DEL RIO ATLETICO C.F.",
+       "v": "CADIZ C.F., S.A.D.",
+       "f": "2027-02-07"
+      },
+      {
+       "l": "U.P. VISO",
+       "v": "C.D. ATLETICO ESPELEÑO",
+       "f": "2027-02-07"
+      },
+      {
+       "l": "CORIA C.F.",
+       "v": "ARCOS C.F.",
+       "f": "2027-02-07"
+      },
+      {
+       "l": "C.D. CABECENSE",
+       "v": "MONTILLA C.F.",
+       "f": "2027-02-07"
+      }
+     ],
+     "descansa": [
+      "C.D. INTERNACIONAL DE SEVILLA"
+     ]
+    },
+    {
+     "j": 25,
+     "fecha": "2027-02-14",
+     "partidos": [
+      {
+       "l": "MONTILLA C.F.",
+       "v": "ALMODOVAR DEL RIO C.F.",
+       "f": "2027-02-14"
+      },
+      {
+       "l": "C.D. MONTALBEÑO",
+       "v": "AROCHE C.F.",
+       "f": "2027-02-14"
+      },
+      {
+       "l": "LA PALMA C.F.",
+       "v": "RAYO SANLUQUEÑO C.D.",
+       "f": "2027-02-14"
+      },
+      {
+       "l": "U.D. RINCONADA",
+       "v": "ISLA CRISTINA C.F.",
+       "f": "2027-02-14"
+      },
+      {
+       "l": "CASTILLEJA C.F.",
+       "v": "C.D. INTERNACIONAL DE SEVILLA",
+       "f": "2027-02-14"
+      },
+      {
+       "l": "C.D. MOGUER",
+       "v": "PALMA DEL RIO ATLETICO C.F.",
+       "f": "2027-02-14"
+      },
+      {
+       "l": "CADIZ C.F., S.A.D.",
+       "v": "U.P. VISO",
+       "f": "2027-02-14"
+      },
+      {
+       "l": "C.D. ATLETICO ESPELEÑO",
+       "v": "CORIA C.F.",
+       "f": "2027-02-14"
+      },
+      {
+       "l": "ARCOS C.F.",
+       "v": "C.D. CABECENSE",
+       "f": "2027-02-14"
+      }
+     ],
+     "descansa": [
+      "UNION BALOMPEDICA LEBRIJANA"
+     ]
+    },
+    {
+     "j": 26,
+     "fecha": "2027-02-21",
+     "partidos": [
+      {
+       "l": "AROCHE C.F.",
+       "v": "ALMODOVAR DEL RIO C.F.",
+       "f": "2027-02-21"
+      },
+      {
+       "l": "RAYO SANLUQUEÑO C.D.",
+       "v": "C.D. MONTALBEÑO",
+       "f": "2027-02-21"
+      },
+      {
+       "l": "ISLA CRISTINA C.F.",
+       "v": "LA PALMA C.F.",
+       "f": "2027-02-21"
+      },
+      {
+       "l": "C.D. INTERNACIONAL DE SEVILLA",
+       "v": "U.D. RINCONADA",
+       "f": "2027-02-21"
+      },
+      {
+       "l": "UNION BALOMPEDICA LEBRIJANA",
+       "v": "CASTILLEJA C.F.",
+       "f": "2027-02-21"
+      },
+      {
+       "l": "U.P. VISO",
+       "v": "C.D. MOGUER",
+       "f": "2027-02-21"
+      },
+      {
+       "l": "CORIA C.F.",
+       "v": "CADIZ C.F., S.A.D.",
+       "f": "2027-02-21"
+      },
+      {
+       "l": "C.D. CABECENSE",
+       "v": "C.D. ATLETICO ESPELEÑO",
+       "f": "2027-02-21"
+      },
+      {
+       "l": "ARCOS C.F.",
+       "v": "MONTILLA C.F.",
+       "f": "2027-02-21"
+      }
+     ],
+     "descansa": [
+      "PALMA DEL RIO ATLETICO C.F."
+     ]
+    },
+    {
+     "j": 27,
+     "fecha": "2027-02-28",
+     "partidos": [
+      {
+       "l": "MONTILLA C.F.",
+       "v": "AROCHE C.F.",
+       "f": "2027-02-28"
+      },
+      {
+       "l": "ALMODOVAR DEL RIO C.F.",
+       "v": "RAYO SANLUQUEÑO C.D.",
+       "f": "2027-02-28"
+      },
+      {
+       "l": "C.D. MONTALBEÑO",
+       "v": "ISLA CRISTINA C.F.",
+       "f": "2027-02-28"
+      },
+      {
+       "l": "LA PALMA C.F.",
+       "v": "C.D. INTERNACIONAL DE SEVILLA",
+       "f": "2027-02-28"
+      },
+      {
+       "l": "U.D. RINCONADA",
+       "v": "UNION BALOMPEDICA LEBRIJANA",
+       "f": "2027-02-28"
+      },
+      {
+       "l": "CASTILLEJA C.F.",
+       "v": "PALMA DEL RIO ATLETICO C.F.",
+       "f": "2027-02-28"
+      },
+      {
+       "l": "C.D. MOGUER",
+       "v": "CORIA C.F.",
+       "f": "2027-02-28"
+      },
+      {
+       "l": "CADIZ C.F., S.A.D.",
+       "v": "C.D. CABECENSE",
+       "f": "2027-02-28"
+      },
+      {
+       "l": "C.D. ATLETICO ESPELEÑO",
+       "v": "ARCOS C.F.",
+       "f": "2027-02-28"
+      }
+     ],
+     "descansa": [
+      "U.P. VISO"
+     ]
+    },
+    {
+     "j": 28,
+     "fecha": "2027-03-03",
+     "partidos": [
+      {
+       "l": "RAYO SANLUQUEÑO C.D.",
+       "v": "AROCHE C.F.",
+       "f": "2027-03-03"
+      },
+      {
+       "l": "ISLA CRISTINA C.F.",
+       "v": "ALMODOVAR DEL RIO C.F.",
+       "f": "2027-03-03"
+      },
+      {
+       "l": "C.D. INTERNACIONAL DE SEVILLA",
+       "v": "C.D. MONTALBEÑO",
+       "f": "2027-03-03"
+      },
+      {
+       "l": "UNION BALOMPEDICA LEBRIJANA",
+       "v": "LA PALMA C.F.",
+       "f": "2027-03-03"
+      },
+      {
+       "l": "PALMA DEL RIO ATLETICO C.F.",
+       "v": "U.D. RINCONADA",
+       "f": "2027-03-03"
+      },
+      {
+       "l": "U.P. VISO",
+       "v": "CASTILLEJA C.F.",
+       "f": "2027-03-03"
+      },
+      {
+       "l": "C.D. CABECENSE",
+       "v": "C.D. MOGUER",
+       "f": "2027-03-03"
+      },
+      {
+       "l": "ARCOS C.F.",
+       "v": "CADIZ C.F., S.A.D.",
+       "f": "2027-03-03"
+      },
+      {
+       "l": "C.D. ATLETICO ESPELEÑO",
+       "v": "MONTILLA C.F.",
+       "f": "2027-03-03"
+      }
+     ],
+     "descansa": [
+      "CORIA C.F."
+     ]
+    },
+    {
+     "j": 29,
+     "fecha": "2027-03-07",
+     "partidos": [
+      {
+       "l": "MONTILLA C.F.",
+       "v": "RAYO SANLUQUEÑO C.D.",
+       "f": "2027-03-07"
+      },
+      {
+       "l": "AROCHE C.F.",
+       "v": "ISLA CRISTINA C.F.",
+       "f": "2027-03-07"
+      },
+      {
+       "l": "ALMODOVAR DEL RIO C.F.",
+       "v": "C.D. INTERNACIONAL DE SEVILLA",
+       "f": "2027-03-07"
+      },
+      {
+       "l": "C.D. MONTALBEÑO",
+       "v": "UNION BALOMPEDICA LEBRIJANA",
+       "f": "2027-03-07"
+      },
+      {
+       "l": "LA PALMA C.F.",
+       "v": "PALMA DEL RIO ATLETICO C.F.",
+       "f": "2027-03-07"
+      },
+      {
+       "l": "U.D. RINCONADA",
+       "v": "U.P. VISO",
+       "f": "2027-03-07"
+      },
+      {
+       "l": "CASTILLEJA C.F.",
+       "v": "CORIA C.F.",
+       "f": "2027-03-07"
+      },
+      {
+       "l": "C.D. MOGUER",
+       "v": "ARCOS C.F.",
+       "f": "2027-03-07"
+      },
+      {
+       "l": "CADIZ C.F., S.A.D.",
+       "v": "C.D. ATLETICO ESPELEÑO",
+       "f": "2027-03-07"
+      }
+     ],
+     "descansa": [
+      "C.D. CABECENSE"
+     ]
+    },
+    {
+     "j": 30,
+     "fecha": "2027-03-14",
+     "partidos": [
+      {
+       "l": "ISLA CRISTINA C.F.",
+       "v": "RAYO SANLUQUEÑO C.D.",
+       "f": "2027-03-14"
+      },
+      {
+       "l": "C.D. INTERNACIONAL DE SEVILLA",
+       "v": "AROCHE C.F.",
+       "f": "2027-03-14"
+      },
+      {
+       "l": "UNION BALOMPEDICA LEBRIJANA",
+       "v": "ALMODOVAR DEL RIO C.F.",
+       "f": "2027-03-14"
+      },
+      {
+       "l": "PALMA DEL RIO ATLETICO C.F.",
+       "v": "C.D. MONTALBEÑO",
+       "f": "2027-03-14"
+      },
+      {
+       "l": "U.P. VISO",
+       "v": "LA PALMA C.F.",
+       "f": "2027-03-14"
+      },
+      {
+       "l": "CORIA C.F.",
+       "v": "U.D. RINCONADA",
+       "f": "2027-03-14"
+      },
+      {
+       "l": "C.D. CABECENSE",
+       "v": "CASTILLEJA C.F.",
+       "f": "2027-03-14"
+      },
+      {
+       "l": "C.D. ATLETICO ESPELEÑO",
+       "v": "C.D. MOGUER",
+       "f": "2027-03-14"
+      },
+      {
+       "l": "CADIZ C.F., S.A.D.",
+       "v": "MONTILLA C.F.",
+       "f": "2027-03-14"
+      }
+     ],
+     "descansa": [
+      "ARCOS C.F."
+     ]
+    },
+    {
+     "j": 31,
+     "fecha": "2027-03-21",
+     "partidos": [
+      {
+       "l": "MONTILLA C.F.",
+       "v": "ISLA CRISTINA C.F.",
+       "f": "2027-03-21"
+      },
+      {
+       "l": "RAYO SANLUQUEÑO C.D.",
+       "v": "C.D. INTERNACIONAL DE SEVILLA",
+       "f": "2027-03-21"
+      },
+      {
+       "l": "AROCHE C.F.",
+       "v": "UNION BALOMPEDICA LEBRIJANA",
+       "f": "2027-03-21"
+      },
+      {
+       "l": "ALMODOVAR DEL RIO C.F.",
+       "v": "PALMA DEL RIO ATLETICO C.F.",
+       "f": "2027-03-21"
+      },
+      {
+       "l": "C.D. MONTALBEÑO",
+       "v": "U.P. VISO",
+       "f": "2027-03-21"
+      },
+      {
+       "l": "LA PALMA C.F.",
+       "v": "CORIA C.F.",
+       "f": "2027-03-21"
+      },
+      {
+       "l": "U.D. RINCONADA",
+       "v": "C.D. CABECENSE",
+       "f": "2027-03-21"
+      },
+      {
+       "l": "CASTILLEJA C.F.",
+       "v": "ARCOS C.F.",
+       "f": "2027-03-21"
+      },
+      {
+       "l": "C.D. MOGUER",
+       "v": "CADIZ C.F., S.A.D.",
+       "f": "2027-03-21"
+      }
+     ],
+     "descansa": [
+      "C.D. ATLETICO ESPELEÑO"
+     ]
+    },
+    {
+     "j": 32,
+     "fecha": "2027-03-28",
+     "partidos": [
+      {
+       "l": "C.D. INTERNACIONAL DE SEVILLA",
+       "v": "ISLA CRISTINA C.F.",
+       "f": "2027-03-28"
+      },
+      {
+       "l": "UNION BALOMPEDICA LEBRIJANA",
+       "v": "RAYO SANLUQUEÑO C.D.",
+       "f": "2027-03-28"
+      },
+      {
+       "l": "PALMA DEL RIO ATLETICO C.F.",
+       "v": "AROCHE C.F.",
+       "f": "2027-03-28"
+      },
+      {
+       "l": "U.P. VISO",
+       "v": "ALMODOVAR DEL RIO C.F.",
+       "f": "2027-03-28"
+      },
+      {
+       "l": "CORIA C.F.",
+       "v": "C.D. MONTALBEÑO",
+       "f": "2027-03-28"
+      },
+      {
+       "l": "C.D. CABECENSE",
+       "v": "LA PALMA C.F.",
+       "f": "2027-03-28"
+      },
+      {
+       "l": "ARCOS C.F.",
+       "v": "U.D. RINCONADA",
+       "f": "2027-03-28"
+      },
+      {
+       "l": "C.D. ATLETICO ESPELEÑO",
+       "v": "CASTILLEJA C.F.",
+       "f": "2027-03-28"
+      },
+      {
+       "l": "C.D. MOGUER",
+       "v": "MONTILLA C.F.",
+       "f": "2027-03-28"
+      }
+     ],
+     "descansa": [
+      "CADIZ C.F., S.A.D."
+     ]
+    },
+    {
+     "j": 33,
+     "fecha": "2027-04-04",
+     "partidos": [
+      {
+       "l": "MONTILLA C.F.",
+       "v": "C.D. INTERNACIONAL DE SEVILLA",
+       "f": "2027-04-04"
+      },
+      {
+       "l": "ISLA CRISTINA C.F.",
+       "v": "UNION BALOMPEDICA LEBRIJANA",
+       "f": "2027-04-04"
+      },
+      {
+       "l": "RAYO SANLUQUEÑO C.D.",
+       "v": "PALMA DEL RIO ATLETICO C.F.",
+       "f": "2027-04-04"
+      },
+      {
+       "l": "AROCHE C.F.",
+       "v": "U.P. VISO",
+       "f": "2027-04-04"
+      },
+      {
+       "l": "ALMODOVAR DEL RIO C.F.",
+       "v": "CORIA C.F.",
+       "f": "2027-04-04"
+      },
+      {
+       "l": "C.D. MONTALBEÑO",
+       "v": "C.D. CABECENSE",
+       "f": "2027-04-04"
+      },
+      {
+       "l": "LA PALMA C.F.",
+       "v": "ARCOS C.F.",
+       "f": "2027-04-04"
+      },
+      {
+       "l": "U.D. RINCONADA",
+       "v": "C.D. ATLETICO ESPELEÑO",
+       "f": "2027-04-04"
+      },
+      {
+       "l": "CASTILLEJA C.F.",
+       "v": "CADIZ C.F., S.A.D.",
+       "f": "2027-04-04"
+      }
+     ],
+     "descansa": [
+      "C.D. MOGUER"
+     ]
+    },
+    {
+     "j": 34,
+     "fecha": "2027-04-11",
+     "partidos": [
+      {
+       "l": "UNION BALOMPEDICA LEBRIJANA",
+       "v": "C.D. INTERNACIONAL DE SEVILLA",
+       "f": "2027-04-11"
+      },
+      {
+       "l": "PALMA DEL RIO ATLETICO C.F.",
+       "v": "ISLA CRISTINA C.F.",
+       "f": "2027-04-11"
+      },
+      {
+       "l": "U.P. VISO",
+       "v": "RAYO SANLUQUEÑO C.D.",
+       "f": "2027-04-11"
+      },
+      {
+       "l": "CORIA C.F.",
+       "v": "AROCHE C.F.",
+       "f": "2027-04-11"
+      },
+      {
+       "l": "C.D. CABECENSE",
+       "v": "ALMODOVAR DEL RIO C.F.",
+       "f": "2027-04-11"
+      },
+      {
+       "l": "ARCOS C.F.",
+       "v": "C.D. MONTALBEÑO",
+       "f": "2027-04-11"
+      },
+      {
+       "l": "C.D. ATLETICO ESPELEÑO",
+       "v": "LA PALMA C.F.",
+       "f": "2027-04-11"
+      },
+      {
+       "l": "CADIZ C.F., S.A.D.",
+       "v": "U.D. RINCONADA",
+       "f": "2027-04-11"
+      },
+      {
+       "l": "C.D. MOGUER",
+       "v": "CASTILLEJA C.F.",
+       "f": "2027-04-11"
+      }
+     ],
+     "descansa": [
+      "MONTILLA C.F."
+     ]
+    },
+    {
+     "j": 35,
+     "fecha": "2027-04-18",
+     "partidos": [
+      {
+       "l": "MONTILLA C.F.",
+       "v": "UNION BALOMPEDICA LEBRIJANA",
+       "f": "2027-04-18"
+      },
+      {
+       "l": "C.D. INTERNACIONAL DE SEVILLA",
+       "v": "PALMA DEL RIO ATLETICO C.F.",
+       "f": "2027-04-18"
+      },
+      {
+       "l": "ISLA CRISTINA C.F.",
+       "v": "U.P. VISO",
+       "f": "2027-04-18"
+      },
+      {
+       "l": "RAYO SANLUQUEÑO C.D.",
+       "v": "CORIA C.F.",
+       "f": "2027-04-18"
+      },
+      {
+       "l": "AROCHE C.F.",
+       "v": "C.D. CABECENSE",
+       "f": "2027-04-18"
+      },
+      {
+       "l": "ALMODOVAR DEL RIO C.F.",
+       "v": "ARCOS C.F.",
+       "f": "2027-04-18"
+      },
+      {
+       "l": "C.D. MONTALBEÑO",
+       "v": "C.D. ATLETICO ESPELEÑO",
+       "f": "2027-04-18"
+      },
+      {
+       "l": "LA PALMA C.F.",
+       "v": "CADIZ C.F., S.A.D.",
+       "f": "2027-04-18"
+      },
+      {
+       "l": "U.D. RINCONADA",
+       "v": "C.D. MOGUER",
+       "f": "2027-04-18"
+      }
+     ],
+     "descansa": [
+      "CASTILLEJA C.F."
+     ]
+    },
+    {
+     "j": 36,
+     "fecha": "2027-04-25",
+     "partidos": [
+      {
+       "l": "PALMA DEL RIO ATLETICO C.F.",
+       "v": "UNION BALOMPEDICA LEBRIJANA",
+       "f": "2027-04-25"
+      },
+      {
+       "l": "U.P. VISO",
+       "v": "C.D. INTERNACIONAL DE SEVILLA",
+       "f": "2027-04-25"
+      },
+      {
+       "l": "CORIA C.F.",
+       "v": "ISLA CRISTINA C.F.",
+       "f": "2027-04-25"
+      },
+      {
+       "l": "C.D. CABECENSE",
+       "v": "RAYO SANLUQUEÑO C.D.",
+       "f": "2027-04-25"
+      },
+      {
+       "l": "ARCOS C.F.",
+       "v": "AROCHE C.F.",
+       "f": "2027-04-25"
+      },
+      {
+       "l": "C.D. ATLETICO ESPELEÑO",
+       "v": "ALMODOVAR DEL RIO C.F.",
+       "f": "2027-04-25"
+      },
+      {
+       "l": "CADIZ C.F., S.A.D.",
+       "v": "C.D. MONTALBEÑO",
+       "f": "2027-04-25"
+      },
+      {
+       "l": "C.D. MOGUER",
+       "v": "LA PALMA C.F.",
+       "f": "2027-04-25"
+      },
+      {
+       "l": "CASTILLEJA C.F.",
+       "v": "MONTILLA C.F.",
+       "f": "2027-04-25"
+      }
+     ],
+     "descansa": [
+      "U.D. RINCONADA"
+     ]
+    },
+    {
+     "j": 37,
+     "fecha": "2027-05-02",
+     "partidos": [
+      {
+       "l": "PALMA DEL RIO ATLETICO C.F.",
+       "v": "MONTILLA C.F.",
+       "f": "2027-05-02"
+      },
+      {
+       "l": "UNION BALOMPEDICA LEBRIJANA",
+       "v": "U.P. VISO",
+       "f": "2027-05-02"
+      },
+      {
+       "l": "C.D. INTERNACIONAL DE SEVILLA",
+       "v": "CORIA C.F.",
+       "f": "2027-05-02"
+      },
+      {
+       "l": "ISLA CRISTINA C.F.",
+       "v": "C.D. CABECENSE",
+       "f": "2027-05-02"
+      },
+      {
+       "l": "RAYO SANLUQUEÑO C.D.",
+       "v": "ARCOS C.F.",
+       "f": "2027-05-02"
+      },
+      {
+       "l": "AROCHE C.F.",
+       "v": "C.D. ATLETICO ESPELEÑO",
+       "f": "2027-05-02"
+      },
+      {
+       "l": "ALMODOVAR DEL RIO C.F.",
+       "v": "CADIZ C.F., S.A.D.",
+       "f": "2027-05-02"
+      },
+      {
+       "l": "C.D. MONTALBEÑO",
+       "v": "C.D. MOGUER",
+       "f": "2027-05-02"
+      },
+      {
+       "l": "U.D. RINCONADA",
+       "v": "CASTILLEJA C.F.",
+       "f": "2027-05-02"
+      }
+     ],
+     "descansa": [
+      "LA PALMA C.F."
+     ]
+    },
+    {
+     "j": 38,
+     "fecha": "2027-05-09",
+     "partidos": [
+      {
+       "l": "U.P. VISO",
+       "v": "PALMA DEL RIO ATLETICO C.F.",
+       "f": "2027-05-09"
+      },
+      {
+       "l": "CORIA C.F.",
+       "v": "UNION BALOMPEDICA LEBRIJANA",
+       "f": "2027-05-09"
+      },
+      {
+       "l": "C.D. CABECENSE",
+       "v": "C.D. INTERNACIONAL DE SEVILLA",
+       "f": "2027-05-09"
+      },
+      {
+       "l": "ARCOS C.F.",
+       "v": "ISLA CRISTINA C.F.",
+       "f": "2027-05-09"
+      },
+      {
+       "l": "C.D. ATLETICO ESPELEÑO",
+       "v": "RAYO SANLUQUEÑO C.D.",
+       "f": "2027-05-09"
+      },
+      {
+       "l": "CADIZ C.F., S.A.D.",
+       "v": "AROCHE C.F.",
+       "f": "2027-05-09"
+      },
+      {
+       "l": "C.D. MOGUER",
+       "v": "ALMODOVAR DEL RIO C.F.",
+       "f": "2027-05-09"
+      },
+      {
+       "l": "CASTILLEJA C.F.",
+       "v": "LA PALMA C.F.",
+       "f": "2027-05-09"
+      },
+      {
+       "l": "MONTILLA C.F.",
+       "v": "U.D. RINCONADA",
+       "f": "2027-05-09"
+      }
+     ],
+     "descansa": [
+      "C.D. MONTALBEÑO"
+     ]
+    }
+   ],
+   "externo": true,
+   "club": "C.D. Internacional de Sevilla",
+   "nombre_web": "C.D. INTERNACIONAL DE SEVILLA"
   }
  ],
  "avisos": []
