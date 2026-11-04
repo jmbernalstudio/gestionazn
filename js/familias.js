@@ -272,11 +272,19 @@
         <p class="inv-l">${esc(L)}</p><div class="btn-row"><button type="button" class="btn ghost" id="inv-copy">${ic('list')} Copiar enlace</button>
         <a class="btn blue" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent('Ya podéis seguir los partidos, resultados y clasificaciones del C.D. Aznalcóllar Fútbol Base y pedir la ropa de entrenamiento desde la app del club. Instaladla y pedid vuestro acceso aquí: ' + L)}">${ic('send')} Enviar por WhatsApp</a>
         <a class="btn ghost" href="icons/qr-familias.png" download="qr-familias-cd-aznalcollar.png">${ic('download')} Descargar QR</a></div></div></section>`;
+    /* Filtro por equipo: una familia sale en cada equipo de sus hijos */
+    const teamsOf = f => (f.jugadores || []).map(id => (jug(id) || {}).team).filter(Boolean);
+    const tOpts = Object.keys(S.teams).sort(teamOrder).map(t => [t, acc.filter(f => teamsOf(f).includes(t)).length]);
+    const ft = S.famTeam && S.teams[S.famTeam] ? S.famTeam : '';
+    const accV = ft ? acc.filter(f => teamsOf(f).includes(ft)) : acc;
+    const filtro = acc.length ? `<label class="f fam-ft" for="fam-ft"><span class="sr">Ver familias de</span><select id="fam-ft"><option value="">Todos los equipos (${acc.length})</option>
+        ${tOpts.map(([t, n]) => `<option value="${esc(t)}" ${t === ft ? 'selected' : ''}>${esc(t)} (${n})</option>`).join('')}</select></label>` : '';
     const body = S.famOff ? falta() : `${pend.length ? `<div class="cards-grid">${pend.map(reqCard).join('')}</div>` : ''}
       ${invita}
-      ${card('h-fac', `Familias con acceso · ${acc.length}`, acc.length ? acc.map(accRow).join('') : '<p class="muted" style="margin:0">Todavía no hay familias con acceso. Pasa a las familias el enlace de la app: entrarán en “Familias” y pedirán su acceso.</p>')}`;
+      ${card('h-fac', `Familias con acceso · ${accV.length}`, acc.length ? filtro + (accV.length ? accV.map(accRow).join('') : `<p class="muted" style="margin:0">Ninguna familia de ${esc(ft)} tiene acceso todavía.</p>`) : '<p class="muted" style="margin:0">Todavía no hay familias con acceso. Pasa a las familias el enlace de la app: entrarán en “Familias” y pedirán su acceso.</p>')}`;
     return { body: `<div class="stack">${inboxSeg()}${!S.famOff && !pend.length ? '<p class="card muted" style="margin:0">No hay solicitudes nuevas de familias.</p>' : ''}${body}</div>`, bind() {
       bindInboxSeg();
+      if ($('#fam-ft')) $('#fam-ft').onchange = e => { S.famTeam = e.target.value; render(); };
       if ($('#inv-copy')) $('#inv-copy').onclick = async () => { try { await navigator.clipboard.writeText(L); say('Enlace copiado. Pégalo en el grupo de WhatsApp del equipo.'); } catch (_) { prompt('Copia este enlace:', L); } };
       document.querySelectorAll('[data-facc]').forEach(b => b.onclick = async () => {
         const id = b.dataset.facc, ids = [...document.querySelectorAll(`[data-fj="${id}"]`)].map(s => +s.value).filter(Boolean);
