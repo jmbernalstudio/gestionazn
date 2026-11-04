@@ -1411,3 +1411,19 @@ select, .rq .ctl select { -webkit-appearance: none; appearance: none; padding-ri
 .ft-mine { font-weight: 600; font-size: .85em; opacity: .7; }
 .f-info .facts { grid-template-columns: minmax(0, 1fr); }
 .f-gol { margin-top: 16px; }
+/* Tienda · packs */
+.pk-l { display: flex; flex-direction: column; gap: 10px; }
+.pk-s { display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border-radius: 14px; background: var(--shell); min-width: 0; }
+.pk-s > b { font-weight: 700; overflow-wrap: anywhere; }
+.pk-s .f { display: flex; flex-direction: column; gap: 6px; font-weight: 600; min-width: 0; }
+.pk-f { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+@media (max-width: 360px) { .pk-f { grid-template-columns: minmax(0, 1fr); } }
+small.pk-z { display: block; white-space: pre-line !important; overflow: visible !important; text-overflow: clip !important; color: var(--muted); }
+.pk-h { margin: 4px 0 0; font-size: .92rem; }
+.pk-es { display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 16px; background: var(--shell); }
+.pk-eh { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.pk-o { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.pk-o > .f { flex: 1; min-width: 0; }
+.pk-or { font-weight: 700; font-size: 1rem; color: var(--muted); flex: none; }
+.pk-del { width: 44px; height: 44px; border-radius: 14px; border: 0; background: var(--bad-soft); color: var(--bad-ink); display: grid; place-items: center; cursor: pointer; flex: none; }
+.pk-es > .btn.sm { align-self: flex-start; }
