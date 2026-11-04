@@ -1410,3 +1410,4 @@ select, .rq .ctl select { -webkit-appearance: none; appearance: none; padding-ri
 .f-tsel .dd-l button > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ft-mine { font-weight: 600; font-size: .85em; opacity: .7; }
 .f-info .facts { grid-template-columns: minmax(0, 1fr); }
+.f-gol { margin-top: 16px; }
