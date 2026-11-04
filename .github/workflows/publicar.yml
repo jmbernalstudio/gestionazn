@@ -1,0 +1,31 @@
+# Publica la app en GitHub Pages sin pasar por la cola automática de Pages.
+# Para que funcione: Settings > Pages > Source = "GitHub Actions".
+name: Publicar la app
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: publicar-app
+  cancel-in-progress: true
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preparar archivos
+        run: |
+          rsync -a --exclude .git --exclude .github --exclude _site ./ _site/
+          touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deploy
+        uses: actions/deploy-pages@v4
