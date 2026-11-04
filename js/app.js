@@ -2544,7 +2544,7 @@ function trainView() {
     <button type="button" data-tt="week" aria-pressed="${sel === 'week'}">Semana</button>${DIAS.map((d, i) =>
     `<button type="button" data-tt="${i + 1}" aria-pressed="${sel === String(i + 1)}">${d} ${toDate(dayIso(i)).getDate()}</button>`).join('')}</div>`;
   const nTr = all.filter(x => x.kind === 'tr' && !x.anul).length, nPa = all.filter(x => x.kind === 'pa').length;
-  const top = `${nav}<div class="cal-bar">${seg}<button type="button" class="btn blue" id="calx" data-day="${sel}"${(sel === 'week' ? all : all.filter(x => x.f === dayIso(+sel - 1))).length ? '' : ' disabled'}>${ic('send')} ${sel === 'week' ? 'Exportar semana' : 'Exportar día'}</button></div>
+  const top = `${nav}<div class="cal-bar">${seg}<button type="button" class="btn blue" id="calx" data-day="${sel}"${(sel === 'week' ? all : all.filter(x => x.f === dayIso(+sel - 1))).length ? '' : ' disabled'}>${ic('send')} ${sel === 'week' ? 'Exportar semana' : 'Exportar día'}</button><button type="button" class="btn blue" id="calh"${trainSessions().some(x => x.h) ? '' : ' disabled'}>${ic('send')} Exportar horarios</button></div>
     <p class="muted cal-key"><span class="tt-dot"></span>Entrenamientos · ${nTr}<span class="tt-dot pa"></span>Partidos · ${nPa}</p>
     <p class="muted cal-tip">Toca un entrenamiento para anularlo esta semana.</p>`;
   if (!all.length) return top + emptyPage('cal', 'Nada esta semana', 'No hay entrenamientos ni partidos. Usa las flechas para ver otra semana.', 'g');
@@ -2699,6 +2699,93 @@ async function calPoster(wk, day) {
   x.restore(); path(TB.x, TB.y, TB.w, TB.h, 22); x.strokeStyle = LINE; x.lineWidth = 2; x.stroke();
   return new Promise(ok => cv.toBlob(b => ok(b), 'image/png'));
 }
+/* Imagen del horario fijo de entrenamientos para los entrenadores: cada día con sus campos (Campo 1, Campo 2 y otros sitios)
+   y las horas en horizontal; cada equipo ocupa su campo de la hora en que empieza a la hora en que acaba.
+   "Campo entero" ocupa los dos campos; si el otro campo aún está ocupado, empieza en el medio campo libre */
+async function horarioPoster() {
+  await Promise.all(['800 60px Outfit', '700 40px Outfit', '500 30px Outfit'].map(f => document.fonts.load(f).catch(() => {})));
+  const SHORT = { prebenjamin: 'Prebenj. 2º' }, shortT = t => SHORT[(EQ[t] || {}).id] || t.replace(' año', '');
+  const BLUE = '#0034DF', SOFT = '#E6EBFD', INK = '#0B0B0B', MUTED = '#5B6475', LINE = '#BFC6D4', HEADBG = '#F3F5F9', BG = '#EEF1F7', BAD = '#FDE7EA', BADINK = '#B42318';
+  const W = 2200, PAD = 40, HEAD = 190, TH = 64, DC = 170, FC = 150, LH = 92, CP = 8;
+  const all = trainSessions().filter(s => s.h).map(s => ({ ...s, a: hm2min(s.h), z: hm2min(s.h) + trainMin(s.team), where: s.where || 'Sin campo' }));
+  const isAll = w => /entero/i.test(w);
+  const days = [1, 2, 3, 4, 5, 6, 7].map(d => {
+    const list = all.filter(s => s.d === d).sort((p, q) => p.a - q.a || teamOrd(p.team) - teamOrd(q.team));
+    const extra = [...new Set(list.map(s => s.where).filter(w => !isAll(w) && w !== 'Campo 1' && w !== 'Campo 2'))];
+    return { d, list, lanes: ['Campo 1', 'Campo 2', ...extra] };
+  }).filter(x => x.list.length);
+  const t0 = all.length ? Math.floor(Math.min(...all.map(s => s.a)) / 60) * 60 : 960, t1 = all.length ? Math.ceil(Math.max(...all.map(s => s.z)) / 60) * 60 : 1020;
+  const n = (t1 - t0) / 30, X0 = PAD + DC + FC, SW = (W - PAD - X0) / n, px = m => X0 + (m - t0) / 30 * SW;
+  const H = HEAD + TH + days.reduce((s, x) => s + x.lanes.length * LH, 0) + PAD + 2;
+  const cv = document.createElement('canvas'), x = cv.getContext('2d'); cv.width = W; cv.height = H;
+  const font = (w, p) => `${w} ${p}px Outfit, system-ui, sans-serif`;
+  const text = (t, tx, y, w, p, color, maxW, align = 'left') => {
+    x.font = font(w, p);
+    if (x.measureText(t).width > maxW) { while (t.length > 1 && x.measureText(t + '…').width > maxW) t = t.slice(0, -1); t += '…'; }
+    x.fillStyle = color; x.textAlign = align; x.textBaseline = 'middle'; x.fillText(t, tx, y);
+  };
+  const path = (rx, ry, rw, rh, rad) => { rad = Math.min(rad, rh / 2, rw / 2); x.beginPath(); x.moveTo(rx + rad, ry); x.arcTo(rx + rw, ry, rx + rw, ry + rh, rad); x.arcTo(rx + rw, ry + rh, rx, ry + rh, rad);
+    x.arcTo(rx, ry + rh, rx, ry, rad); x.arcTo(rx, ry, rx + rw, ry, rad); x.closePath(); };
+  const rr = (rx, ry, rw, rh, rad, color) => { path(rx, ry, rw, rh, rad); x.fillStyle = color; x.fill(); };
+  const line = (x1, y1, x2, y2, c = LINE, lw = 2) => { x.beginPath(); x.moveTo(x1, y1); x.lineTo(x2, y2); x.strokeStyle = c; x.lineWidth = lw; x.stroke(); };
+  /* Cabecera azul con el escudo, como el resto de imágenes del club */
+  x.fillStyle = BG; x.fillRect(0, 0, W, H);
+  rr(PAD, PAD, W - PAD * 2, 120, 32, BLUE);
+  const crest = await loadImg(crestBig());
+  if (crest) { const k = Math.min(84 / crest.width, 84 / crest.height); x.drawImage(crest, PAD + 36, PAD + 60 - crest.height * k / 2, crest.width * k, crest.height * k); }
+  text('C.D. Aznalcóllar Fútbol Base', PAD + 150, PAD + 40, 600, 26, '#FFFFFF', 900);
+  text('Horario de entrenamientos · campos', PAD + 150, PAD + 82, 800, 40, '#FFFFFF', 1250);
+  rr(W - PAD - 560, PAD + 46, 28, 28, 7, SOFT); text('Medio campo', W - PAD - 520, PAD + 60, 700, 24, '#FFFFFF', 200);
+  rr(W - PAD - 290, PAD + 46, 28, 28, 7, '#FFFFFF'); rr(W - PAD - 285, PAD + 51, 18, 18, 4, BLUE); text('Campo entero', W - PAD - 250, PAD + 60, 700, 24, '#FFFFFF', 220);
+  /* Tabla */
+  const TB = { x: PAD, y: HEAD, w: W - PAD * 2, h: H - HEAD - PAD };
+  x.save(); path(TB.x, TB.y, TB.w, TB.h, 22); x.clip();
+  x.fillStyle = '#FFFFFF'; x.fillRect(TB.x, TB.y, TB.w, TB.h);
+  x.fillStyle = HEADBG; x.fillRect(TB.x, TB.y, TB.w, TH); x.fillRect(TB.x, TB.y, DC + FC, TB.h);
+  text('Día', PAD + DC / 2, HEAD + TH / 2, 700, 24, INK, DC - 16, 'center');
+  text('Campo', PAD + DC + FC / 2, HEAD + TH / 2, 700, 24, INK, FC - 16, 'center');
+  for (let k = 0; k < n; k++) text(hhmm(t0 + k * 30), X0 + k * SW + SW / 2, HEAD + TH / 2, 800, 21, BLUE, SW - 6, 'center');
+  for (let k = 0; k <= n; k++) line(X0 + k * SW, TB.y, X0 + k * SW, TB.y + TB.h, LINE, k % 2 ? 1 : 2);
+  line(PAD + DC, HEAD + TH, PAD + DC, TB.y + TB.h);
+  const block = (bx, by, bw, bh, team, sub, full, clash) => {
+    rr(bx, by, bw, bh, 14, clash ? BAD : full ? BLUE : SOFT);
+    const ix = bx + 14, iw = bw - 24;
+    /* Si no cabe "· campo entero", se queda solo la hora (el bloque ya ocupa los dos campos) */
+    let sp = bh > LH ? 21 : 20; x.font = font(500, sp); if (x.measureText(sub).width > iw) sub = sub.split(' · ')[0];
+    while (sp > 16 && (x.font = font(500, sp), x.measureText(sub).width > iw)) sp--;
+    const c1 = clash ? BADINK : full ? '#FFFFFF' : INK, c2 = clash ? BADINK : full ? '#FFFFFF' : MUTED;
+    if (bh > LH) { text(shortT(team), ix, by + bh / 2 - 15, 700, 27, c1, iw); text(sub, ix, by + bh / 2 + 17, 500, sp, c2, iw); }
+    else { text(shortT(team), ix, by + 28, 700, 25, c1, iw); text(sub, ix, by + 56, 500, sp, c2, iw); }
+  };
+  const busy = (list, lane, a, z) => list.some(s => s.where === lane && s.a < z && s.z > a);
+  let y = HEAD + TH;
+  days.forEach((dy, di) => {
+    const lane = w => dy.lanes.indexOf(w), ly = i => y + i * LH, hgt = dy.lanes.length * LH;
+    if (di) line(TB.x, y, TB.x + TB.w, y, INK, 3); else line(TB.x, y, TB.x + TB.w, y);
+    dy.lanes.forEach((w, i) => { if (i) line(PAD + DC, ly(i), TB.x + TB.w, ly(i)); text(w, PAD + DC + FC / 2, ly(i) + LH / 2, 700, 23, INK, FC - 16, 'center'); });
+    text(DIAS_D[dy.d - 1], PAD + DC / 2, y + hgt / 2, 800, 28, BLUE, DC - 20, 'center');
+    const half = dy.list.filter(s => !isAll(s.where)), whole = dy.list.filter(s => isAll(s.where));
+    half.forEach(s => { const i = lane(s.where), clash = half.some(o => o !== s && o.where === s.where && o.a < s.z && o.z > s.a);
+      block(px(s.a) + 4, ly(i) + CP, px(s.z) - px(s.a) - 8, LH - CP * 2, s.team, `${s.h}–${hhmm(s.z)}`, false, clash); });
+    /* Campo entero: se parte por tramos según qué campo queda libre en cada momento */
+    whole.forEach(s => {
+      const cuts = [...new Set([s.a, s.z, ...half.flatMap(o => [o.a, o.z]).filter(m => m > s.a && m < s.z)])].sort((p, q) => p - q);
+      const segs = [];
+      for (let k = 0; k < cuts.length - 1; k++) {
+        const a = cuts[k], z = cuts[k + 1], f1 = !busy(half, 'Campo 1', a, z), f2 = !busy(half, 'Campo 2', a, z);
+        const key = f1 && f2 ? 'both' : f1 ? 'c1' : f2 ? 'c2' : 'clash', last = segs[segs.length - 1];
+        if (last && last.key === key) last.z = z; else segs.push({ a, z, key });
+      }
+      segs.forEach(g => {
+        const full = g.key === 'both' || g.key === 'clash', top = g.key === 'c2' ? ly(1) : ly(0), h = full ? LH * 2 : LH;
+        block(px(g.a) + 4, top + CP, px(g.z) - px(g.a) - 8, h - CP * 2, s.team, full && g.key !== 'clash' ? `${hhmm(g.a)}–${hhmm(g.z)} · campo entero` : `${hhmm(g.a)}–${hhmm(g.z)}`, full && g.key !== 'clash', g.key === 'clash');
+      });
+    });
+    y += hgt;
+  });
+  x.restore(); path(TB.x, TB.y, TB.w, TB.h, 22); x.strokeStyle = LINE; x.lineWidth = 2; x.stroke();
+  return new Promise(ok => cv.toBlob(b => ok(b), 'image/png'));
+}
 function gamesScreen() {
   return { kicker: S.role === 'board' ? 'Todos los equipos' : 'Fines de semana', title: 'Partidos', body: gamesView(),
     bind() {
@@ -2758,6 +2845,8 @@ const BOARD = {
       if ($('#calx')) $('#calx').onclick = () => { const wk = S.calWk || weekOf(TODAY), d = $('#calx').dataset.day, f = d === 'week' ? null : addDays(wk, +d - 1);
         shareImage({ title: f ? 'Calendario del día' : 'Calendario de la semana', wait: 'Preparando la imagen…', build: () => calPoster(wk, f), name: fileName('calendario', 'club', f || wk),
           alt: f ? `Calendario del club, ${longDate(f)}` : `Calendario del club, semana del ${calWeekLbl(wk)}`, msg: '', what: 'la imagen' }); };
+      if ($('#calh')) $('#calh').onclick = () => shareImage({ title: 'Horario de entrenamientos', wait: 'Preparando la imagen…', build: horarioPoster, name: fileName('horario', 'entrenamientos', 'campos'),
+        alt: 'Horario semanal de entrenamientos del club: qué campo usa cada equipo cada día, con la hora de empiece y de final', msg: '', what: 'la imagen' });
       bindMatches();
       document.querySelectorAll('[data-anu]').forEach(el => {
         const run = async () => {

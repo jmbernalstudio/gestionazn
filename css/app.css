@@ -1042,7 +1042,8 @@ select, .rq .ctl select { -webkit-appearance: none; appearance: none; padding-ri
 .cal-bar { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .cal-bar .seg { flex: 1 1 auto; min-width: 0; }
 .cal-bar .btn { flex: none; }
-@media (max-width: 760px) { .cal-bar { flex-direction: column; align-items: stretch; } .cal-bar .seg { width: 100%; } }
+@media (max-width: 760px) { .cal-bar { display: grid; grid-template-columns: 1fr 1fr; } .cal-bar .seg { grid-column: 1 / -1; width: 100%; } .cal-bar .btn { min-width: 0; padding: 0 12px; } }
+@media (max-width: 400px) { .cal-bar { grid-template-columns: 1fr; } }
 .cal-key { margin: 0; display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: .88rem; }
 .tt-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ink); flex: none; }
 .tt-dot.pa { background: var(--club); margin-left: 8px; }
