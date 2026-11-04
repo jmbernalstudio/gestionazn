@@ -97,25 +97,33 @@
       const teams = allTeams(), team = S.fteam && EQ[S.fteam] ? S.fteam : F().teams[0] || teams[0].nombre, e = EQ[team];
       const v = ['games', 'group', 'table'].includes(S.fview) ? S.fview : 'games', t = F().train[team], gol = golUrl(e.id);
       const mine = F().teams.includes(team);
-      const info = `<section class="card f-info" aria-labelledby="h-fi"><div class="card-h"><h2 id="h-fi">${esc(e.cat)}</h2><span class="tag src">${e.fuente}</span></div>
-        <dl class="facts"><div class="wide"><dt>Entrenamientos</dt><dd>${t && t.dias.length ? esc(trainTxt(t)) : 'Por confirmar'}</dd></div>
-          ${ourRow(e) ? `<div><dt>Puesto</dt><dd>${ourRow(e).pos}º</dd></div><div><dt>Puntos</dt><dd>${ourRow(e).pts}</dd></div>` : ''}</dl>
+      /* Sin repetir: la competición sale una vez y el puesto y los puntos ya están en Clasificación */
+      const info = `<section class="card f-info" aria-labelledby="h-fi"><div class="card-h"><h2 id="h-fi">${esc(e.cat)}</h2></div>
+        <dl class="facts"><div class="wide"><dt>Entrenamientos</dt><dd>${t && t.dias.length ? esc(trainTxt(t)) : 'Por confirmar'}</dd></div></dl>
         ${gol ? `<a class="btn blue block" target="_blank" rel="noopener" href="${gol}">${ic('ball')} Ver goleadores (RFAF)</a>` : ''}</section>`;
       let body;
       if (v === 'group') body = groupView(e);
-      else if (v === 'table') body = card('h-ftb', 'Clasificación', tableHTML(e), '', `<span class="tag src">${e.fuente}</span>`);
-      else body = card('h-fgm', `Temporada · ${e.partidos.length} jornadas`, [...e.partidos].sort(byDate).map(p => matchRow(e, p)).join(''), '', `<span class="tag src">${e.fuente}</span>`);
+      else if (v === 'table') body = card('h-ftb', 'Clasificación', tableHTML(e));
+      else body = card('h-fgm', `Temporada · ${e.partidos.length} jornadas`, [...e.partidos].sort(byDate).map(p => matchRow(e, p)).join(''));
       return {
         kicker: `Equipos${mine ? ' · Tu equipo' : ''}`, title: esc(team),
-        body: `<div class="stack"><div class="seg g-scope seg-x" role="group" aria-label="Elige equipo">${teams.map(x => `<button type="button" data-ft="${esc(x.nombre)}" aria-pressed="${x.nombre === team}">${esc(x.nombre)}</button>`).join('')}</div>
+        body: `<div class="stack"><div class="dd f-tsel"><button type="button" class="dd-b" id="ft-b" aria-haspopup="listbox" aria-expanded="false" aria-label="Equipo: ${esc(team)}. Toca para cambiarlo">${esc(team)}</button>
+            <ul class="dd-l" id="ft-l" role="listbox" aria-label="Elige equipo" hidden>${teams.map(x => `<li><button type="button" role="option" data-ft="${esc(x.nombre)}" aria-selected="${x.nombre === team}"><span>${esc(x.nombre)}${F().teams.includes(x.nombre) ? ' <small class="ft-mine">· Tu equipo</small>' : ''}</span>${x.nombre === team ? ic('check') : ''}</button></li>`).join('')}</ul></div>
           ${info}
           <div class="tabs" role="group" aria-label="Qué ver">${[['games', 'Partidos'], ['group', 'Jornada'], ['table', 'Clasificación']].map(([k, l]) => `<button type="button" data-fv="${k}" aria-pressed="${v === k}">${l}</button>`).join('')}</div>
           ${body}</div>`,
         bind() {
-          document.querySelectorAll('[data-ft]').forEach(b => b.onclick = () => { S.fteam = b.dataset.ft; S.gj = null; render(); });
+          /* Selector de equipo: se abre al tocarlo y se cierra al elegir, al tocar fuera o con Escape */
+          const fb = $('#ft-b'), fl = $('#ft-l');
+          const shut = () => { fl.hidden = true; fb.setAttribute('aria-expanded', 'false'); document.removeEventListener('pointerdown', out, true); };
+          const out = ev => { if (!ev.target.closest('.f-tsel')) shut(); };
+          fb.onclick = () => { if (!fl.hidden) return shut();
+            fl.hidden = false; fb.setAttribute('aria-expanded', 'true'); document.addEventListener('pointerdown', out, true);
+            (fl.querySelector('[aria-selected="true"]') || fl.querySelector('button')).focus({ preventScroll: true }); };
+          fl.onkeydown = ev => { if (ev.key === 'Escape') { ev.stopPropagation(); shut(); fb.focus(); } };
+          fl.querySelectorAll('[data-ft]').forEach(b => b.onclick = () => { shut(); if (b.dataset.ft !== team) { S.fteam = b.dataset.ft; S.gj = null; render(); } });
           document.querySelectorAll('[data-fv]').forEach(b => b.onclick = () => { S.fview = b.dataset.fv; render(); });
           document.querySelectorAll('[data-gj]').forEach(b => b.onclick = () => { if (b.dataset.gj) { S.gj = +b.dataset.gj; render(); } });
-          document.querySelectorAll('.seg-x [aria-pressed="true"]').forEach(b => { const s = b.parentElement; s.scrollLeft = b.offsetLeft - (s.clientWidth - b.offsetWidth) / 2; });
         }
       };
     },
