@@ -223,7 +223,7 @@ applyCrest();
 const CLUB = 'C.D. Aznalcóllar';
 const greet = () => { const h = new Date().getHours(); return h < 14 ? 'Buenos días' : h < 21 ? 'Buenas tardes' : 'Buenas noches'; };
 const myName = () => S.live ? S.me.nombre : S.role === 'coach' ? S.me.nombre : S.board;
-const roleName = () => S.role === 'coach' ? 'Entrenador' : 'Junta directiva';
+const roleName = () => S.role === 'coach' ? 'Entrenador' : S.role === 'family' ? 'Familia' : 'Junta directiva';
 const myPerson = () => S.live ? S.me : { nombre: myName(), foto: null };
 /* Foto de la persona, o sus iniciales si la junta aún no ha subido ninguna */
 /* Número del jugador; si tiene foto, la foto con el dorsal en una esquina */
@@ -240,7 +240,7 @@ function optsScreen() {
   return { kicker: 'Tu cuenta', title: 'Opciones', back,
     body: `<div class="opts">
       <section class="card opts-me" aria-label="Tu perfil">${avatar(myPerson(), 'av big')}<div class="grow"><b>${esc(myName())}</b><small>${roleName()}</small></div>
-        <button type="button" class="btn ghost" id="rename">${ic('pen')} Cambiar mi nombre</button></section>
+        ${S.role === 'family' ? '' : `<button type="button" class="btn ghost" id="rename">${ic('pen')} Cambiar mi nombre</button>`}</section>
       <section class="card stack" aria-labelledby="h-op-esc"><h2 id="h-op-esc" class="opts-h">Escudo del club</h2>
         <div class="opts-row"><div class="grow"><b id="op-esc-l">Usar escudo del 75º aniversario</b><small>Si lo quitas, en toda la app sale el escudo de siempre.</small></div>
           <button type="button" class="tgl" role="switch" id="op-esc" aria-checked="${on}" aria-labelledby="op-esc-l"><span></span></button></div>
@@ -254,7 +254,7 @@ function optsScreen() {
           <button type="button" class="btn ${S.role === 'coach' ? 'blue' : 'out'} block" data-role="coach">Entrenador</button>
           <button type="button" class="btn ${S.role === 'board' ? 'blue' : 'out'} block" data-role="board">Junta</button>`}</section></div>`,
     bind() {
-      $('#rename').onclick = renameMe;
+      if ($('#rename')) $('#rename').onclick = renameMe;
       if ($('#push-menu')) $('#push-menu').onclick = activarPush;
       if ($('#logout')) $('#logout').onclick = () => window.logout && window.logout();
       document.querySelectorAll('.opts [data-role]').forEach(x => x.onclick = () => { S.role = x.dataset.role; go('home'); });
@@ -407,7 +407,9 @@ let AGENDA = buildAgenda();
 
 function tabsFor() {
   const unread = S.notices.filter(n => !n.read).length;
-  const open = S.requests.filter(r => r.st < 3).length;
+  const open = S.requests.filter(r => r.st < 3).length + (window.famInboxCount ? famInboxCount() : 0);
+  /* Familias: solo partidos, equipos y tienda */
+  if (S.role === 'family') return [['home', 'Inicio', 'home'], ['games', 'Partidos', 'cal'], ['shop', 'Tienda', 'box', 'plus'], ['team', 'Equipos', 'team']];
   return S.role === 'coach'
     ? [['home', 'Inicio', 'home'], ['team', 'Mi equipo', 'team', '', pendingAll().length], ['ask', 'Solicitar', 'plus', 'plus'], ['games', 'Partidos', 'cal'], ['msg', 'Mensajes', 'chat', '', unread]]
     : [['home', 'Bandeja', 'inbox', '', open], ['team', 'Equipos', 'team'], ['ask', 'Aviso', 'send', 'plus'], ['games', 'Partidos', 'cal'], ['msg', 'Enviados', 'chat']];
@@ -422,7 +424,8 @@ function render(focus) {
     `<li><button type="button" class="${cls || ''}" data-tab="${k}" ${S.tab === k ? 'aria-current="page"' : ''}>${ic(i)}<span>${l}</span>${n ? `<span class="badge" aria-label="${n} pendientes">${n}</span>` : ''}</button></li>`).join('');
   $('#bottom-tabs').innerHTML = tabs.map(([k, l, i, cls, n]) =>
     `<li><button type="button" class="${cls || ''}" data-tab="${k}" ${S.tab === k ? 'aria-current="page"' : ''}>${cls === 'plus' ? `<span class="ic">${ic(i)}</span>` : ic(i)}<span>${l}</span>${n ? `<span class="badge" aria-label="${n} pendientes">${n}</span>` : ''}</button></li>`).join('');
-  const v = (S.role === 'coach' ? COACH : BOARD)[S.tab]();
+  const SCR = S.role === 'family' ? window.FAMILY : S.role === 'coach' ? COACH : BOARD;
+  const v = (SCR[S.tab] || SCR.home)();
   const unread = S.notices.filter(n => !n.read).length;
   const unseen = S.requests.filter(r => r.st === 0).length;
   $('#top').innerHTML = `
@@ -430,7 +433,7 @@ function render(focus) {
     <div class="title"><small>${v.kicker}</small><h1 id="title">${v.title}</h1></div>
     <div class="me-wrap"><button type="button" class="me" id="me" aria-label="Opciones de tu cuenta: ${esc(myName())}">
       ${S.tab === 'home' ? `<span class="me-t"><small>${roleName()}</small></span>` : `<span class="me-t"><small>${roleName()}</small><b>${esc(myName())}</b></span>`}${avatar(myPerson(), 'av')}</button></div>
-    ${S.role === 'coach' ? `<button type="button" class="iconbtn" data-go="msg" aria-label="Mensajes${unread ? `, ${unread} sin leer` : ''}">${ic('bell')}${unread ? '<span class="dot"></span>' : ''}</button>`
+    ${S.role === 'family' ? '' : S.role === 'coach' ? `<button type="button" class="iconbtn" data-go="msg" aria-label="Mensajes${unread ? `, ${unread} sin leer` : ''}">${ic('bell')}${unread ? '<span class="dot"></span>' : ''}</button>`
       : `<button type="button" class="iconbtn" data-go="home" aria-label="Peticiones${unseen ? `, ${unseen} sin ver` : ''}">${ic('bell')}${unseen ? '<span class="dot"></span>' : ''}</button>`}`;
   bindMe();
   $('#main').className = v.layout || '';
@@ -584,7 +587,7 @@ function openMatch(e, p) {
   const kit = k ? `<div class="kit">${[['Camiseta', k.camiseta], ['Pantalón', k.pantalon], ['Medias', k.medias]].filter(x => x[1]).map(([l, v]) =>
       `<div class="kit-r">${swatch(v)}<span class="kit-l">${l}</span><b>${esc(v)}</b></div>`).join('')}</div>`
     : `<p class="muted" style="margin:0">Todavía no tenemos los colores de este equipo.</p>`;
-  const m = modal(`<div class="rqd-h"><span class="pill ${S.teams[e.nombre] && S.role === 'coach' ? 'gold' : 'blue'}">${esc(e.nombre)}</span><div class="grow"><small>Jornada ${p.j}</small></div>
+  const m = modal(`<div class="rqd-h"><span class="pill ${(S.teams[e.nombre] && S.role === 'coach') || (S.role === 'family' && S.fam && S.fam.teams.includes(e.nombre)) ? 'gold' : 'blue'}">${esc(e.nombre)}</span><div class="grow"><small>Jornada ${p.j}</small></div>
       <button type="button" class="iconbtn" data-v="0" aria-label="Cerrar">${ic('x')}</button></div>
     <h2 id="mdl-t" class="sr">${p.casa ? esc(sideName(e)) + ' contra ' + esc(rv) : esc(rv) + ' contra ' + esc(sideName(e))}</h2>
     <div class="mx-s">${p.casa ? us : them}${mid}${p.casa ? them : us}</div>
@@ -718,8 +721,8 @@ function bindMatches() {
 }
 function gamesView() {
   /* Entrenadores: sus equipos o todo el club; la junta ve siempre todo */
-  const coach = S.role === 'coach', mineOnly = coach && S.gscope !== 'all';
-  const own = e => coach && !!S.teams[e.nombre];
+  const fam = S.role === 'family', coach = S.role === 'coach' || fam, mineOnly = coach && S.gscope !== 'all';
+  const own = e => coach && (fam ? (S.fam ? S.fam.teams : []).includes(e.nombre) : !!S.teams[e.nombre]);
   const all = allGames().filter(g => !mineOnly || own(g.e));
   const weeks = [...new Set(all.filter(g => !g.p.descansa).map(g => g.wk))].sort();
   const now = weekOf(TODAY);
@@ -743,7 +746,7 @@ function gamesView() {
         : `<div class="kpi"><small>De local</small><b>${week.filter(g => g.p.casa).length}</b></div><div class="kpi"><small>De visitante</small><b>${week.filter(g => !g.p.casa).length}</b></div>`}</div>`;
   const body = list.length ? `<div class="games">${list.map(g => gameCard(g.e, g.p, own(g.e))).join('')}</div>`
     : emptyPage('cal', `No hay partidos${venue === 'home' ? ' de local' : venue === 'away' ? ' de visitante' : ''}`, 'Usa las flechas para ver otro fin de semana.', 'g');
-  const n = Object.keys(S.teams).length;
+  const n = fam ? (S.fam ? S.fam.teams.length : 0) : Object.keys(S.teams).length;
   const scope = coach ? `<div class="seg g-scope" role="group" aria-label="Qué partidos ver">
       <button type="button" data-gs="mine" aria-pressed="${mineOnly}">${n === 1 ? 'Mi equipo' : 'Mis equipos'}</button>
       <button type="button" data-gs="all" aria-pressed="${!mineOnly}">Todo el club</button></div>` : '';
@@ -2697,7 +2700,7 @@ async function calPoster(wk, day) {
   return new Promise(ok => cv.toBlob(b => ok(b), 'image/png'));
 }
 function gamesScreen() {
-  return { kicker: S.role === 'coach' ? 'Fines de semana' : 'Todos los equipos', title: 'Partidos', body: gamesView(),
+  return { kicker: S.role === 'board' ? 'Todos los equipos' : 'Fines de semana', title: 'Partidos', body: gamesView(),
     bind() {
       document.querySelectorAll('[data-wk]').forEach(b => b.onclick = () => { if (b.dataset.wk) { S.wk = b.dataset.wk; render(); } });
       document.querySelectorAll('[data-gs]').forEach(b => b.onclick = () => { S.gscope = b.dataset.gs; S.wk = null; render(); });
@@ -2707,11 +2710,13 @@ function gamesScreen() {
 const BOARD = {
   opts: optsScreen,
   home() {
+    /* La bandeja se divide en Peticiones, Pedidos (tienda) y Familias (solicitudes de acceso) */
+    if (S.live && window.boardInbox && ['ped', 'fam'].includes(S.inbox)) { const x = boardInbox(); return { kicker: `${greet()}, ${esc(firstName())}`, title: S.inbox === 'ped' ? 'Pedidos de la tienda' : 'Familias', ...x }; }
     const open = S.requests.filter(r => r.st < 3);
     const order = [...S.requests].sort((a, b) => (a.st === 3) - (b.st === 3) || b.urgent - a.urgent || a.st - b.st);
     return {
       kicker: `${greet()}, ${esc(firstName())}`, title: 'Bandeja de la junta',
-      body: `${pushCard()}<div class="grid board-home">
+      body: `${pushCard()}${S.live && window.inboxSeg ? inboxSeg() : ''}<div class="grid board-home">
         <div class="kpis a-kpis">
           <div class="kpi dark"><small>Abiertas</small><b>${open.length}</b></div>
           <div class="kpi ${open.some(r => r.urgent) ? 'alert' : ''}"><small>Urgentes</small><b>${open.filter(r => r.urgent).length}</b></div>
@@ -2723,7 +2728,7 @@ const BOARD = {
         ${card('h-tm', 'Nuestros equipos', `<div class="scroll">${teamsList()}</div>`, 'a-teams', '<button type="button" class="more" data-go="team">Ver todos</button>')}
         ${noticeCard(S.notices[0], 'a-notice')}
       </div>`,
-      bind() { document.querySelectorAll('[data-st]').forEach(s => s.onchange = () => {
+      bind() { window.bindInboxSeg && bindInboxSeg(); document.querySelectorAll('[data-st]').forEach(s => s.onchange = () => {
         const r = S.requests.find(x => x.id == s.dataset.st); const prev = r.st; r.st = +s.value; render();
         API() && API().estado(r.id, r.st).catch(() => { r.st = prev; render(); say('No se ha podido guardar. Revisa la conexión.'); });
         say(`“${r.title}” pasa a ${STATES[r.st]}. ${r.by} lo verá en su móvil.`, () => { r.st = prev; API() && API().estado(r.id, prev); }); }); }
@@ -2827,7 +2832,8 @@ function bindGo() {
 }
 
 document.addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if (b) go(b.dataset.tab); });
-if (window.SERVIDOR_ON) window.startServer();
+/* Se arranca cuando ya están cargados todos los archivos (también js/familias.js) */
+if (window.SERVIDOR_ON) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => window.startServer()); else window.startServer(); }
 else { load(); render(); window.splashOff && splashOff(); }
 
 if ('serviceWorker' in navigator) {

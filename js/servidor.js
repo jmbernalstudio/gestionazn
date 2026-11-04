@@ -6,7 +6,15 @@
   if (!C.url || !C.clave || !window.supabase) return;
   const sb = window.supabase.createClient(C.url, C.clave, { auth: { persistSession: true, autoRefreshToken: true } });
   const DOMINIO = 'usuarios.cdaznalcollar.es';
+  /* Las familias tienen su propia entrada y su propio tipo de cuenta (otro dominio interno, sin perfil de entrenador) */
+  const DOMINIO_FAM = 'familias.cdaznalcollar.es';
   const emailDe = u => { u = u.trim().toLowerCase(); return u.includes('@') ? u : `${u}@${DOMINIO}`; };
+  const emailFam = u => `${u.trim().toLowerCase().replace(/@.*$/, '')}@${DOMINIO_FAM}`;
+  const esFamilia = user => !!user && (user.app_metadata || {}).tipo === 'familia';
+  let modoEntrada = 'staff';
+  /* El enlace para familias (…/?familias) y la app que instalan abren directamente la entrada de familias */
+  if (/[?&]familias\b/.test(location.search)) try { localStorage.setItem('entrada', 'familia'); } catch (_) {}
+  try { if (localStorage.getItem('entrada') === 'familia' || /[?&]familias\b/.test(location.search)) modoEntrada = 'familia'; } catch (_) { if (/[?&]familias\b/.test(location.search)) modoEntrada = 'familia'; }
   const ok = ({ data, error }) => { if (error) throw error; return data; };
   const nombreEq = id => (D.equipos.find(e => e.id === id) || {}).nombre || id;
   const idEq = nombre => (D.equipos.find(e => e.nombre === nombre) || {}).id || null;
@@ -71,6 +79,21 @@
     async directo(team, fecha, datos) { ok(await sb.from('partidos_directo').upsert({ equipo: idEq(team), fecha, datos, actualizado: new Date().toISOString() }, { onConflict: 'equipo,fecha' })); },
     async borrarDirecto(team, fecha) { ok(await sb.from('partidos_directo').delete().eq('equipo', idEq(team)).eq('fecha', fecha)); },
     async nombre(nombre) { ok(await sb.rpc('cambiar_nombre', { p_nombre: nombre })); },
+    /* ---------- Familias y tienda ---------- */
+    async solicitarFamilia(f) { ok(await sb.rpc('solicitar_familia', { p_usuario: f.usuario, p_clave: f.clave, p_nombre: f.nombre, p_telefono: f.telefono, p_hijos: f.hijos })); },
+    async aceptarFamilia(id, jugadores) { ok(await sb.rpc('aceptar_familia', { p_id: id, p_jugadores: jugadores })); },
+    async quitarFamilia(id) { ok(await sb.rpc('quitar_familia', { p_id: id })); },
+    async producto(x) {
+      const fila = { nombre: x.nombre, descripcion: x.descripcion, precio: x.precio, tallas: x.tallas, activo: x.activo, foto: x.foto || null };
+      if (x.id) { ok(await sb.from('productos').update(fila).eq('id', x.id)); return x.id; }
+      return ok(await sb.from('productos').insert(fila).select('id').single()).id;
+    },
+    async borrarProducto(id) { ok(await sb.from('productos').delete().eq('id', id)); },
+    async fotosProductos(ids) { return ids.length ? ok(await sb.from('productos').select('id, foto, foto_hash').in('id', ids)) : []; },
+    async hacerPedido(jugador, lineas, nota) { return ok(await sb.rpc('hacer_pedido', { p_jugador: jugador, p_lineas: lineas, p_nota: nota })); },
+    async estadoPedido(id, st) { ok(await sb.from('pedidos').update({ estado: st }).eq('id', id)); },
+    async estadoPedidos(ids, st) { ok(await sb.from('pedidos').update({ estado: st }).in('id', ids)); },
+    async borrarPedido(id) { if (!(ok(await sb.from('pedidos').delete().eq('id', id).select('id')) || []).length) throw new Error('visto'); },
     async equipos(perfil, ids) {
       ok(await sb.from('entrenador_equipo').delete().eq('perfil', perfil).not('equipo', 'in', `(${ids.join(',')})`));
       ok(await sb.from('entrenador_equipo').upsert(ids.map(equipo => ({ perfil, equipo })), { ignoreDuplicates: true }));
@@ -84,18 +107,30 @@
     let box = $('#login');
     if (!box) { box = document.createElement('div'); box.id = 'login'; box.className = 'login'; document.body.prepend(box); }
     box.hidden = false;
+    const fam = modoEntrada === 'familia';
+    /* En el móvil, las familias solo entran con la app instalada: si no, primero la guía para instalarla */
+    if (fam && window.Instalar && !Instalar.puedeSeguir()) return Instalar.pantalla(box, () => pantallaEntrada(msg));
     box.innerHTML = `<main class="card stack" aria-labelledby="lg-t">
       <img class="cr crest" src="${crestSm()}" alt="">
-      <div><h1 id="lg-t">C.D. Aznalcóllar Fútbol Base</h1><p class="sub">Entrenadores y junta directiva</p></div>
+      <div><h1 id="lg-t">C.D. Aznalcóllar Fútbol Base</h1><p class="sub">${fam ? 'Familias de los jugadores' : 'Entrenadores y junta directiva'}</p></div>
+      <div class="seg lg-seg" role="group" aria-label="Quién entra">
+        <button type="button" data-modo="staff" aria-pressed="${!fam}">Entrenadores y junta</button>
+        <button type="button" data-modo="familia" aria-pressed="${fam}">Familias</button></div>
       <form id="lg" class="stack" method="post" action="#" novalidate>
-        <label class="f" for="lu">Usuario o correo<input type="text" id="lu" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
+        <label class="f" for="lu">${fam ? 'Usuario' : 'Usuario o correo'}<input type="text" id="lu" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
         <label class="f" for="lp">Contraseña<span class="pw"><input type="password" id="lp" name="password" autocomplete="current-password" required>
           <button type="button" id="ver" aria-pressed="false">Ver</button></span></label>
         <p id="lerr" class="err" role="alert" ${msg ? '' : 'hidden'}>${msg ? esc(msg) : ''}</p>
         <button type="submit" class="btn blue block" id="lgo">Entrar</button>
       </form>
-      <p class="help">¿Sin contraseña? Pídela a la junta.</p>
+      ${fam ? `<button type="button" class="btn outline block" id="lg-pedir">${ic('user')} ¿Primera vez? Pide tu acceso</button>`
+        : '<p class="help">¿Sin contraseña? Pídela a la junta.</p>'}
     </main>`;
+    document.querySelectorAll('[data-modo]').forEach(b => b.onclick = () => {
+      modoEntrada = b.dataset.modo; try { localStorage.setItem('entrada', modoEntrada); } catch (_) {}
+      pantallaEntrada();
+    });
+    if ($('#lg-pedir')) $('#lg-pedir').onclick = () => pantallaSolicitud(box);
     $('#ver').onclick = e => { const v = $('#lp').type === 'password'; $('#lp').type = v ? 'text' : 'password'; e.target.textContent = v ? 'Ocultar' : 'Ver'; e.target.setAttribute('aria-pressed', v); };
     $('#lg').onsubmit = async e => {
       e.preventDefault();
@@ -103,21 +138,129 @@
       const u = $('#lu').value, p = $('#lp').value;
       if (!u.trim() || !p) return err('Escribe tu usuario y tu contraseña.');
       $('#lgo').disabled = true; $('#lgo').textContent = 'Entrando…';
-      const { error } = await sb.auth.signInWithPassword({ email: emailDe(u), password: p });
-      if (error) return err(/invalid/i.test(error.message) ? 'Usuario o contraseña incorrectos.' : 'No hay conexión. Prueba otra vez en un momento.');
+      const { data: dl, error } = await sb.auth.signInWithPassword({ email: fam ? emailFam(u) : emailDe(u), password: p });
+      if (error) {
+        if (!/invalid/i.test(error.message)) return err('No hay conexión. Prueba otra vez en un momento.');
+        /* Familia que ya pidió el acceso pero la junta aún no lo ha aceptado */
+        if (fam) { const r = await sb.rpc('estado_familia', { p_usuario: u.trim() }); if (r.data === 'pendiente') return err('La junta todavía no ha aceptado tu solicitud. Cuando la acepte, podrás entrar con este usuario y esta contraseña.'); }
+        return err('Usuario o contraseña incorrectos.');
+      }
+      /* Cada tipo de cuenta entra solo por su sitio */
+      if (esFamilia(dl.user) !== fam) {
+        await sb.auth.signOut();
+        return err(fam ? 'Esta cuenta es de un entrenador o de la junta. Entra desde “Entrenadores y junta”.' : 'Esta cuenta es de una familia. Entra desde “Familias”.');
+      }
       /* El móvil ofrece guardar el usuario y la contraseña; además recordamos el usuario para la próxima vez */
-      try { localStorage.setItem('ultimo-usuario', u.trim()); } catch (_) {}
+      try { localStorage.setItem(fam ? 'ultimo-usuario-fam' : 'ultimo-usuario', u.trim()); } catch (_) {}
       try { if (window.PasswordCredential) await navigator.credentials.store(new PasswordCredential({ id: u.trim(), password: p, name: u.trim() })); } catch (_) {}
       entrar();
     };
-    let ultimo = ''; try { ultimo = localStorage.getItem('ultimo-usuario') || ''; } catch (_) {}
+    let ultimo = ''; try { ultimo = localStorage.getItem(fam ? 'ultimo-usuario-fam' : 'ultimo-usuario') || ''; } catch (_) {}
     if (ultimo) { $('#lu').value = ultimo; $('#lp').focus(); } else $('#lu').focus();
   }
+
+  /* ---------- Pedir acceso (familias) ---------- */
+  function pantallaSolicitud(box) {
+    const eqs = D.equipos.slice().sort((a, b) => ORDEN.indexOf(a.id) - ORDEN.indexOf(b.id));
+    const st = { hijos: [{ nombre: '', equipo: '' }] };
+    const pinta = () => {
+      const val = id => ($('#' + id) || {}).value || '';
+      const prev = { nombre: val('sn'), tel: val('st'), usu: val('su'), clave: val('sp'), ok: ($('#sok') || {}).checked };
+      document.querySelectorAll('[data-hn]').forEach(x => { st.hijos[+x.dataset.hn].nombre = x.value; });
+      document.querySelectorAll('[data-he]').forEach(x => { st.hijos[+x.dataset.he].equipo = x.value; });
+      box.innerHTML = `<main class="card stack sol" aria-labelledby="sl-t">
+        <div class="rqd-h"><div class="grow"><h1 id="sl-t" class="st-h2">Pedir acceso</h1></div><button type="button" class="iconbtn" id="sl-x" aria-label="Volver">${ic('x')}</button></div>
+        <p class="muted" style="margin:0">La junta comprobará tus datos antes de darte acceso. Solo para familias de jugadores del club.</p>
+        <form id="sl" class="stack" novalidate>
+          <label class="f" for="sn">Tu nombre y apellidos<input type="text" id="sn" autocomplete="name" maxlength="80" value="${esc(prev.nombre)}"></label>
+          <label class="f" for="st">Teléfono<span class="hint">Por si la junta necesita hablar contigo</span><input type="tel" id="st" autocomplete="tel" inputmode="tel" maxlength="20" value="${esc(prev.tel)}"></label>
+          ${st.hijos.map((h, i) => `<fieldset class="sl-h"><legend>${st.hijos.length > 1 ? `Jugador ${i + 1}` : 'Jugador'}</legend>
+            <label class="f" for="hn${i}">Nombre y apellidos del jugador<input type="text" id="hn${i}" data-hn="${i}" maxlength="60" value="${esc(h.nombre)}"></label>
+            <label class="f" for="he${i}">Equipo<select id="he${i}" data-he="${i}"><option value="">Elige el equipo</option>${eqs.map(e => `<option value="${e.id}" ${h.equipo === e.id ? 'selected' : ''}>${esc(e.nombre)}</option>`).join('')}</select></label>
+            ${st.hijos.length > 1 ? `<button type="button" class="btn red sm" data-hq="${i}">${ic('trash')} Quitar este jugador</button>` : ''}</fieldset>`).join('')}
+          ${st.hijos.length < 6 ? `<button type="button" class="btn ghost block" id="sl-mas">${ic('plus')} Añadir otro jugador</button>` : ''}
+          <label class="f" for="su">Elige un usuario<span class="hint">Sin espacios ni tildes, como maria.lopez</span><input type="text" id="su" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="40" value="${esc(prev.usu)}"></label>
+          <label class="f" for="sp">Elige una contraseña<span class="hint">Al menos 8 caracteres</span><span class="pw"><input type="password" id="sp" autocomplete="new-password" value="${esc(prev.clave)}">
+            <button type="button" id="sp-ver" aria-pressed="false">Ver</button></span></label>
+          <label class="chk"><input type="checkbox" id="sok" ${prev.ok ? 'checked' : ''}><span>Acepto que el club guarde estos datos solo para gestionar mi acceso a la app.</span></label>
+          <p id="serr" class="err" role="alert" hidden></p>
+          <button type="submit" class="btn blue block" id="sgo">${ic('send')} Enviar solicitud</button>
+        </form></main>`;
+      $('#sl-x').onclick = () => pantallaEntrada();
+      $('#sp-ver').onclick = e => { const v = $('#sp').type === 'password'; $('#sp').type = v ? 'text' : 'password'; e.target.textContent = v ? 'Ocultar' : 'Ver'; e.target.setAttribute('aria-pressed', v); };
+      if ($('#sl-mas')) $('#sl-mas').onclick = () => { pinta(); st.hijos.push({ nombre: '', equipo: '' }); pinta(); $('#hn' + (st.hijos.length - 1)).focus(); };
+      document.querySelectorAll('[data-hq]').forEach(b => b.onclick = () => { pinta(); st.hijos.splice(+b.dataset.hq, 1); pinta(); });
+      /* Propone un usuario con el nombre (maria.lopez) mientras no lo haya escrito */
+      $('#sn').oninput = () => { if ($('#su').dataset.toc) return; const w = $('#sn').value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z ]/g, '').trim().split(/\s+/).filter(Boolean); $('#su').value = w.length > 1 ? `${w[0]}.${w[1]}` : w[0] || ''; };
+      $('#su').oninput = () => { $('#su').dataset.toc = '1'; };
+      $('#sl').onsubmit = async e => {
+        e.preventDefault();
+        document.querySelectorAll('[data-hn]').forEach(x => { st.hijos[+x.dataset.hn].nombre = x.value.trim(); });
+        document.querySelectorAll('[data-he]').forEach(x => { st.hijos[+x.dataset.he].equipo = x.value; });
+        const f = { nombre: $('#sn').value.trim(), telefono: $('#st').value.trim(), usuario: $('#su').value.trim().toLowerCase(), clave: $('#sp').value, hijos: st.hijos };
+        const err = (m, el) => { $('#serr').textContent = m; $('#serr').hidden = false; $('#sgo').disabled = false; $('#sgo').innerHTML = `${ic('send')} Enviar solicitud`; if (el) el.focus(); };
+        if (f.nombre.length < 3) return err('Escribe tu nombre y apellidos.', $('#sn'));
+        if (f.telefono.replace(/\D/g, '').length < 9) return err('Escribe un teléfono de contacto.', $('#st'));
+        const mal = f.hijos.findIndex(h => h.nombre.length < 2 || !h.equipo);
+        if (mal >= 0) return err('Escribe el nombre y elige el equipo de cada jugador.', $(f.hijos[mal].nombre.length < 2 ? '#hn' + mal : '#he' + mal));
+        if (!/^[a-z0-9][a-z0-9._-]{2,39}$/.test(f.usuario)) return err('El usuario solo puede llevar letras sin tildes, números, puntos o guiones (de 3 a 40).', $('#su'));
+        if (f.clave.length < 8) return err('La contraseña debe tener al menos 8 caracteres.', $('#sp'));
+        if (!$('#sok').checked) return err('Marca la casilla para aceptar que el club guarde estos datos.', $('#sok'));
+        $('#sgo').disabled = true; $('#sgo').textContent = 'Enviando…';
+        const { error } = await sb.rpc('solicitar_familia', { p_usuario: f.usuario, p_clave: f.clave, p_nombre: f.nombre, p_telefono: f.telefono, p_hijos: f.hijos });
+        if (error) {
+          const m = error.message || '';
+          if (/function|schema cache|does not exist/i.test(m)) return err('El acceso para familias todavía no está abierto. Prueba en unos días.');
+          return err(/Failed to fetch|network/i.test(m) ? 'No hay conexión. Prueba otra vez en un momento.' : m);
+        }
+        try { localStorage.setItem('ultimo-usuario-fam', f.usuario); } catch (_) {}
+        box.innerHTML = `<main class="card stack sol-ok" aria-labelledby="ok-t"><span class="sol-ic">${ic('check')}</span>
+          <h1 id="ok-t" class="st-h2">Solicitud enviada</h1>
+          <p style="margin:0">La junta la revisará. Cuando la acepte, entra en “Familias” con tu usuario <b>${esc(f.usuario)}</b> y la contraseña que has elegido.</p>
+          <button type="button" class="btn blue block" id="ok-v">Volver a la entrada</button></main>`;
+        $('#ok-v').onclick = () => pantallaEntrada(); $('#ok-v').focus();
+      };
+    };
+    pinta(); $('#sn').focus();
+  }
+
+  /* ---------- Familia: solo lo suyo (sus jugadores, la tienda y sus pedidos). Nada de plantillas ni datos internos ---------- */
+  async function cargarFamilia(user) {
+    const [yo, hijos, eqs, anu] = await Promise.all([
+      sb.from('familias').select('id, nombre, usuario').eq('id', user.id).single().then(ok),
+      sb.rpc('mis_jugadores').then(ok),
+      sb.from('equipos').select('id, dias, hora, lugar, sesiones').then(ok),
+      sb.from('entrenos_anulados').select('equipo, fecha').then(r => r.data || [])
+    ]);
+    S.live = true; S.role = 'family'; S.teams = {}; S.requests = []; S.notices = []; S.people = []; S.conv = {}; S.attend = {};
+    S.me = { id: yo.id, nombre: yo.nombre, foto: null };
+    S.anulados = new Set(anu.map(a => `${nombreEq(a.equipo)} ${a.fecha}`));
+    const kids = hijos.map(h => ({ id: h.id, n: h.nombre, team: nombreEq(h.equipo) }));
+    const train = {};
+    for (const q of eqs) train[nombreEq(q.id)] = { dias: q.dias || [], h: q.hora || '', where: q.lugar || '', ses: Array.isArray(q.sesiones) ? q.sesiones : null };
+    S.fam = Object.assign(S.fam || { cart: [], fotos: {} }, { kids, train,
+      teams: [...new Set(kids.map(k => k.team))].sort((a, b) => ORDEN.indexOf(idEq(a)) - ORDEN.indexOf(idEq(b))) });
+    await cargarTienda();
+    AGENDA = [];
+    return true;
+  }
+  /* Productos (sin fotos: van aparte y solo cuando cambian) y pedidos. Si la tienda aún no existe, se sigue sin ella */
+  async function cargarTienda() {
+    const [pr, pe] = await Promise.all([
+      sb.from('productos').select('id, nombre, descripcion, precio, tallas, activo, orden, foto_hash').order('orden').order('id'),
+      sb.from('pedidos').select('id, familia, jugador, equipo, lineas, total, nota, contacto, estado, creado').order('creado', { ascending: false })
+    ]);
+    S.shopOff = !!pr.error;
+    S.products = (pr.data || []).map(x => ({ ...x, precio: +x.precio }));
+    S.orders = (pe.data || []).map(x => ({ ...x, total: +x.total }));
+  }
+  window.cargarTienda = cargarTienda;
 
   /* ---------- Cargar los datos de la persona que entra ---------- */
   async function cargar() {
     const { data: { user } } = await sb.auth.getUser();
     if (!user) return false;
+    if (esFamilia(user)) return cargarFamilia(user);
     const yo = ok(await sb.from('perfiles').select('*').eq('id', user.id).single());
     const junta = yo.rol === 'junta';
     const asig = ok(await sb.from('entrenador_equipo').select('perfil, equipo'));
@@ -186,6 +329,16 @@
     S.notices = avi.map(n => ({ id: n.id, from: 'Junta directiva', title: n.titulo, body: n.texto,
       read: lei.some(l => l.aviso === n.id && l.perfil === yo.id), readBy: lei.filter(l => l.aviso === n.id).length, total }));
     if (!S.teams[S.team]) S.team = Object.keys(S.teams)[0] || null;
+    /* Junta: familias (solicitudes y accesos), pedidos y productos de la tienda. Si aún no existen, se sigue sin ellos */
+    if (junta) {
+      const [fa, fj] = await Promise.all([
+        sb.from('familias').select('id, usuario, nombre, telefono, hijos, estado, creada').order('creada', { ascending: false }),
+        sb.from('familia_jugador').select('familia, jugador')
+      ]);
+      S.famOff = !!fa.error;
+      S.fams = (fa.data || []).map(f => ({ ...f, jugadores: (fj.data || []).filter(x => x.familia === f.id).map(x => x.jugador) }));
+      await cargarTienda();
+    }
     AGENDA = buildAgenda();
     return true;
   }
@@ -251,8 +404,9 @@
     }
     /* Al abrir desde una notificación, ir directamente a su pantalla */
     const pide = new URLSearchParams(location.search).get('tab');
-    S.tab = ['home', 'team', 'ask', 'games', 'msg'].includes(pide) ? pide : 'home'; S.sub = null;
+    S.tab = (S.role === 'family' ? ['home', 'team', 'shop', 'games'] : ['home', 'team', 'ask', 'games', 'msg']).includes(pide) ? pide : 'home'; S.sub = null;
     if (pide) history.replaceState(null, '', location.pathname);
+    if (S.role === 'family') { S.push = 'no'; render(); return; }
     S.push = await Push.estado();
     if (S.push === 'on') await Push.recuperar();
     render();
@@ -268,9 +422,9 @@
     if (ocupado()) return false;
     refrescando = true;
     try {
-      const antes = JSON.stringify([S.requests, S.notices, S.conv]);
+      const antes = JSON.stringify([S.requests, S.notices, S.conv, S.fams, S.orders, S.products]);
       const tab = S.tab, sub = S.sub, team = S.team, y = scrollY;
-      if (await cargar() && !ocupado() && (forzar === true || JSON.stringify([S.requests, S.notices, S.conv]) !== antes)) {
+      if (await cargar() && !ocupado() && (forzar === true || JSON.stringify([S.requests, S.notices, S.conv, S.fams, S.orders, S.products]) !== antes)) {
         S.tab = tab; S.sub = sub; if (S.teams[team]) S.team = team;
         render(); scrollTo(0, y);
       }
@@ -284,10 +438,14 @@
      si algo ha cambiado, se trae todo */
   let huella = '';
   setInterval(async () => {
-    if (document.visibilityState !== 'visible' || !S.live) return;
+    /* Las familias no hacen esta comprobación: así el servidor aguanta a cientos de familias */
+    if (document.visibilityState !== 'visible' || !S.live || S.role === 'family') return;
     try {
       const [p, a, l] = await Promise.all([sb.from('peticiones').select('id, estado'), sb.from('avisos').select('id'), sb.from('avisos_leidos').select('aviso, perfil')].map(q => Promise.resolve(q).then(ok)));
-      const h = JSON.stringify([p.map(x => x.id + ':' + x.estado).sort(), a.map(x => x.id).sort(), l.length]);
+      /* La junta, además, solicitudes de familias y pedidos (si aún no existen, no cuentan) */
+      const [fa, pe] = S.role === 'board' ? await Promise.all([sb.from('familias').select('id, estado'), sb.from('pedidos').select('id, estado')]) : [{}, {}];
+      const h = JSON.stringify([p.map(x => x.id + ':' + x.estado).sort(), a.map(x => x.id).sort(), l.length,
+        (fa.data || []).map(x => x.id + ':' + x.estado).sort(), (pe.data || []).map(x => x.id + ':' + x.estado).sort()]);
       /* Si ahora no se puede repintar (está escribiendo, etc.), se reintenta en la siguiente vuelta */
       if (h === huella || await refrescar()) huella = h;
     } catch (_) {}
