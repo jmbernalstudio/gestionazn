@@ -95,21 +95,17 @@
     games: gamesScreen,
     team() {
       const teams = allTeams(), team = S.fteam && EQ[S.fteam] ? S.fteam : F().teams[0] || teams[0].nombre, e = EQ[team];
-      const v = ['games', 'group', 'table'].includes(S.fview) ? S.fview : 'games', t = F().train[team], gol = golUrl(e.id);
+      const v = ['games', 'group', 'table'].includes(S.fview) ? S.fview : 'games', gol = golUrl(e.id);
       const mine = F().teams.includes(team);
-      /* Sin repetir: la competición sale una vez y el puesto y los puntos ya están en Clasificación */
-      const info = `<section class="card f-info" aria-labelledby="h-fi"><div class="card-h"><h2 id="h-fi">${esc(e.cat)}</h2></div>
-        <dl class="facts"><div class="wide"><dt>Entrenamientos</dt><dd>${t && t.dias.length ? esc(trainTxt(t)) : 'Por confirmar'}</dd></div></dl>
-        ${gol ? `<a class="btn blue block" target="_blank" rel="noopener" href="${gol}">${ic('ball')} Ver goleadores (RFAF)</a>` : ''}</section>`;
       let body;
       if (v === 'group') body = groupView(e);
-      else if (v === 'table') body = card('h-ftb', 'Clasificación', tableHTML(e));
+      /* Solo Partidos, Jornada y Clasificación. El botón de goleadores va con la clasificación */
+      else if (v === 'table') body = card('h-ftb', 'Clasificación', tableHTML(e) + (gol ? `<a class="btn blue block f-gol" target="_blank" rel="noopener" href="${gol}">${ic('ball')} Ver goleadores (RFAF)</a>` : ''));
       else body = card('h-fgm', `Temporada · ${e.partidos.length} jornadas`, [...e.partidos].sort(byDate).map(p => matchRow(e, p)).join(''));
       return {
         kicker: `Equipos${mine ? ' · Tu equipo' : ''}`, title: esc(team),
         body: `<div class="stack"><div class="dd f-tsel"><button type="button" class="dd-b" id="ft-b" aria-haspopup="listbox" aria-expanded="false" aria-label="Equipo: ${esc(team)}. Toca para cambiarlo">${esc(team)}</button>
             <ul class="dd-l" id="ft-l" role="listbox" aria-label="Elige equipo" hidden>${teams.map(x => `<li><button type="button" role="option" data-ft="${esc(x.nombre)}" aria-selected="${x.nombre === team}"><span>${esc(x.nombre)}${F().teams.includes(x.nombre) ? ' <small class="ft-mine">· Tu equipo</small>' : ''}</span>${x.nombre === team ? ic('check') : ''}</button></li>`).join('')}</ul></div>
-          ${info}
           <div class="tabs" role="group" aria-label="Qué ver">${[['games', 'Partidos'], ['group', 'Jornada'], ['table', 'Clasificación']].map(([k, l]) => `<button type="button" data-fv="${k}" aria-pressed="${v === k}">${l}</button>`).join('')}</div>
           ${body}</div>`,
         bind() {
