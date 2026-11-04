@@ -1405,3 +1405,8 @@ select, .rq .ctl select { -webkit-appearance: none; appearance: none; padding-ri
 .fh-side .f-shop { display: flex; }
 @media (min-width: 720px) and (max-width: 1079px) { .fh-side { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 1080px) { .fam-home { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) !important; align-items: stretch; } .fh-side .f-shop { flex: 1; } }
+/* Familias · selector de equipo */
+.f-tsel .dd-l { z-index: 20; }
+.f-tsel .dd-l button > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ft-mine { font-weight: 600; font-size: .85em; opacity: .7; }
+.f-info .facts { grid-template-columns: minmax(0, 1fr); }
