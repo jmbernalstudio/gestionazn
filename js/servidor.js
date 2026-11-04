@@ -85,6 +85,7 @@
     async quitarFamilia(id) { ok(await sb.rpc('quitar_familia', { p_id: id })); },
     async producto(x) {
       const fila = { nombre: x.nombre, descripcion: x.descripcion, precio: x.precio, tallas: x.tallas, activo: x.activo, foto: x.foto || null };
+      if (!S.packOff) fila.componentes = x.componentes || [];
       if (x.id) { ok(await sb.from('productos').update(fila).eq('id', x.id)); return x.id; }
       return ok(await sb.from('productos').insert(fila).select('id').single()).id;
     },
@@ -246,12 +247,16 @@
   }
   /* Productos (sin fotos: van aparte y solo cuando cambian) y pedidos. Si la tienda aún no existe, se sigue sin ella */
   async function cargarTienda() {
-    const [pr, pe] = await Promise.all([
-      sb.from('productos').select('id, nombre, descripcion, precio, tallas, activo, orden, foto_hash').order('orden').order('id'),
+    const cols = 'id, nombre, descripcion, precio, tallas, activo, orden, foto_hash';
+    let [pr, pe] = await Promise.all([
+      sb.from('productos').select(cols + ', componentes').order('orden').order('id'),
       sb.from('pedidos').select('id, familia, jugador, equipo, lineas, total, nota, contacto, estado, creado').order('creado', { ascending: false })
     ]);
+    /* Sin el Paso 11 (packs) la columna "componentes" no existe: se sigue sin packs */
+    S.packOff = !!pr.error;
+    if (pr.error) pr = await sb.from('productos').select(cols).order('orden').order('id');
     S.shopOff = !!pr.error;
-    S.products = (pr.data || []).map(x => ({ ...x, precio: +x.precio }));
+    S.products = (pr.data || []).map(x => ({ ...x, precio: +x.precio, componentes: Array.isArray(x.componentes) ? x.componentes : [] }));
     S.orders = (pe.data || []).map(x => ({ ...x, total: +x.total }));
   }
   window.cargarTienda = cargarTienda;
