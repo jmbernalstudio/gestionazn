@@ -335,16 +335,7 @@ def equipo_educa(eq, pool):
         casa = bool(NOSOTROS.search(m['local']))
         c = next((x for x in cal if x['jornada'] == n and x['local'] == m['local'] and x['visitante'] == m['visitante']), None)
         info = ' '.join(c['info']) if c else ''
-        hora = (re.search(r'(\d{1,2}:\d{2})', info) or [None, None])[1]
-        fecha = fecha_j
-        dia = re.match(r'\D*(\d{1,2})\b', info)
-        if fecha and dia:  # "Vie 16 17:00": el día real puede no ser el de la jornada
-            base = datetime.strptime(fecha, '%Y-%m-%d')
-            for k in range(-3, 7):
-                x = base + timedelta(days=k)
-                if x.day == int(dia[1]):
-                    fecha = x.strftime('%Y-%m-%d')
-                    break
+        fecha, hora = dia_hora_educa(info, fecha_j)
         estado = m['info'][0] if m['info'] else ''
         campo = ' '.join(m['info'][1:]) or None
         todo = estado + ' ' + info
@@ -374,19 +365,41 @@ def equipo_educa(eq, pool):
     return partidos, tabla, escudos, grupo
 
 
+AVISOS_FECHA = []  # días que no se han podido leer bien: el aviso frena la publicación diaria
+DIAS_EDUCA = {'lun': 0, 'mar': 1, 'mie': 2, 'jue': 3, 'vie': 4, 'sab': 5, 'dom': 6}
+
+
+def dia_hora_educa(info, fecha_j):
+    """Día y hora reales de un partido de la Liga Educa a partir del texto del calendario.
+    La web pone el día y la hora en piezas separadas que llegan pegadas ("Sáb 0716:00" = sábado 7 a las 16:00),
+    así que el día son los dos dígitos justo antes de la hora. La fecha de la jornada es solo la referencia:
+    el partido puede jugarse otro día de ese fin de semana. Si el día de la semana escrito no cuadra, se avisa."""
+    m = re.search(r'([A-Za-zÁÉÍÓÚáéíóú]{3})\.?\s*(\d{1,2})\s*(\d{1,2}:\d{2})', info)
+    hora = m[3] if m else (re.search(r'(\d{1,2}:\d{2})', info) or [None, None])[1]
+    if not fecha_j:
+        return fecha_j, hora
+    base = datetime.strptime(fecha_j, '%Y-%m-%d')
+    if not m:
+        m2 = re.match(r'\s*([A-Za-zÁÉÍÓÚáéíóú]{3})\.?\s*(\d{1,2})\b', info)
+        if not m2:
+            return fecha_j, hora
+        m = m2
+    nombre = unicodedata.normalize('NFD', m[1]).encode('ascii', 'ignore').decode().lower()
+    for k in range(-3, 7):
+        x = base + timedelta(days=k)
+        if x.day == int(m[2]):
+            if nombre in DIAS_EDUCA and x.weekday() != DIAS_EDUCA[nombre]:
+                AVISOS_FECHA.append(f'Liga Educa: "{info}" no cuadra con el día de la semana (jornada del {fecha_j})')
+            return x.strftime('%Y-%m-%d'), hora
+    AVISOS_FECHA.append(f'Liga Educa: no encuentro el día de "{info}" cerca de la jornada del {fecha_j}')
+    return fecha_j, hora
+
+
 def cuando_educa(cal, n, f, fecha_j):
     """Día, hora y si ha terminado un partido de la Liga Educa (el día y la hora salen del calendario)"""
     c = next((x for x in cal if x['jornada'] == n and x['local'] == f['local'] and x['visitante'] == f['visitante']), None)
     info = ' '.join(c['info']) if c else ''
-    hora = (re.search(r'(\d{1,2}:\d{2})', info) or [None, None])[1]
-    fecha, dia = fecha_j, re.match(r'\D*(\d{1,2})\b', info)
-    if fecha and dia:
-        base = datetime.strptime(fecha, '%Y-%m-%d')
-        for k in range(-3, 7):
-            x = base + timedelta(days=k)
-            if x.day == int(dia[1]):
-                fecha = x.strftime('%Y-%m-%d')
-                break
+    fecha, hora = dia_hora_educa(info, fecha_j)
     estado = f['info'][0] if f['info'] else ''
     return fecha, hora, bool(re.search(r'Finalizado', estado + ' ' + info, re.I))
 
@@ -474,6 +487,7 @@ def main():
             print(f'{eq["nombre"]}: {sum(1 for p in partidos if not p.get("descansa"))} partidos, '
                   f'{len(tabla)} equipos en la tabla, {sum(1 for v in locales.values() if v)}/{len(locales)} escudos '
                   f'({time.time() - t:.0f}s)', flush=True)
+    avisos += list(dict.fromkeys(AVISOS_FECHA))
     salida['avisos'] = avisos
     js = ('/* Generado por herramientas/actualizar.py desde rfaf.es y educationleague.es. No editar a mano. */\n'
           f'window.DATOS = {json.dumps(salida, ensure_ascii=False, indent=1)};\n')
