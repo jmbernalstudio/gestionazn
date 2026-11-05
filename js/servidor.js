@@ -455,10 +455,24 @@
   window.addEventListener('online', () => refrescar());
   /* Cada 10 segundos, una comprobación muy ligera (solo números de peticiones, estados y avisos);
      si algo ha cambiado, se trae todo */
-  let huella = '';
+  let huella = '', vueltaFam = 0;
+  /* Familias: solo miran el estado de sus pedidos que aún no se han entregado, cada 20 segundos.
+     Así ven al momento cuándo la junta lo pide al proveedor o lo tiene listo, y el servidor aguanta a cientos de familias */
+  async function estadoPedidosFamilia() {
+    const abiertos = (S.orders || []).filter(o => o.estado < 3);
+    if (!abiertos.length) return;
+    const r = await sb.from('pedidos').select('id, estado').in('id', abiertos.map(o => o.id));
+    if (r.error) return;
+    const st = new Map((r.data || []).map(x => [x.id, x.estado]));
+    let cambio = false;
+    abiertos.forEach(o => { const e = st.get(o.id); if (e === undefined) { S.orders = S.orders.filter(x => x !== o); cambio = true; } else if (e !== o.estado) { o.estado = e; cambio = true; } });
+    if (!cambio) return;
+    const ocupado = $('.modal') || document.activeElement.matches('input, textarea, select');
+    if (S.tab === 'shop' && !ocupado) { const y = scrollY; render(); scrollTo(0, y); }
+  }
   setInterval(async () => {
-    /* Las familias no hacen esta comprobación: así el servidor aguanta a cientos de familias */
-    if (document.visibilityState !== 'visible' || !S.live || S.role === 'family') return;
+    if (document.visibilityState !== 'visible' || !S.live) return;
+    if (S.role === 'family') { if (++vueltaFam % 2 === 0) try { await estadoPedidosFamilia(); } catch (_) {} return; }
     try {
       const [p, a, l] = await Promise.all([sb.from('peticiones').select('id, estado'), sb.from('avisos').select('id'), sb.from('avisos_leidos').select('aviso, perfil')].map(q => Promise.resolve(q).then(ok)));
       /* La junta, además, solicitudes de familias y pedidos (si aún no existen, no cuentan) */

@@ -347,13 +347,17 @@
       <div class="ped-t"><span>Total · en efectivo</span><b>${euro(o.total)}</b></div>
       ${junta ? `<div class="ped-a"><label class="f" for="pe${o.id}">Estado<select id="pe${o.id}" data-pest="${o.id}">${ESTADOS_PED.map((s, i) => `<option value="${i}" ${i === o.estado ? 'selected' : ''}>${s}</option>`).join('')}</select></label>
           <button type="button" class="btn red" data-pdel="${o.id}">${ic('trash')} Borrar pedido</button></div>`
-        : o.estado === 0 ? `<button type="button" class="btn red block" data-pdel="${o.id}">${ic('trash')} Anular pedido</button>` : ''}</section>`;
+        : o.estado === 0 ? `<button type="button" class="btn red block" data-pdel="${o.id}">${ic('trash')} Anular pedido</button>`
+        : o.estado < 3 ? '<p class="muted ped-x">Ya está en marcha, así que no se puede anular. Si necesitas cambiar algo, habla con la junta.</p>' : ''}</section>`;
   }
   function bindOrders(junta) {
     document.querySelectorAll('[data-pdel]').forEach(b => b.onclick = async () => {
       const o = S.orders.find(x => x.id == b.dataset.pdel);
       if (!(await ask(junta ? `¿Borrar el pedido nº ${o.id}?` : `¿Anular el pedido nº ${o.id}?`, junta ? 'Desaparecerá también del móvil de la familia. No se puede deshacer.' : 'La junta dejará de verlo. No se puede deshacer.', junta ? 'Sí, borrar' : 'Sí, anular'))) return;
-      try { await API().borrarPedido(o.id); } catch (x) { return say(x.message === 'visto' ? 'La junta ya lo está preparando. Para cambiarlo, habla con la junta.' : 'No se ha podido borrar. Revisa la conexión.'); }
+      try { await API().borrarPedido(o.id); } catch (x) {
+        /* Ya no se puede anular: la junta lo ha pedido al proveedor. Se muestra el estado nuevo */
+        if (x.message === 'visto') { if (!junta && o.estado === 0) o.estado = 1; render(); }
+        return say(x.message === 'visto' ? 'Ya no se puede anular: la junta lo ha pedido al proveedor. Si necesitas cambiar algo, habla con la junta.' : 'No se ha podido borrar. Revisa la conexión.'); }
       S.orders = S.orders.filter(x => x !== o); render(); say(junta ? 'Pedido borrado.' : 'Pedido anulado.');
     });
     document.querySelectorAll('[data-pest]').forEach(s => s.onchange = async () => {
@@ -625,15 +629,31 @@
     const cols = [...new Set([...filas.values()].flatMap(f => Object.keys(f.n)))].sort((a, b) => { const x = rank(a), y = rank(b); return x[0] - y[0] || x[1] - y[1] || String(x[2]).localeCompare(String(y[2]), 'es'); });
     const lista = [...filas.values()].sort((a, b) => a.nombre.localeCompare(b.nombre, 'es') || a.mo.localeCompare(b.mo, 'es') || a.co.localeCompare(b.co, 'es'));
     const total = f => Object.values(f.n).reduce((a, b) => a + b, 0);
-    const hoja1 = [['Producto', 'Modelo', 'Color', ...cols.map(t => t === 'Única' ? 'Talla única' : 'Talla ' + t), 'Total'],
-      ...lista.map(f => [f.nombre, f.mo, f.co, ...cols.map(t => f.n[t] || ''), total(f)]),
-      [], ['Total', '', '', ...cols.map(t => lista.reduce((a, f) => a + (f.n[t] || 0), 0) || ''), lista.reduce((a, f) => a + total(f), 0)]];
+    /* Hoja para el proveedor (versión 2 elegida por la junta): una tabla por tipo de talla
+       (ropa, tallas de pie y talla única), así cada tabla solo tiene las columnas que usa */
+    const pie = t => /^\d+(?:[.,]\d+)?\s*-\s*\d+(?:[.,]\d+)?$/.test(String(t).trim());
+    const tipo = f => { const ts = Object.keys(f.n); return ts.every(t => t === 'Única') ? 'u' : ts.every(t => pie(t) || t === 'Única') ? 'p' : 'r'; };
+    const SECC = [['r', 'Ropa · tallas de niño y de adulto'], ['p', 'Medias y calzado · tallas de pie'], ['u', 'Talla única']];
+    const X = (v, s, span) => ({ v, s, span: span || 1 });
+    const prendas = lista.reduce((a, f) => a + total(f), 0), hoy = new Date();
+    const hoja1 = [[X('C.D. Aznalcóllar Fútbol Base · Pedido al proveedor', 'title')],
+      [X(`${sel.length === 1 ? '1 pedido' : sel.length + ' pedidos'} de familias · ${prendas === 1 ? '1 prenda' : prendas + ' prendas'} en total · ${hoy.getDate()}/${hoy.getMonth() + 1}/${hoy.getFullYear()}`, 'sub')], []];
+    for (const [k, tit] of SECC) {
+      const fs = lista.filter(f => tipo(f) === k);
+      if (!fs.length) continue;
+      const ts = cols.filter(t => fs.some(f => f.n[t]));
+      hoja1.push([X(tit, 'sec', 4 + ts.length)],
+        [X('Prenda', 'hl'), X('Modelo', 'h'), X('Color', 'h'), ...ts.map(t => X(t === 'Única' ? 'Talla única' : 'Talla ' + t, 'h')), X('Total', 'h')],
+        ...fs.map(f => [X(f.nombre, 'lb'), X(f.mo, 'l'), X(f.co, 'l'), ...ts.map(t => X(f.n[t] || '', 'n')), X(total(f), 'nb')]),
+        [X('Total', 'tl'), X('', 'tl'), X('', 'tl'), ...ts.map(t => X(fs.reduce((a, f) => a + (f.n[t] || 0), 0) || '', 't')), X(fs.reduce((a, f) => a + total(f), 0), 't')], []);
+    }
+    hoja1.push([X('Total de prendas', 'tl', 3), X(prendas, 't')]);
     const hoja2 = [['Pedido', 'Fecha', 'Familia', 'Teléfono', 'Jugador', 'Equipo', 'Producto', 'Modelo', 'Color', 'Talla', 'Cantidad', 'Precio', 'Importe', 'Estado', 'Nota'],
       ...lin.map(({ o, l }) => { const [nom, tel] = (o.contacto || '').split(' · '); const d = new Date(o.creado);
         const fila = [o.id, `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`, nom || '', tel || '', o.jugador, o.equipo, l.nombre, ...(l.piezas ? ['', ''] : [mc(l.producto)[0], l.color || mc(l.producto)[1]]), l.piezas ? 'Pack' : l.talla || 'Única', l.cantidad, { m: +l.precio }, { m: Math.round(l.cantidad * l.precio * 100) / 100 }, ESTADOS_PED[o.estado], o.nota || ''];
         return [fila, ...(l.piezas || []).map(z => [o.id, '', '', '', '', '', '   · ' + z.nombre, mc(z.producto)[0], z.color || mc(z.producto)[1], z.talla || 'Única', l.cantidad, '', '', '', ''])]; }).flat(),
       [], ['', '', '', '', '', '', '', '', '', '', '', 'Total', { m: sel.reduce((a, o) => a + o.total, 0) }]];
-    const blob = xlsx([['Para el proveedor', hoja1], ['Pedidos', hoja2]]);
+    const blob = xlsx([['Para el proveedor', hoja1, { estilo: true }], ['Pedidos', hoja2]]);
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `pedidos-cd-aznalcollar-${TODAY}.xlsx`;
     document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
     const n0 = sel.filter(o => o.estado === 0);
@@ -657,6 +677,31 @@
   }
   const xe = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '');
   const col = i => { let s = ''; i++; while (i) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; };
+  /* Estilos de la hoja con formato: índice del estilo (cellXfs) de cada tipo de celda */
+  const XS = { h: 3, hl: 4, sec: 5, t: 6, tl: 7, n: 8, nb: 9, l: 10, lb: 11, title: 12, sub: 13 };
+  /* Hoja con formato: celdas { v, s, span }. Los títulos y subtítulos no cuentan para el ancho de las columnas */
+  function sheetXmlEstilo(rows) {
+    const w = [], merges = [];
+    rows.forEach(r => { let c = 0; r.forEach(x => { if (x.span === 1 && !['title', 'sub'].includes(x.s)) w[c] = Math.max(w[c] || 9, Math.min(40, String(x.v).length + 3)); c += x.span; }); });
+    for (let i = 0; i < w.length; i++) w[i] = w[i] || 9;
+    const body = rows.map((r, ri) => {
+      let c = 0;
+      const cells = r.map(x => {
+        const ref = col(c) + (ri + 1), st = ` s="${XS[x.s] || 0}"`;
+        let out = x.v === '' || x.v == null ? `<c r="${ref}"${st}/>` : typeof x.v === 'number' ? `<c r="${ref}"${st}><v>${x.v}</v></c>` : `<c r="${ref}" t="inlineStr"${st}><is><t xml:space="preserve">${xe(x.v)}</t></is></c>`;
+        for (let k = 1; k < x.span; k++) out += `<c r="${col(c + k) + (ri + 1)}"${st}/>`;
+        if (x.span > 1) merges.push(`${ref}:${col(c + x.span - 1) + (ri + 1)}`);
+        c += x.span; return out;
+      }).join('');
+      const alto = r[0] && r[0].s === 'title' ? ' ht="26" customHeight="1"' : r[0] && ['sec', 'h', 'hl'].includes(r[0].s) ? ' ht="22" customHeight="1"' : '';
+      return `<row r="${ri + 1}"${alto}>${cells}</row>`;
+    }).join('');
+    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+<sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><sheetViews><sheetView workbookViewId="0" showGridLines="0"/></sheetViews>
+<cols>${w.map((x, i) => `<col min="${i + 1}" max="${i + 1}" width="${x}" customWidth="1"/>`).join('')}</cols><sheetData>${body}</sheetData>
+${merges.length ? `<mergeCells count="${merges.length}">${merges.map(m => `<mergeCell ref="${m}"/>`).join('')}</mergeCells>` : ''}
+<pageMargins left="0.5" right="0.5" top="0.6" bottom="0.6" header="0.3" footer="0.3"/><pageSetup orientation="landscape" fitToWidth="1" fitToHeight="0"/></worksheet>`;
+  }
   function xlsx(sheets) {
     const sheetXml = rows => {
       const txt = v => v && typeof v === 'object' ? String(v.m) + '  €' : String(v == null ? '' : v);
@@ -673,8 +718,17 @@
       ['_rels/.rels', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`],
       ['xl/workbook.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${sheets.map(([n], i) => `<sheet name="${xe(n)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join('')}</sheets></workbook>`],
       ['xl/_rels/workbook.xml.rels', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sheets.map((_, i) => `<Relationship Id="rId${i + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i + 1}.xml"/>`).join('')}<Relationship Id="rId${sheets.length + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`],
-      ['xl/styles.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="1"><numFmt numFmtId="164" formatCode="#,##0.00\\ &quot;€&quot;"/></numFmts><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF0034DF"/></patternFill></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf/></cellStyleXfs><cellXfs count="3"><xf/><xf fontId="1" fillId="2" applyFont="1" applyFill="1"/><xf numFmtId="164" applyNumberFormat="1"/></cellXfs></styleSheet>`],
-      ...sheets.map(([, rows], i) => [`xl/worksheets/sheet${i + 1}.xml`, sheetXml(rows)])
+      ['xl/styles.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="1"><numFmt numFmtId="164" formatCode="#,##0.00\\ &quot;€&quot;"/></numFmts>`
+        + `<fonts count="6"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font>`
+        + `<font><b/><sz val="12"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font><font><b/><sz val="16"/><color rgb="FF0034DF"/><name val="Calibri"/></font><font><i/><sz val="11"/><color rgb="FF555555"/><name val="Calibri"/></font></fonts>`
+        + `<fills count="5"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF0034DF"/></patternFill></fill>`
+        + `<fill><patternFill patternType="solid"><fgColor rgb="FF111111"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FFFFC72C"/></patternFill></fill></fills>`
+        + `<borders count="2"><border/><border><left style="thin"><color rgb="FFD5DCE8"/></left><right style="thin"><color rgb="FFD5DCE8"/></right><top style="thin"><color rgb="FFD5DCE8"/></top><bottom style="thin"><color rgb="FFD5DCE8"/></bottom><diagonal/></border></borders>`
+        + `<cellStyleXfs count="1"><xf/></cellStyleXfs><cellXfs count="14"><xf/><xf fontId="1" fillId="2" applyFont="1" applyFill="1"/><xf numFmtId="164" applyNumberFormat="1"/>`
+        + [[1, 2, 'center'], [1, 2, 'left'], [3, 3, 'left'], [2, 4, 'center'], [2, 4, 'left'], [0, 0, 'center'], [2, 0, 'center'], [0, 0, 'left'], [2, 0, 'left']]
+          .map(([f, fi, al]) => `<xf fontId="${f}" fillId="${fi}" borderId="1" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="${al}" vertical="center"/></xf>`).join('')
+        + `<xf fontId="4" applyFont="1"/><xf fontId="5" applyFont="1"/></cellXfs></styleSheet>`],
+      ...sheets.map(([, rows, o], i) => [`xl/worksheets/sheet${i + 1}.xml`, o && o.estilo ? sheetXmlEstilo(rows) : sheetXml(rows)])
     ]);
   }
 
