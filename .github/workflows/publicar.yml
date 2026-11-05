@@ -11,7 +11,8 @@ permissions:
   id-token: write
 concurrency:
   group: publicar-app
-  cancel-in-progress: true
+  # No cortar una subida a medias: Pages la da por cancelada y no deja repetirla con el mismo commit
+  cancel-in-progress: false
 jobs:
   publicar:
     runs-on: ubuntu-latest
