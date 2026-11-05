@@ -2798,7 +2798,7 @@ const BOARD = {
   opts: optsScreen,
   home() {
     /* La bandeja se divide en Peticiones, Pedidos (tienda) y Familias (solicitudes de acceso) */
-    if (S.live && window.boardInbox && ['ped', 'fam'].includes(S.inbox)) { const x = boardInbox(); return { kicker: `${greet()}, ${esc(firstName())}`, title: S.inbox === 'ped' ? 'Pedidos de la tienda' : 'Familias', ...x }; }
+    if (S.live && window.boardInbox && ['ped', 'tienda', 'fam'].includes(S.inbox)) { const x = boardInbox(); return { kicker: `${greet()}, ${esc(firstName())}`, title: S.inbox === 'ped' ? 'Pedidos de la tienda' : S.inbox === 'tienda' ? 'Tienda' : 'Familias', ...x }; }
     const open = S.requests.filter(r => r.st < 3);
     const order = [...S.requests].sort((a, b) => (a.st === 3) - (b.st === 3) || b.urgent - a.urgent || a.st - b.st);
     return {

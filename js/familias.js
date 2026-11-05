@@ -375,6 +375,7 @@
     return `<div class="seg g-scope inbox-seg" role="group" aria-label="Qué ver en la bandeja">
       <button type="button" data-inbox="pet" aria-pressed="${v === 'pet'}">Peticiones</button>
       <button type="button" data-inbox="ped" aria-pressed="${v === 'ped'}">Pedidos${np ? ` <span class="pdot" aria-label="${np} nuevos"></span>` : ''}</button>
+      <button type="button" data-inbox="tienda" aria-pressed="${v === 'tienda'}">Tienda</button>
       <button type="button" data-inbox="fam" aria-pressed="${v === 'fam'}">Familias${nf ? ` <span class="pdot" aria-label="${nf} solicitudes"></span>` : ''}</button></div>`;
   }
   function bindInboxSeg() { document.querySelectorAll('[data-inbox]').forEach(b => b.onclick = () => { S.inbox = b.dataset.inbox; render(); }); }
@@ -413,7 +414,7 @@
   /* Junta: productos de la tienda, por categorías, con filtro y flechas para ordenar */
   function listaProductos() {
     const all = agrupar(S.products || []);
-    if (!all.length) return card('h-prs', 'Productos de la tienda · 0', '<p class="muted" style="margin:0">Añade el primer producto con el botón “Añadir producto”.</p>');
+    if (!all.length) return card('h-prs', 'Productos · 0', '<p class="muted" style="margin:0">Añade el primer producto con el botón “Añadir producto”.</p>');
     const cats = ordenCats(all), nom = c => c || 'Sin categoría', conNombre = cats.filter(Boolean);
     const f = cats.includes(S.prCat) ? S.prCat : '*', ver = f === '*' ? cats : [f];
     const n = c => all.filter(p => catDe(p) === c).length;
@@ -423,26 +424,32 @@
     const grupo = c => { const l = all.filter(p => catDe(p) === c), ci = cats.indexOf(c);
       return `<section class="pr-cg" aria-label="${esc(nom(c))}"><div class="pr-cat-h">${f === '*' && c && conNombre.length > 1 ? `<div class="pr-ord h"><button type="button" class="pr-mv" data-mvc="-1" data-cat="${esc(c)}" aria-label="Subir la categoría ${esc(nom(c))}" ${ci ? '' : 'disabled'}>${ic('up')}</button><button type="button" class="pr-mv" data-mvc="1" data-cat="${esc(c)}" aria-label="Bajar la categoría ${esc(nom(c))}" ${ci < conNombre.length - 1 ? '' : 'disabled'}>${ic('down')}</button></div>` : ''}
         <div class="grow"><b>${esc(nom(c))}</b><small>${l.length === 1 ? '1 producto' : l.length + ' productos'}</small></div></div>${l.map(fila).join('')}</section>`; };
-    return card('h-prs', `Productos de la tienda · ${all.length}`, `<div class="pr-filt">
+    return card('h-prs', `Productos · ${all.length}`, `<div class="pr-filt">
         <label class="f" for="prcf">Ver<select id="prcf"><option value="*">Todas las categorías · ${all.length}</option>${cats.map(c => `<option value="${esc(c)}" ${c === f ? 'selected' : ''}>${esc(nom(c))} · ${n(c)}</option>`).join('')}</select></label>
         <p class="muted">Las familias ven los productos en este orden. Con las flechas de cada producto lo subes o bajas dentro de su categoría.${f === '*' && conNombre.length > 1 ? ' Con las flechas de la categoría cambias el orden de los apartados de la tienda.' : ''}</p></div>
       ${ver.map(grupo).join('')}`);
   }
   function boardInbox() {
     const v = S.inbox;
-    if (v === 'ped') {
-      const os = S.orders || [], c = st => os.filter(o => o.estado === st).length;
-      const body = S.shopOff ? falta() : `<div class="kpis ped-k"><div class="kpi dark blue"><small>Recibidos</small><b>${c(0)}</b></div><div class="kpi"><small>Pedidos al proveedor</small><b>${c(1)}</b></div>
-          <div class="kpi"><small>Listos para recoger</small><b>${c(2)}</b></div><div class="kpi"><small>Entregados</small><b>${c(3)}</b></div></div>
-        <div class="btn-row ped-btns"><button type="button" class="btn blue" id="xls" ${os.length ? '' : 'disabled'}>${ic('list')} Exportar a Excel</button><button type="button" class="btn blue" id="mail" ${os.length ? '' : 'disabled'}>${ic('send')} Copiar para el correo</button><button type="button" class="btn blue" id="pr-new">${ic('plus')} Añadir producto</button></div>
-        ${os.length ? `<div class="cards-grid">${os.map(o => orderCard(o, true)).join('')}</div>` : emptyPage('box', 'Todavía no hay pedidos', 'Cuando una familia haga un pedido en la tienda, aparecerá aquí.')}
-        ${listaProductos()}`;
-      return { body: `<div class="stack">${inboxSeg()}${body}</div>`, bind() { bindInboxSeg(); bindOrders(true); traerFotos();
-        if ($('#xls')) $('#xls').onclick = () => exportar(); if ($('#mail')) $('#mail').onclick = () => exportar('correo'); if ($('#pr-new')) $('#pr-new').onclick = () => productoForm(null);
+    /* Tienda: los productos, por categorías, con su orden. Separado de los pedidos para no tener que bajar */
+    if (v === 'tienda') {
+      const body = S.shopOff ? falta() : `<div class="btn-row ped-btns"><button type="button" class="btn blue" id="pr-new">${ic('plus')} Añadir producto</button></div>${listaProductos()}`;
+      return { body: `<div class="stack">${inboxSeg()}${body}</div>`, bind() { bindInboxSeg(); traerFotos();
+        if ($('#pr-new')) $('#pr-new').onclick = () => productoForm(null);
         document.querySelectorAll('[data-pr]').forEach(b => b.onclick = () => productoForm(S.products.find(p => p.id == b.dataset.pr)));
         document.querySelectorAll('[data-mv]').forEach(b => b.onclick = () => moverProducto(+b.dataset.id, +b.dataset.mv));
         document.querySelectorAll('[data-mvc]').forEach(b => b.onclick = () => moverCategoria(b.dataset.cat, +b.dataset.mvc));
         if ($('#prcf')) $('#prcf').onchange = () => { S.prCat = $('#prcf').value; render(); }; } };
+    }
+    if (v === 'ped') {
+      const os = S.orders || [], c = st => os.filter(o => o.estado === st).length;
+      const body = S.shopOff ? falta() : `<div class="kpis ped-k"><div class="kpi dark blue"><small>Recibidos</small><b>${c(0)}</b></div><div class="kpi"><small>Pedidos al proveedor</small><b>${c(1)}</b></div>
+          <div class="kpi"><small>Listos para recoger</small><b>${c(2)}</b></div><div class="kpi"><small>Entregados</small><b>${c(3)}</b></div></div>
+        <div class="btn-row ped-btns"><button type="button" class="btn blue" id="xls" ${os.length ? '' : 'disabled'}>${ic('list')} Exportar a Excel</button><button type="button" class="btn blue" id="mail" ${os.length ? '' : 'disabled'}>${ic('send')} Copiar para el correo</button></div>
+        ${os.length ? `<div class="cards-grid">${os.map(o => orderCard(o, true)).join('')}</div>` : emptyPage('box', 'Todavía no hay pedidos', 'Cuando una familia haga un pedido en la tienda, aparecerá aquí.')}
+`;
+      return { body: `<div class="stack">${inboxSeg()}${body}</div>`, bind() { bindInboxSeg(); bindOrders(true); traerFotos();
+        if ($('#xls')) $('#xls').onclick = () => exportar(); if ($('#mail')) $('#mail').onclick = () => exportar('correo'); } };
     }
     /* Familias: solicitudes pendientes y familias con acceso */
     const pend = famPend(), acc = (S.fams || []).filter(f => f.estado === 'aceptada');
