@@ -495,13 +495,13 @@
         ${S.catOff ? '' : `<div class="f pr-cat-f"><label for="prc">Categoría</label><span class="hint">Cada categoría es un apartado de la tienda. Toca una o escribe otra</span>
           <div class="chips pr-cats" role="group" aria-label="Categorías">${catsSug().map(c => `<button type="button" class="chip" data-cat="${esc(c)}" aria-pressed="${c === x.categoria}">${esc(c)}</button>`).join('')}</div>
           <input type="text" id="prc" maxlength="40" value="${esc(x.categoria || '')}" placeholder="Por ejemplo: Merchandising"></div>`}
-        ${S.modOff ? '' : `<div class="row2" id="prmc" ${st.pack ? 'hidden' : ''}><label class="f" for="prmo">Modelo<input type="text" id="prmo" maxlength="60" value="${esc(x.modelo || '')}" placeholder="Por ejemplo: Rigel"></label>
-          <label class="f" for="prco">Color<input type="text" id="prco" maxlength="60" value="${esc(x.color || '')}" placeholder="Por ejemplo: Azul y blanco"></label></div>`}
+        ${S.modOff ? '' : `<label class="f" for="prmo" id="prmc" ${st.pack ? 'hidden' : ''}>Modelo<span class="hint">Para el Excel del proveedor</span><input type="text" id="prmo" maxlength="60" value="${esc(x.modelo || '')}" placeholder="Por ejemplo: Rigel"></label>`}
+        ${!S.colOff ? `<label class="f" for="prcl" id="prcl-w" ${st.pack ? 'hidden' : ''}>Color<span class="hint">Si hay varios, sepáralos con comas</span><input type="text" id="prcl" maxlength="200" value="${esc((x.colores || []).length ? x.colores.join(', ') : x.color || '')}" placeholder="Por ejemplo: Negro"></label>`
+          : S.modOff ? '' : `<label class="f" for="prco" id="prcl-w" ${st.pack ? 'hidden' : ''}>Color<input type="text" id="prco" maxlength="60" value="${esc(x.color || '')}" placeholder="Por ejemplo: Negro"></label>`}
+        ${S.colOff || S.fcOff ? '' : `<div class="pr-fc" id="prfc" ${st.pack ? 'hidden' : ''}></div>`}
         <label class="f" for="prd">Descripción<span class="hint">Opcional. Qué incluye</span><textarea id="prd" maxlength="300" rows="2">${esc(x.descripcion)}</textarea></label>
         <label class="f" for="prp">Precio en euros<input type="text" id="prp" inputmode="decimal" value="${x.precio === '' ? '' : String(x.precio).replace('.', ',')}" placeholder="35,00"></label>
         <label class="f" for="prt" id="prt-w" ${st.pack ? 'hidden' : ''}>Tallas disponibles<span class="hint">Separadas por comas. Déjalo vacío si es talla única</span><input type="text" id="prt" value="${esc(x.tallas.join(', '))}" placeholder="6, 8, 10, 12, 14, S, M, L, XL"></label>
-        ${S.colOff ? '' : `<label class="f" for="prcl" id="prcl-w" ${st.pack ? 'hidden' : ''}>Colores para elegir<span class="hint">Si viene en varios colores. Separados por comas</span><input type="text" id="prcl" value="${esc((x.colores || []).join(', '))}" placeholder="Azul, Negro, Blanco"></label>`}
-        ${S.colOff || S.fcOff ? '' : `<div class="pr-fc" id="prfc" ${st.pack ? 'hidden' : ''}></div>`}
         <div class="pk-ed stack" id="pk-ed" ${st.pack ? '' : 'hidden'}></div>
         ${S.oblOff ? '' : `<div class="opts-row"><div class="grow"><b id="pro-l">Obligatorio</b><small>Sale en el apartado “Obligatorio” de la tienda, el primero. Por ejemplo, el pack de entrenamiento.</small></div>
           <button type="button" class="tgl" role="switch" id="pro" aria-checked="${!!x.obligatorio}" aria-labelledby="pro-l"><span></span></button></div>`}
@@ -538,16 +538,18 @@
     if (st.pack) drawPk();
     if ($('#prk')) $('#prk').onclick = () => {
       st.pack = !st.pack; $('#prk').setAttribute('aria-checked', st.pack);
-      $('#prt-w').hidden = st.pack; $('#pk-ed').hidden = !st.pack; if ($('#prmc')) $('#prmc').hidden = st.pack; if ($('#prcl-w')) $('#prcl-w').hidden = st.pack; if ($('#prfc')) $('#prfc').hidden = st.pack;
+      $('#prt-w').hidden = st.pack; $('#pk-ed').hidden = !st.pack; if ($('#prmc')) $('#prmc').hidden = st.pack; if ($('#prcl-w')) $('#prcl-w').hidden = st.pack; if ($('#prfc')) $('#prfc').hidden = st.pack; drawFc();
       if (st.pack) { if (!st.slots.length) st.slots = [[null]]; drawPk(); }
     };
     /* Una foto por color (opcional): al elegir el color en la tienda, sale su foto */
     const drawFc = () => {
       const box = $('#prfc'); if (!box) return;
       const cols = $('#prcl') ? parseColores($('#prcl').value) : [];
-      if (!cols.length) { box.innerHTML = ''; return; }
+      /* Con varios colores, cada color lleva su foto y la foto general sobra */
+      m.el.querySelector('.pr-ph').hidden = cols.length > 1 && !st.pack;
+      if (cols.length < 2) { box.innerHTML = ''; return; }
       if (st.fc === undefined) { box.innerHTML = '<p class="muted" style="margin:0">Cargando las fotos de cada color…</p>'; return; }
-      box.innerHTML = `<div><b>Foto de cada color</b><small class="muted">Opcional. Cuando la familia elige el color, ve esta foto</small></div>
+      box.innerHTML = `<div><b>Foto de cada color</b><small class="muted">La familia elige el color y ve su foto</small></div>
         <div class="pr-fcl">${cols.map((c, i) => `<label class="pr-fct" for="prfc${i}">${st.fc[c] ? `<span class="pr-f"><img src="${st.fc[c]}" alt=""></span>` : `<span class="pr-f">${ic('camera')}</span>`}<span>${esc(c)}</span>
           <input type="file" id="prfc${i}" accept="image/*" class="sr" data-fc="${esc(c)}" aria-label="${st.fc[c] ? 'Cambiar' : 'Añadir'} foto del color ${esc(c)}"></label>`).join('')}</div>`;
       box.querySelectorAll('[data-fc]').forEach(inp => inp.onchange = async () => {
@@ -577,15 +579,20 @@
       if (!nombre) return err('Escribe el nombre del producto.');
       if (!$('#prp').value.trim() || isNaN(precio) || precio < 0) return err('Escribe el precio. Por ejemplo: 35,00');
       let tallas = [...new Set($('#prt').value.split(',').map(t => t.trim()).filter(Boolean))], componentes = [];
-      let colores = $('#prcl') ? parseColores($('#prcl').value) : [];
+      /* Un solo color: es el color del producto (para el proveedor). Varios: la familia elige uno */
+      const cls = !st.pack && $('#prcl') ? parseColores($('#prcl').value) : [];
+      let colores = cls.length > 1 ? cls : [];
+      const color = st.pack ? '' : $('#prcl') ? (cls.length === 1 ? cls[0] : '') : $('#prco') ? $('#prco').value.trim() : '';
+      /* Si todos los colores tienen su foto, no hace falta la foto general */
+      const fotoGen = colores.length && st.fc && colores.every(c => st.fc[c]) ? null : st.foto || null;
       if (st.pack) {
         if (!st.slots.length) return err('Añade al menos una prenda al pack.');
         if (st.slots.some(sl => sl.some(id => !id))) return err('Elige el producto de cada prenda, o quita las que sobren.');
         if (st.slots.some(sl => new Set(sl).size !== sl.length)) return err('Hay un modelo repetido dentro de la misma prenda.');
         componentes = st.slots.map(sl => sl.slice()); tallas = []; colores = [];
       }
-      const fila = { id: p && p.id, nombre, descripcion: $('#prd').value.trim(), precio: Math.round(precio * 100) / 100, tallas, componentes, activo: x.activo, obligatorio: !!x.obligatorio, colores, ...(st.fc && (st.fcCambiada || Object.keys(st.fc).some(c => !colores.includes(c))) ? { fotos_color: Object.fromEntries(colores.filter(c => st.fc[c]).map(c => [c, st.fc[c]])) } : {}), foto: st.foto || null, categoria: catNorm($('#prc') ? $('#prc').value : ''),
-        modelo: !st.pack && $('#prmo') ? $('#prmo').value.trim() : '', color: !st.pack && $('#prco') ? $('#prco').value.trim() : '' };
+      const fila = { id: p && p.id, nombre, descripcion: $('#prd').value.trim(), precio: Math.round(precio * 100) / 100, tallas, componentes, activo: x.activo, obligatorio: !!x.obligatorio, colores, ...(st.fc && (st.fcCambiada || Object.keys(st.fc).some(c => !colores.includes(c))) ? { fotos_color: Object.fromEntries(colores.filter(c => st.fc[c]).map(c => [c, st.fc[c]])) } : {}), foto: fotoGen, categoria: catNorm($('#prc') ? $('#prc').value : ''),
+        modelo: !st.pack && $('#prmo') ? $('#prmo').value.trim() : '', color };
       try { await API().producto(fila); } catch (_) { return err(S.shopOff ? 'Falta un paso en Supabase para poder guardar productos.' : 'No se ha podido guardar. Revisa la conexión.'); }
       await window.cargarTienda(); m.close(); render(); say(p ? 'Producto guardado.' : 'Producto añadido a la tienda.');
     };
