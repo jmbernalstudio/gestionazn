@@ -15,7 +15,10 @@
   /* Packs: "componentes" es una lista de huecos con los productos que se pueden elegir en cada uno */
   const esPack = p => !!(p && p.componentes && p.componentes.length);
   const prodId = id => (S.products || []).find(x => x.id === +id);
-  const slotNombre = sl => sl.map(id => prodId(id) ? nomMod(prodId(id)) : 'Prenda que ya no existe').join(' o ');
+  const slotNombre = (sl, fam) => sl.map(id => prodId(id) ? (fam ? prodId(id).nombre : nomMod(prodId(id))) : 'Prenda que ya no existe').join(' o ');
+  /* Para las familias solo el nombre del producto: el modelo es para el proveedor.
+     Si dos opciones se llaman igual, se añade el modelo (o el color) para poder distinguirlas */
+  const nomFam = (o, ops) => ops.filter(x => x.nombre === o.nombre).length > 1 ? `${o.nombre} ${o.modelo || o.color || ''}`.trim() : o.nombre;
   const nomMod = p => p.nombre + (p.modelo && !p.nombre.toLowerCase().includes(p.modelo.toLowerCase()) ? ' ' + p.modelo : '');
   const modTxt = p => p ? [p.modelo && 'Modelo ' + p.modelo, p.color].filter(Boolean).join(' · ') : '';
   const piezasTxt = l => (l.piezas || []).map(z => `${z.nombre}${z.talla ? ' · talla ' + z.talla : ''}`).join('\n');
@@ -171,23 +174,23 @@
     return `<div class="pk-l" role="group" aria-label="Prendas del pack">${p.componentes.map((sl, i) => {
       const ops = sl.map(prodId).filter(Boolean), id = `${p.id}-${i}`;
       if (!ops.length) return `<p class="muted pk-s">Una prenda de este pack ya no está disponible.</p>`;
-      if (ops.length === 1) return `<div class="pk-s"><b>${esc(nomMod(ops[0]))}</b>${ops[0].tallas.length ? `<label class="f" for="pt${id}"><span class="sr">Talla de ${esc(nomMod(ops[0]))}</span><select id="pt${id}" data-pt="${p.id}" data-i="${i}" data-pz="${ops[0].id}">${tallaOpts(ops[0])}</select></label>` : '<small class="muted">Talla única</small>'}</div>`;
-      return `<div class="pk-s"><b>${esc(ops.map(o => nomMod(o)).join(' o '))}</b><div class="pk-f">
-        <label class="f" for="pm${id}">Modelo<select id="pm${id}" data-pm="${id}"><option value="">Elige</option>${ops.map(o => `<option value="${o.id}">${esc(nomMod(o))}</option>`).join('')}</select></label>
+      if (ops.length === 1) return `<div class="pk-s"><b>${esc(ops[0].nombre)}</b>${ops[0].tallas.length ? `<label class="f" for="pt${id}"><span class="sr">Talla de ${esc(ops[0].nombre)}</span><select id="pt${id}" data-pt="${p.id}" data-i="${i}" data-pz="${ops[0].id}">${tallaOpts(ops[0])}</select></label>` : '<small class="muted">Talla única</small>'}</div>`;
+      return `<div class="pk-s"><b>${esc(ops.map(o => nomFam(o, ops)).join(' o '))}</b><div class="pk-f">
+        <label class="f" for="pm${id}">Modelo<select id="pm${id}" data-pm="${id}"><option value="">Elige</option>${ops.map(o => `<option value="${o.id}">${esc(nomFam(o, ops))}</option>`).join('')}</select></label>
         <label class="f" for="pt${id}">Talla<select id="pt${id}" data-pt="${p.id}" data-i="${i}" disabled><option value="">Elige antes el modelo</option></select></label></div></div>`;
     }).join('')}</div>`;
   }
   /* Tarjeta de la tienda: foto, nombre y precio. Al tocarla se abre la ficha para elegir tallas */
   function prodCard(p) {
     return `<button type="button" class="card pr pr-pick" data-open="${p.id}" aria-label="${esc(p.nombre)}, ${euro(p.precio)}. Elegir ${esPack(p) ? 'tallas' : 'talla'}">${prFoto(p)}
-      <span class="pr-b"><b class="pr-n">${esc(p.nombre)}</b>${modTxt(p) ? `<span class="pr-m">${esc(modTxt(p))}</span>` : ''}${esPack(p) ? `<span class="pr-m">${esc(p.componentes.map(slotNombre).join(' + '))}</span>` : ''}<b class="pr-p">${euro(p.precio)}</b></span>
+      <span class="pr-b"><b class="pr-n">${esc(p.nombre)}</b>${esPack(p) ? `<span class="pr-m">${esc(p.componentes.map(sl => slotNombre(sl, true)).join(' + '))}</span>` : ''}<b class="pr-p">${euro(p.precio)}</b></span>
       <span class="btn blue block">${ic('plus')} ${esPack(p) ? 'Elegir tallas' : 'Elegir talla'}</span></button>`;
   }
   /* Ficha del producto (pantalla completa): tallas, modelo si hay que elegirlo y cantidad */
   function prodModal(p) {
     const pk = esPack(p), roto = pk && p.componentes.some(sl => !sl.some(prodId));
     const m = modal(`<h2 id="mdl-t">${esc(p.nombre)}</h2>
-      <div class="pr-d">${prFoto(p)}<div class="pr-b">${modTxt(p) ? `<p class="pr-m">${esc(modTxt(p))}</p>` : ''}${p.descripcion ? `<p>${esc(p.descripcion)}</p>` : ''}<b class="pr-p">${euro(p.precio)}</b></div></div>
+      <div class="pr-d">${prFoto(p)}<div class="pr-b">${p.descripcion ? `<p>${esc(p.descripcion)}</p>` : ''}<b class="pr-p">${euro(p.precio)}</b></div></div>
       ${pk ? packCampos(p) : ''}
       <div class="pr-c">${!pk && p.tallas.length ? `<label class="f" for="t${p.id}">Talla<select id="t${p.id}"><option value="">Elige</option>${p.tallas.map(t => `<option>${esc(t)}</option>`).join('')}</select></label>` : ''}
         <div class="f"><span id="ql${p.id}">Cantidad</span><div class="qty" role="group" aria-labelledby="ql${p.id}"><button type="button" class="iconbtn" data-qty="${p.id}" data-d="-1" aria-label="Uno menos">${ic('minus')}</button>
@@ -304,7 +307,7 @@
         <div class="btn-row ped-btns"><button type="button" class="btn blue" id="xls" ${os.length ? '' : 'disabled'}>${ic('list')} Exportar a Excel</button><button type="button" class="btn blue" id="pr-new">${ic('plus')} Añadir producto</button></div>
         ${os.length ? `<div class="cards-grid">${os.map(o => orderCard(o, true)).join('')}</div>` : emptyPage('box', 'Todavía no hay pedidos', 'Cuando una familia haga un pedido en la tienda, aparecerá aquí.')}
         ${card('h-prs', `Productos de la tienda · ${(S.products || []).length}`, (S.products || []).length ? (S.products || []).map(p => `<div class="tm pr-row">${prFoto(p, 'pr-th')}
-            <div class="grow"><b>${esc(p.nombre)}</b><small>${euro(p.precio)}${modTxt(p) ? ' · ' + esc(modTxt(p)) : ''}${esPack(p) ? ' · Pack: ' + esc(p.componentes.map(slotNombre).join(' + ')) : p.tallas.length ? ' · Tallas ' + esc(p.tallas.join(', ')) : ' · Talla única'}</small></div>
+            <div class="grow"><b>${esc(p.nombre)}</b><small>${euro(p.precio)}${modTxt(p) ? ' · ' + esc(modTxt(p)) : ''}${esPack(p) ? ' · Pack: ' + esc(p.componentes.map(sl => slotNombre(sl)).join(' + ')) : p.tallas.length ? ' · Tallas ' + esc(p.tallas.join(', ')) : ' · Talla única'}</small></div>
             ${p.activo ? '' : '<span class="pill grey">Oculto</span>'}<button type="button" class="btn ghost sm" data-pr="${p.id}">${ic('pen')} Editar</button></div>`).join('')
           : '<p class="muted" style="margin:0">Añade el primer producto con el botón “Añadir producto”.</p>')}`;
       return { body: `<div class="stack">${inboxSeg()}${body}</div>`, bind() { bindInboxSeg(); bindOrders(true); traerFotos();
