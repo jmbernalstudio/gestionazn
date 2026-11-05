@@ -141,17 +141,61 @@
           : emptyPage('box', 'Aún no has hecho ningún pedido', 'Cuando hagas uno, aquí verás cómo va.', '', `<button type="button" class="btn blue" data-shv="shop">${ic('box')} Ir a la tienda</button>`)}</div>`,
         bind() { bindShopSeg(); bindOrders(false); }
       };
-      const prods = (S.products || []).filter(p => p.activo);
+      const prods = (S.products || []).filter(p => p.activo), packs = prods.filter(esPack), sueltas = prods.filter(p => !esPack(p));
+      /* Primero se elige entre packs y prendas sueltas (si hay de los dos) */
+      const kind = packs.length && sueltas.length ? (S.shopKind === 'suelta' ? 'suelta' : 'pack') : packs.length ? 'pack' : 'suelta';
+      const lista = kind === 'pack' ? packs : sueltas;
+      const seg2 = packs.length && sueltas.length ? `<div class="seg g-scope sh-kind" role="group" aria-label="Qué quieres pedir"><button type="button" data-shk="pack" aria-pressed="${kind === 'pack'}">Packs · ${packs.length}</button>
+        <button type="button" data-shk="suelta" aria-pressed="${kind === 'suelta'}">Prendas sueltas · ${sueltas.length}</button></div>` : '';
       const cart = f.cart || [], n = cart.reduce((a, l) => a + l.cantidad, 0), tot = cart.reduce((a, l) => a + l.cantidad * l.precio, 0);
       return {
         kicker: 'Club', title: 'Tienda',
         body: `<div class="stack">${seg}
           <p class="card pay-note">${ic('check')}<span>Haz el pedido aquí y <b>págalo en efectivo en el club</b>. La junta te avisará cuando esté listo para recoger.</span></p>
-          ${prods.length ? `<div class="pr-grid">${prods.map(prodCard).join('')}</div>` : emptyPage('box', 'Todavía no hay productos', 'La junta está preparando la tienda. Vuelve pronto.')}
+          ${prods.length ? `${seg2}<div class="pr-grid">${lista.map(prodCard).join('')}</div>` : emptyPage('box', 'Todavía no hay productos', 'La junta está preparando la tienda. Vuelve pronto.')}
           ${n ? `<div class="cart-bar" role="region" aria-label="Tu pedido"><div class="grow"><b>${n === 1 ? '1 producto' : n + ' productos'}</b><small>${euro(tot)} · pago en efectivo</small></div>
             <button type="button" class="btn gold" id="cart-go">${ic('box')} Ver pedido</button></div>` : ''}</div>`,
         bind() {
           bindShopSeg(); traerFotos();
+          document.querySelectorAll('[data-shk]').forEach(b => b.onclick = () => { S.shopKind = b.dataset.shk; render(); });
+          document.querySelectorAll('[data-open]').forEach(b => b.onclick = () => prodModal(S.products.find(x => x.id == b.dataset.open)));
+          if ($('#cart-go')) $('#cart-go').onclick = cartModal;
+        }
+      };
+    }
+  };
+  function bindShopSeg() { document.querySelectorAll('[data-shv]').forEach(b => b.onclick = () => { S.shopView = b.dataset.shv; render(); }); }
+  const tallaOpts = pr => pr && pr.tallas.length ? `<option value="">Elige</option>${pr.tallas.map(t => `<option>${esc(t)}</option>`).join('')}` : '<option value="">Talla única</option>';
+  /* Prendas de un pack: talla de cada una, y modelo si el hueco tiene más de uno */
+  function packCampos(p) {
+    return `<div class="pk-l" role="group" aria-label="Prendas del pack">${p.componentes.map((sl, i) => {
+      const ops = sl.map(prodId).filter(Boolean), id = `${p.id}-${i}`;
+      if (!ops.length) return `<p class="muted pk-s">Una prenda de este pack ya no está disponible.</p>`;
+      if (ops.length === 1) return `<div class="pk-s"><b>${esc(nomMod(ops[0]))}</b>${ops[0].tallas.length ? `<label class="f" for="pt${id}"><span class="sr">Talla de ${esc(nomMod(ops[0]))}</span><select id="pt${id}" data-pt="${p.id}" data-i="${i}" data-pz="${ops[0].id}">${tallaOpts(ops[0])}</select></label>` : '<small class="muted">Talla única</small>'}</div>`;
+      return `<div class="pk-s"><b>${esc(ops.map(o => nomMod(o)).join(' o '))}</b><div class="pk-f">
+        <label class="f" for="pm${id}">Modelo<select id="pm${id}" data-pm="${id}"><option value="">Elige</option>${ops.map(o => `<option value="${o.id}">${esc(nomMod(o))}</option>`).join('')}</select></label>
+        <label class="f" for="pt${id}">Talla<select id="pt${id}" data-pt="${p.id}" data-i="${i}" disabled><option value="">Elige antes el modelo</option></select></label></div></div>`;
+    }).join('')}</div>`;
+  }
+  /* Tarjeta de la tienda: foto, nombre y precio. Al tocarla se abre la ficha para elegir tallas */
+  function prodCard(p) {
+    return `<button type="button" class="card pr pr-pick" data-open="${p.id}" aria-label="${esc(p.nombre)}, ${euro(p.precio)}. Elegir ${esPack(p) ? 'tallas' : 'talla'}">${prFoto(p)}
+      <span class="pr-b"><b class="pr-n">${esc(p.nombre)}</b>${modTxt(p) ? `<span class="pr-m">${esc(modTxt(p))}</span>` : ''}${esPack(p) ? `<span class="pr-m">${esc(p.componentes.map(slotNombre).join(' + '))}</span>` : ''}<b class="pr-p">${euro(p.precio)}</b></span>
+      <span class="btn blue block">${ic('plus')} ${esPack(p) ? 'Elegir tallas' : 'Elegir talla'}</span></button>`;
+  }
+  /* Ficha del producto (pantalla completa): tallas, modelo si hay que elegirlo y cantidad */
+  function prodModal(p) {
+    const pk = esPack(p), roto = pk && p.componentes.some(sl => !sl.some(prodId));
+    const m = modal(`<h2 id="mdl-t">${esc(p.nombre)}</h2>
+      <div class="pr-d">${prFoto(p)}<div class="pr-b">${modTxt(p) ? `<p class="pr-m">${esc(modTxt(p))}</p>` : ''}${p.descripcion ? `<p>${esc(p.descripcion)}</p>` : ''}<b class="pr-p">${euro(p.precio)}</b></div></div>
+      ${pk ? packCampos(p) : ''}
+      <div class="pr-c">${!pk && p.tallas.length ? `<label class="f" for="t${p.id}">Talla<select id="t${p.id}"><option value="">Elige</option>${p.tallas.map(t => `<option>${esc(t)}</option>`).join('')}</select></label>` : ''}
+        <div class="f"><span id="ql${p.id}">Cantidad</span><div class="qty" role="group" aria-labelledby="ql${p.id}"><button type="button" class="iconbtn" data-qty="${p.id}" data-d="-1" aria-label="Uno menos">${ic('minus')}</button>
+          <output id="qv${p.id}" aria-live="polite">1</output><input type="hidden" id="q${p.id}" value="1"><button type="button" class="iconbtn" data-qty="${p.id}" data-d="1" aria-label="Uno más">${ic('plus')}</button></div></div></div>
+      <p class="err" id="te${p.id}" role="alert" hidden>Elige la talla.</p>
+      <button type="button" class="btn blue block" data-add="${p.id}" ${roto ? 'disabled' : ''}>${ic('plus')} Añadir al pedido</button>`, 'dialog', () => render());
+    m.el.classList.add('rqd', 'pr-mdl');
+    traerFotos();
           document.querySelectorAll('[data-qty]').forEach(b => b.onclick = () => { const i = $('#q' + b.dataset.qty), v = Math.min(20, Math.max(1, +i.value + +b.dataset.d)); i.value = v; $('#qv' + b.dataset.qty).textContent = v; });
           /* Pack: al elegir el modelo, salen las tallas de ese modelo */
           document.querySelectorAll('[data-pm]').forEach(s => s.onchange = () => {
@@ -179,36 +223,8 @@
             S.fam.cart = S.fam.cart || [];
             const k = JSON.stringify(piezas), l = S.fam.cart.find(x => x.producto === p.id && x.talla === talla && JSON.stringify(x.piezas || null) === k);
             if (l) l.cantidad = Math.min(20, l.cantidad + cantidad); else S.fam.cart.push({ producto: p.id, nombre: p.nombre, talla, cantidad, precio: p.precio, ...(piezas ? { piezas } : {}) });
-            render(); say(`Añadido: ${p.nombre}${talla ? ' (talla ' + talla + ')' : ''}`);
+            m.close(false); say(`Añadido: ${p.nombre}${talla ? ' (talla ' + talla + ')' : ''}`);
           });
-          if ($('#cart-go')) $('#cart-go').onclick = cartModal;
-        }
-      };
-    }
-  };
-  function bindShopSeg() { document.querySelectorAll('[data-shv]').forEach(b => b.onclick = () => { S.shopView = b.dataset.shv; render(); }); }
-  const tallaOpts = pr => pr && pr.tallas.length ? `<option value="">Elige</option>${pr.tallas.map(t => `<option>${esc(t)}</option>`).join('')}` : '<option value="">Talla única</option>';
-  /* Prendas de un pack: talla de cada una, y modelo si el hueco tiene más de uno */
-  function packCampos(p) {
-    return `<div class="pk-l" role="group" aria-label="Prendas del pack">${p.componentes.map((sl, i) => {
-      const ops = sl.map(prodId).filter(Boolean), id = `${p.id}-${i}`;
-      if (!ops.length) return `<p class="muted pk-s">Una prenda de este pack ya no está disponible.</p>`;
-      if (ops.length === 1) return `<div class="pk-s"><b>${esc(nomMod(ops[0]))}</b>${ops[0].tallas.length ? `<label class="f" for="pt${id}"><span class="sr">Talla de ${esc(nomMod(ops[0]))}</span><select id="pt${id}" data-pt="${p.id}" data-i="${i}" data-pz="${ops[0].id}">${tallaOpts(ops[0])}</select></label>` : '<small class="muted">Talla única</small>'}</div>`;
-      return `<div class="pk-s"><b>${esc(ops.map(o => nomMod(o)).join(' o '))}</b><div class="pk-f">
-        <label class="f" for="pm${id}">Modelo<select id="pm${id}" data-pm="${id}"><option value="">Elige</option>${ops.map(o => `<option value="${o.id}">${esc(nomMod(o))}</option>`).join('')}</select></label>
-        <label class="f" for="pt${id}">Talla<select id="pt${id}" data-pt="${p.id}" data-i="${i}" disabled><option value="">Elige antes el modelo</option></select></label></div></div>`;
-    }).join('')}</div>`;
-  }
-  function prodCard(p) {
-    const pk = esPack(p), roto = pk && p.componentes.some(sl => !sl.some(prodId));
-    return `<section class="card pr" aria-labelledby="pr${p.id}">${prFoto(p)}
-      <div class="pr-b"><h2 id="pr${p.id}">${esc(p.nombre)}</h2>${modTxt(p) ? `<p class="pr-m">${esc(modTxt(p))}</p>` : ''}${p.descripcion ? `<p>${esc(p.descripcion)}</p>` : ''}<b class="pr-p">${euro(p.precio)}</b></div>
-      ${pk ? packCampos(p) : ''}
-      <div class="pr-c">${!pk && p.tallas.length ? `<label class="f" for="t${p.id}">Talla<select id="t${p.id}"><option value="">Elige</option>${p.tallas.map(t => `<option>${esc(t)}</option>`).join('')}</select></label>` : ''}
-        <div class="f"><span id="ql${p.id}">Cantidad</span><div class="qty" role="group" aria-labelledby="ql${p.id}"><button type="button" class="iconbtn" data-qty="${p.id}" data-d="-1" aria-label="Uno menos">${ic('minus')}</button>
-          <output id="qv${p.id}" aria-live="polite">1</output><input type="hidden" id="q${p.id}" value="1"><button type="button" class="iconbtn" data-qty="${p.id}" data-d="1" aria-label="Uno más">${ic('plus')}</button></div></div></div>
-      <p class="err" id="te${p.id}" role="alert" hidden>Elige la talla.</p>
-      <button type="button" class="btn blue block" data-add="${p.id}" ${roto ? 'disabled' : ''}>${ic('plus')} Añadir al pedido</button></section>`;
   }
   function cartModal() {
     const f = F(), kids = f.kids;
