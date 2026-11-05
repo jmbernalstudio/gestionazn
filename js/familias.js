@@ -144,23 +144,21 @@
           : emptyPage('box', 'Aún no has hecho ningún pedido', 'Cuando hagas uno, aquí verás cómo va.', '', `<button type="button" class="btn blue" data-shv="shop">${ic('box')} Ir a la tienda</button>`)}</div>`,
         bind() { bindShopSeg(); bindOrders(false); }
       };
-      const prods = (S.products || []).filter(p => p.activo), packs = prods.filter(esPack), sueltas = prods.filter(p => !esPack(p));
-      /* Primero se elige entre packs y prendas sueltas (si hay de los dos) */
-      const kind = packs.length && sueltas.length ? (S.shopKind === 'suelta' ? 'suelta' : 'pack') : packs.length ? 'pack' : 'suelta';
-      const lista = kind === 'pack' ? packs : sueltas;
-      const seg2 = packs.length && sueltas.length ? `<div class="seg g-scope sh-kind" role="group" aria-label="Qué quieres pedir"><button type="button" data-shk="pack" aria-pressed="${kind === 'pack'}">Packs · ${packs.length}</button>
-        <button type="button" data-shk="suelta" aria-pressed="${kind === 'suelta'}">Prendas sueltas · ${sueltas.length}</button></div>` : '';
+      /* Dos apartados, uno debajo del otro: primero lo obligatorio y luego el resto (opcional) */
+      const prods = (S.products || []).filter(p => p.activo), oblig = prods.filter(p => p.obligatorio), resto = prods.filter(p => !p.obligatorio);
+      const grid = l => `<div class="pr-grid">${l.map(prodCard).join('')}</div>`;
+      const apartados = !oblig.length ? grid(prods) : `<section class="sh-sec" aria-labelledby="sh-o"><div><h2 id="sh-o" class="st-h2"><span class="sh-n" aria-hidden="true">1</span>Lo obligatorio</h2><p class="muted">Lo que el club pide a cada jugador. Empieza por aquí.</p></div>${grid(oblig)}</section>
+          ${resto.length ? `<section class="sh-sec" aria-labelledby="sh-r"><div><h2 id="sh-r" class="st-h2"><span class="sh-n" aria-hidden="true">2</span>Más productos del club</h2><p class="muted">No es obligatorio. Prendas sueltas, ropa y artículos del club, por si quieres algo más.</p></div>${grid(resto)}</section>` : ''}`;
       const cart = f.cart || [], n = cart.reduce((a, l) => a + l.cantidad, 0), tot = cart.reduce((a, l) => a + l.cantidad * l.precio, 0);
       return {
         kicker: 'Club', title: 'Tienda',
         body: `<div class="stack">${seg}
           <p class="card pay-note">${ic('check')}<span>Haz el pedido aquí y <b>págalo en efectivo en el club</b>. La junta te avisará cuando esté listo para recoger.</span></p>
-          ${prods.length ? `${seg2}<div class="pr-grid">${lista.map(prodCard).join('')}</div>` : emptyPage('box', 'Todavía no hay productos', 'La junta está preparando la tienda. Vuelve pronto.')}
+          ${prods.length ? apartados : emptyPage('box', 'Todavía no hay productos', 'La junta está preparando la tienda. Vuelve pronto.')}
           ${n ? `<div class="cart-bar" role="region" aria-label="Tu pedido"><div class="grow"><b>${n === 1 ? '1 producto' : n + ' productos'}</b><small>${euro(tot)} · pago en efectivo</small></div>
             <button type="button" class="btn gold" id="cart-go">${ic('box')} Ver pedido</button></div>` : ''}</div>`,
         bind() {
           bindShopSeg(); traerFotos();
-          document.querySelectorAll('[data-shk]').forEach(b => b.onclick = () => { S.shopKind = b.dataset.shk; render(); });
           document.querySelectorAll('[data-open]').forEach(b => b.onclick = () => prodModal(S.products.find(x => x.id == b.dataset.open)));
           if ($('#cart-go')) $('#cart-go').onclick = cartModal;
         }
@@ -182,7 +180,8 @@
   }
   /* Tarjeta de la tienda: foto, nombre y precio. Al tocarla se abre la ficha para elegir tallas */
   function prodCard(p) {
-    return `<button type="button" class="card pr pr-pick" data-open="${p.id}" aria-label="${esc(p.nombre)}, ${euro(p.precio)}. Elegir ${esPack(p) ? 'tallas' : 'talla'}">${prFoto(p)}
+    const yaN = (F().cart || []).filter(l => l.producto === p.id).reduce((a, l) => a + l.cantidad, 0);
+    return `<button type="button" class="card pr pr-pick" data-open="${p.id}" aria-label="${esc(p.nombre)}, ${euro(p.precio)}.${yaN ? ` Ya tienes ${yaN} en tu pedido.` : ''} Elegir ${esPack(p) ? 'tallas' : 'talla'}">${yaN ? `<span class="pill green pr-ya">${ic('check')} En tu pedido${yaN > 1 ? ' · ' + yaN : ''}</span>` : ''}${prFoto(p)}
       <span class="pr-b"><b class="pr-n">${esc(p.nombre)}</b>${esPack(p) ? `<span class="pr-m">${esc(p.componentes.map(sl => slotNombre(sl, true)).join(' + '))}</span>` : ''}<b class="pr-p">${euro(p.precio)}</b></span>
       <span class="btn blue block">${ic('plus')} ${esPack(p) ? 'Elegir tallas' : 'Elegir talla'}</span></button>`;
   }
@@ -227,7 +226,20 @@
             const k = JSON.stringify(piezas), l = S.fam.cart.find(x => x.producto === p.id && x.talla === talla && JSON.stringify(x.piezas || null) === k);
             if (l) l.cantidad = Math.min(20, l.cantidad + cantidad); else S.fam.cart.push({ producto: p.id, nombre: p.nombre, talla, cantidad, precio: p.precio, ...(piezas ? { piezas } : {}) });
             m.close(false); say(`Añadido: ${p.nombre}${talla ? ' (talla ' + talla + ')' : ''}`);
+            if (esPack(p)) sugerir(p);
           });
+  }
+  /* Después de añadir un pack: ¿quieres alguna prenda más? Se ofrecen sus prendas que también se venden sueltas */
+  function sugerir(p) {
+    const ids = [...new Set(p.componentes.flat())], sug = ids.map(prodId).filter(x => x && x.activo && !esPack(x));
+    if (!sug.length) return;
+    const m = modal(`<h2 id="mdl-t">¿Quieres alguna prenda más?</h2>
+      <p class="card pay-note">${ic('check')}<span><b>${esc(p.nombre)}</b> ya está en tu pedido. Si además quieres alguna prenda suelta (por ejemplo, otras medias), elígela aquí.</span></p>
+      <div class="pr-grid">${sug.map(prodCard).join('')}</div>
+      <button type="button" class="btn ghost block" data-v="0">No, gracias</button>`, 'dialog', () => render());
+    m.el.classList.add('rqd', 'pr-mdl');
+    traerFotos();
+    m.el.querySelectorAll('[data-open]').forEach(b => b.onclick = () => { const x = prodId(b.dataset.open); m.close(false); prodModal(x); });
   }
   function cartModal() {
     const f = F(), kids = f.kids;
@@ -308,7 +320,7 @@
         ${os.length ? `<div class="cards-grid">${os.map(o => orderCard(o, true)).join('')}</div>` : emptyPage('box', 'Todavía no hay pedidos', 'Cuando una familia haga un pedido en la tienda, aparecerá aquí.')}
         ${card('h-prs', `Productos de la tienda · ${(S.products || []).length}`, (S.products || []).length ? (S.products || []).map(p => `<div class="tm pr-row">${prFoto(p, 'pr-th')}
             <div class="grow"><b>${esc(p.nombre)}</b><small>${euro(p.precio)}${modTxt(p) ? ' · ' + esc(modTxt(p)) : ''}${esPack(p) ? ' · Pack: ' + esc(p.componentes.map(sl => slotNombre(sl)).join(' + ')) : p.tallas.length ? ' · Tallas ' + esc(p.tallas.join(', ')) : ' · Talla única'}</small></div>
-            ${p.activo ? '' : '<span class="pill grey">Oculto</span>'}<button type="button" class="btn ghost sm" data-pr="${p.id}">${ic('pen')} Editar</button></div>`).join('')
+            ${p.obligatorio ? '<span class="pill blue">Obligatorio</span>' : ''}${p.activo ? '' : '<span class="pill grey">Oculto</span>'}<button type="button" class="btn ghost sm" data-pr="${p.id}">${ic('pen')} Editar</button></div>`).join('')
           : '<p class="muted" style="margin:0">Añade el primer producto con el botón “Añadir producto”.</p>')}`;
       return { body: `<div class="stack">${inboxSeg()}${body}</div>`, bind() { bindInboxSeg(); bindOrders(true); traerFotos();
         if ($('#xls')) $('#xls').onclick = exportar; if ($('#pr-new')) $('#pr-new').onclick = () => productoForm(null);
@@ -396,6 +408,8 @@
         <label class="f" for="prp">Precio en euros<input type="text" id="prp" inputmode="decimal" value="${x.precio === '' ? '' : String(x.precio).replace('.', ',')}" placeholder="35,00"></label>
         <label class="f" for="prt" id="prt-w" ${st.pack ? 'hidden' : ''}>Tallas disponibles<span class="hint">Separadas por comas. Déjalo vacío si es talla única</span><input type="text" id="prt" value="${esc(x.tallas.join(', '))}" placeholder="6, 8, 10, 12, 14, S, M, L, XL"></label>
         <div class="pk-ed stack" id="pk-ed" ${st.pack ? '' : 'hidden'}></div>
+        ${S.oblOff ? '' : `<div class="opts-row"><div class="grow"><b id="pro-l">Obligatorio</b><small>Sale arriba, en “Lo obligatorio”. Por ejemplo, el pack de entrenamiento.</small></div>
+          <button type="button" class="tgl" role="switch" id="pro" aria-checked="${!!x.obligatorio}" aria-labelledby="pro-l"><span></span></button></div>`}
         <div class="opts-row"><div class="grow"><b id="pra-l">Se ve en la tienda</b><small>Si lo quitas, las familias no lo ven, pero no se borra.</small></div>
           <button type="button" class="tgl" role="switch" id="pra" aria-checked="${x.activo}" aria-labelledby="pra-l"><span></span></button></div>
         <p class="err" id="pre" role="alert" hidden></p>
@@ -405,6 +419,7 @@
     m.el.classList.add('rqd');
     $('#prn').focus();
     $('#pra').onclick = () => { x.activo = !x.activo; $('#pra').setAttribute('aria-checked', x.activo); };
+    if ($('#pro')) $('#pro').onclick = () => { x.obligatorio = !x.obligatorio; $('#pro').setAttribute('aria-checked', x.obligatorio); };
     /* Prendas del pack: cada prenda es un producto; si tiene varios modelos, la familia elige uno */
     const opt = (sel) => `<option value="">Elige un producto</option>${cands.map(y => `<option value="${y.id}" ${y.id === sel ? 'selected' : ''}>${esc(y.nombre)}${y.activo ? '' : ' (oculto)'}</option>`).join('')}`;
     const drawPk = () => {
@@ -451,7 +466,7 @@
         if (st.slots.some(sl => new Set(sl).size !== sl.length)) return err('Hay un modelo repetido dentro de la misma prenda.');
         componentes = st.slots.map(sl => sl.slice()); tallas = [];
       }
-      const fila = { id: p && p.id, nombre, descripcion: $('#prd').value.trim(), precio: Math.round(precio * 100) / 100, tallas, componentes, activo: x.activo, foto: st.foto || null,
+      const fila = { id: p && p.id, nombre, descripcion: $('#prd').value.trim(), precio: Math.round(precio * 100) / 100, tallas, componentes, activo: x.activo, obligatorio: !!x.obligatorio, foto: st.foto || null,
         modelo: !st.pack && $('#prmo') ? $('#prmo').value.trim() : '', color: !st.pack && $('#prco') ? $('#prco').value.trim() : '' };
       try { await API().producto(fila); } catch (_) { return err(S.shopOff ? 'Falta un paso en Supabase para poder guardar productos.' : 'No se ha podido guardar. Revisa la conexión.'); }
       await window.cargarTienda(); m.close(); render(); say(p ? 'Producto guardado.' : 'Producto añadido a la tienda.');
@@ -469,11 +484,25 @@
     const lin = sel.flatMap(o => (o.lineas || []).map(l => ({ o, l })));
     /* Modelo y color: los de la ficha del producto (si la prenda ya no existe, se dejan en blanco) */
     const mc = id => { const pr = prodId(id); return [pr ? pr.modelo || '' : '', pr ? pr.color || '' : '']; };
-    const sum = {};
-    /* Para el proveedor, un pack cuenta como sus prendas: una unidad de cada una */
-    for (const { l } of lin) for (const z of l.piezas || [l]) { const k = [z.nombre, ...mc(z.producto), z.talla || ''].join('\u0000'); sum[k] = (sum[k] || 0) + l.cantidad; }
-    const hoja1 = [['Producto', 'Modelo', 'Color', 'Talla', 'Cantidad'], ...Object.entries(sum).sort().map(([k, n]) => { const [a, m, c, t] = k.split('\u0000'); return [a, m, c, t || 'Única', n]; }),
-      [], ['Total de prendas', '', '', '', Object.values(sum).reduce((a, b) => a + b, 0)]];
+    /* Para el proveedor: una fila por prenda (con su modelo y color) y una columna por talla.
+       Un pack cuenta como sus prendas: una unidad de cada una */
+    const filas = new Map(), tallasDe = new Map();
+    for (const { l } of lin) for (const z of l.piezas || [l]) {
+      /* Se agrupa por producto (con su nombre de ahora); si ya no existe, por el nombre que tenía en el pedido */
+      const pr = prodId(z.producto), [mo, co] = mc(z.producto), k = pr ? 'p' + pr.id : ['n', z.nombre, mo, co].join('\u0000'), t = z.talla || 'Única';
+      if (!filas.has(k)) filas.set(k, { nombre: pr ? pr.nombre : z.nombre, mo, co, n: {} });
+      const f = filas.get(k); f.n[t] = (f.n[t] || 0) + l.cantidad;
+    }
+    /* Columnas de tallas, ordenadas: números (8, 10, 12… y 31-34, 35-38…), luego letras (XS, S, M, L, XL…), y la talla única al final */
+    const LET = ['XXXS', '3XS', 'XXS', '2XS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', '2XL', 'XXXL', '3XL', '4XL'];
+    const rank = t => { const n = parseFloat(t); if (t === 'Única') return [3, 0, t]; if (!isNaN(n)) return [0, n, t];
+      const i = LET.indexOf(String(t).toUpperCase()); return i >= 0 ? [1, i, t] : [2, 0, t]; };
+    const cols = [...new Set([...filas.values()].flatMap(f => Object.keys(f.n)))].sort((a, b) => { const x = rank(a), y = rank(b); return x[0] - y[0] || x[1] - y[1] || String(x[2]).localeCompare(String(y[2]), 'es'); });
+    const lista = [...filas.values()].sort((a, b) => a.nombre.localeCompare(b.nombre, 'es') || a.mo.localeCompare(b.mo, 'es') || a.co.localeCompare(b.co, 'es'));
+    const total = f => Object.values(f.n).reduce((a, b) => a + b, 0);
+    const hoja1 = [['Producto', 'Modelo', 'Color', ...cols.map(t => t === 'Única' ? 'Talla única' : 'Talla ' + t), 'Total'],
+      ...lista.map(f => [f.nombre, f.mo, f.co, ...cols.map(t => f.n[t] || ''), total(f)]),
+      [], ['Total', '', '', ...cols.map(t => lista.reduce((a, f) => a + (f.n[t] || 0), 0) || ''), lista.reduce((a, f) => a + total(f), 0)]];
     const hoja2 = [['Pedido', 'Fecha', 'Familia', 'Teléfono', 'Jugador', 'Equipo', 'Producto', 'Modelo', 'Color', 'Talla', 'Cantidad', 'Precio', 'Importe', 'Estado', 'Nota'],
       ...lin.map(({ o, l }) => { const [nom, tel] = (o.contacto || '').split(' · '); const d = new Date(o.creado);
         const fila = [o.id, `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`, nom || '', tel || '', o.jugador, o.equipo, l.nombre, ...(l.piezas ? ['', ''] : mc(l.producto)), l.piezas ? 'Pack' : l.talla || 'Única', l.cantidad, { m: +l.precio }, { m: Math.round(l.cantidad * l.precio * 100) / 100 }, ESTADOS_PED[o.estado], o.nota || ''];

@@ -1452,3 +1452,11 @@ small.pk-z { display: block; white-space: pre-line !important; overflow: visible
 .pr-pick .pr-f, .pr-pick .pr-f:not(:has(img)) { aspect-ratio: auto; height: 220px; }
 .pr-d .pr-f { max-width: 16rem; }
 @media (min-width: 720px) { .pr-d .pr-f { max-width: none; } }
+/* Tienda en dos apartados: 1 obligatorio, 2 opcional */
+.sh-sec { display: flex; flex-direction: column; gap: 12px; }
+.sh-sec h2 { display: flex; align-items: center; gap: 10px; margin: 0; }
+.sh-sec p.muted { margin: 4px 0 0; }
+.sh-n { width: 32px; height: 32px; border-radius: 50%; background: var(--club); color: #fff; font-size: 1rem; font-weight: 800; display: grid; place-items: center; flex: none; }
+.pr-pick { position: relative; }
+.pr-ya { position: absolute; top: 28px; left: 28px; z-index: 1; background: var(--ok-soft, #E3F6EA); color: var(--ok-ink, #146C34); display: inline-flex; align-items: center; gap: 4px; font-weight: 700; }
+.pr-ya .i { width: 16px; height: 16px; }
