@@ -134,27 +134,24 @@
       };
     },
     shop() {
-      const f = F(), view = S.shopView === 'mine' ? 'mine' : 'shop', mine = S.orders || [];
-      const seg = `<div class="seg g-scope" role="group" aria-label="Qué ver"><button type="button" data-shv="shop" aria-pressed="${view === 'shop'}">Tienda</button>
-        <button type="button" data-shv="mine" aria-pressed="${view === 'mine'}">Mis pedidos${mine.length ? ` · ${mine.length}` : ''}</button></div>`;
+      const f = F(), mine = S.orders || [];
       if (S.shopOff) return { kicker: 'Club', title: 'Tienda', body: emptyPage('box', 'La tienda abrirá muy pronto', 'La junta está preparando los productos.') };
+      /* Apartados de la tienda, siempre a la vista arriba: lo obligatorio, cada categoría y mis pedidos */
+      const tabs = shopTabs(), view = tabs.some(t => t.k === S.shopView) ? S.shopView : tabs[0].k, tab = tabs.find(t => t.k === view);
+      const nav = `<nav class="sh-tabs" aria-label="Apartados de la tienda">${tabs.map(t => `<button type="button" data-shv="${esc(t.k)}" ${t.k === view ? 'aria-current="page"' : ''}>${ic(t.ic)}<span>${esc(t.label)}</span></button>`).join('')}</nav>`;
       if (view === 'mine') return {
         kicker: 'Tienda', title: 'Mis pedidos',
-        body: `<div class="stack">${seg}${mine.length ? `<div class="cards-grid">${mine.map(o => orderCard(o, false)).join('')}</div>`
-          : emptyPage('box', 'Aún no has hecho ningún pedido', 'Cuando hagas uno, aquí verás cómo va.', '', `<button type="button" class="btn blue" data-shv="shop">${ic('box')} Ir a la tienda</button>`)}</div>`,
+        body: `<div class="stack">${nav}${mine.length ? `<div class="cards-grid">${mine.map(o => orderCard(o, false)).join('')}</div>`
+          : emptyPage('box', 'Aún no has hecho ningún pedido', 'Cuando hagas uno, aquí verás cómo va.', '', `<button type="button" class="btn blue" data-shv="${esc(tabs[0].k)}">${ic('box')} Ir a la tienda</button>`)}</div>`,
         bind() { bindShopSeg(); bindOrders(false); }
       };
-      /* Dos apartados, uno debajo del otro: primero lo obligatorio y luego el resto (opcional) */
-      const prods = (S.products || []).filter(p => p.activo), oblig = prods.filter(p => p.obligatorio), resto = prods.filter(p => !p.obligatorio);
-      const grid = l => `<div class="pr-grid">${l.map(prodCard).join('')}</div>`;
-      const apartados = !oblig.length ? grid(prods) : `<section class="sh-sec" aria-labelledby="sh-o"><div><h2 id="sh-o" class="st-h2"><span class="sh-n" aria-hidden="true">1</span>Lo obligatorio</h2><p class="muted">Lo que el club pide a cada jugador. Empieza por aquí.</p></div>${grid(oblig)}</section>
-          ${resto.length ? `<section class="sh-sec" aria-labelledby="sh-r"><div><h2 id="sh-r" class="st-h2"><span class="sh-n" aria-hidden="true">2</span>Más productos del club</h2><p class="muted">No es obligatorio. Prendas sueltas, ropa y artículos del club, por si quieres algo más.</p></div>${grid(resto)}</section>` : ''}`;
       const cart = f.cart || [], n = cart.reduce((a, l) => a + l.cantidad, 0), tot = cart.reduce((a, l) => a + l.cantidad * l.precio, 0);
       return {
-        kicker: 'Club', title: 'Tienda',
-        body: `<div class="stack">${seg}
+        kicker: 'Tienda', title: esc(tab.title),
+        body: `<div class="stack">${nav}
+          ${tab.hint ? `<p class="sh-hint">${esc(tab.hint)}</p>` : ''}
+          ${tab.prods.length ? `<div class="pr-grid">${tab.prods.map(prodCard).join('')}</div>` : emptyPage('box', 'Todavía no hay productos', 'La junta está preparando la tienda. Vuelve pronto.')}
           <p class="card pay-note">${ic('check')}<span>Haz el pedido aquí y <b>págalo en efectivo en el club</b>. La junta te avisará cuando esté listo para recoger.</span></p>
-          ${prods.length ? apartados : emptyPage('box', 'Todavía no hay productos', 'La junta está preparando la tienda. Vuelve pronto.')}
           ${n ? `<div class="cart-bar" role="region" aria-label="Tu pedido"><div class="grow"><b>${n === 1 ? '1 producto' : n + ' productos'}</b><small>${euro(tot)} · pago en efectivo</small></div>
             <button type="button" class="btn gold" id="cart-go">${ic('box')} Ver pedido</button></div>` : ''}</div>`,
         bind() {
@@ -165,6 +162,21 @@
       };
     }
   };
+  /* Pestañas de la tienda. Lo obligatorio va solo en su apartado; el resto, por categorías en el orden en que la junta ordena los productos */
+  function shopTabs() {
+    const prods = (S.products || []).filter(p => p.activo), oblig = prods.filter(p => p.obligatorio), resto = prods.filter(p => !p.obligatorio);
+    const tabs = [];
+    if (oblig.length) tabs.push({ k: 'obl', ic: 'check', label: 'Obligatorio', title: 'Lo obligatorio', hint: 'Lo que el club pide a cada jugador. Empieza por aquí.', prods: oblig });
+    const cats = [...new Set(resto.map(p => p.categoria))], conCat = cats.some(c => c);
+    cats.sort((x, y) => (x ? 0 : 1) - (y ? 0 : 1)).forEach(c => {
+      const label = c || (conCat ? 'Otros' : oblig.length ? 'Más productos' : 'Productos');
+      tabs.push({ k: 'c:' + c, ic: 'box', label, title: label, hint: oblig.length && !conCat ? 'No es obligatorio. Por si quieres algo más.' : '', prods: resto.filter(p => p.categoria === c) });
+    });
+    if (!tabs.length) tabs.push({ k: 'c:', ic: 'box', label: 'Productos', title: 'Tienda', prods: [] });
+    const nm = (S.orders || []).length;
+    tabs.push({ k: 'mine', ic: 'list', label: 'Mis pedidos' + (nm ? ' · ' + nm : ''), title: 'Mis pedidos' });
+    return tabs;
+  }
   function bindShopSeg() { document.querySelectorAll('[data-shv]').forEach(b => b.onclick = () => { S.shopView = b.dataset.shv; render(); }); }
   const tallaOpts = pr => pr && pr.tallas.length ? `<option value="">Elige</option>${pr.tallas.map(t => `<option>${esc(t)}</option>`).join('')}` : '<option value="">Talla única</option>';
   /* Prendas de un pack: talla de cada una, y modelo si el hueco tiene más de uno */
@@ -332,7 +344,7 @@
         <div class="btn-row ped-btns"><button type="button" class="btn blue" id="xls" ${os.length ? '' : 'disabled'}>${ic('list')} Exportar a Excel</button><button type="button" class="btn blue" id="pr-new">${ic('plus')} Añadir producto</button></div>
         ${os.length ? `<div class="cards-grid">${os.map(o => orderCard(o, true)).join('')}</div>` : emptyPage('box', 'Todavía no hay pedidos', 'Cuando una familia haga un pedido en la tienda, aparecerá aquí.')}
         ${card('h-prs', `Productos de la tienda · ${(S.products || []).length}`, (S.products || []).length ? `<p class="muted" style="margin:0">Las familias ven los productos en este orden. Usa las flechas para subir o bajar cada uno.</p>` + (S.products || []).map((p, i, a) => `<div class="tm pr-row"><div class="pr-ord"><button type="button" class="pr-mv" data-mv="-1" data-id="${p.id}" aria-label="Subir ${esc(p.nombre)}" ${i ? '' : 'disabled'}>${ic('up')}</button><button type="button" class="pr-mv" data-mv="1" data-id="${p.id}" aria-label="Bajar ${esc(p.nombre)}" ${i < a.length - 1 ? '' : 'disabled'}>${ic('down')}</button></div>${prFoto(p, 'pr-th')}
-            <div class="grow"><b>${esc(p.nombre)}</b><small>${euro(p.precio)}${modTxt(p) ? ' · ' + esc(modTxt(p)) : ''}${esPack(p) ? ' · Pack: ' + esc(p.componentes.map(sl => slotNombre(sl)).join(' + ')) : p.tallas.length ? ' · Tallas ' + esc(p.tallas.join(', ')) : ' · Talla única'}</small></div>
+            <div class="grow"><b>${esc(p.nombre)}</b><small>${p.categoria ? esc(p.categoria) + ' · ' : ''}${euro(p.precio)}${modTxt(p) ? ' · ' + esc(modTxt(p)) : ''}${esPack(p) ? ' · Pack: ' + esc(p.componentes.map(sl => slotNombre(sl)).join(' + ')) : p.tallas.length ? ' · Tallas ' + esc(p.tallas.join(', ')) : ' · Talla única'}</small></div>
             ${p.obligatorio ? '<span class="pill blue">Obligatorio</span>' : ''}${p.activo ? '' : '<span class="pill grey">Oculto</span>'}<button type="button" class="btn ghost sm" data-pr="${p.id}">${ic('pen')} Editar</button></div>`).join('')
           : '<p class="muted" style="margin:0">Añade el primer producto con el botón “Añadir producto”.</p>')}`;
       return { body: `<div class="stack">${inboxSeg()}${body}</div>`, bind() { bindInboxSeg(); bindOrders(true); traerFotos();
@@ -404,6 +416,16 @@
       m.close(); say('Contraseña cambiada.'); };
   }
   /* Alta y edición de productos (solo junta) */
+  /* Categorías: las de siempre más las que ya use la junta. "merchandising" y "Merchandising" cuentan como la misma */
+  function catsSug() {
+    const l = ['Entrenamiento', 'Partido', 'Merchandising', ...(S.products || []).map(p => p.categoria).filter(Boolean)];
+    return l.filter((c, i) => l.findIndex(d => d.toLowerCase() === c.toLowerCase()) === i);
+  }
+  function catNorm(v) {
+    v = (v || '').trim().replace(/\s+/g, ' ');
+    if (!v) return '';
+    return catsSug().find(c => c.toLowerCase() === v.toLowerCase()) || v.charAt(0).toUpperCase() + v.slice(1);
+  }
   function productoForm(p) {
     const x = p ? { ...p, tallas: p.tallas.slice() } : { nombre: '', descripcion: '', precio: '', tallas: [], activo: true };
     const st = { foto: p ? fotoDe(p) : null, cambiada: false, pack: esPack(p), slots: esPack(p) ? p.componentes.map(sl => sl.slice()) : [] };
@@ -416,13 +438,16 @@
         ${S.packOff ? '' : `<div class="opts-row"><div class="grow"><b id="prk-l">Es un pack</b><small>Junta varias prendas de la tienda. La familia elige la talla de cada una.</small></div>
           <button type="button" class="tgl" role="switch" id="prk" aria-checked="${st.pack}" aria-labelledby="prk-l"><span></span></button></div>`}
         <label class="f" for="prn">Nombre<input type="text" id="prn" maxlength="80" value="${esc(x.nombre)}" placeholder="${st.pack ? 'Por ejemplo: Pack de entrenamiento' : 'Por ejemplo: Camiseta Rigel'}"></label>
+        ${S.catOff ? '' : `<div class="f pr-cat-f"><label for="prc">Categoría</label><span class="hint">Cada categoría es un apartado de la tienda. Toca una o escribe otra</span>
+          <div class="chips pr-cats" role="group" aria-label="Categorías">${catsSug().map(c => `<button type="button" class="chip" data-cat="${esc(c)}" aria-pressed="${c === x.categoria}">${esc(c)}</button>`).join('')}</div>
+          <input type="text" id="prc" maxlength="40" value="${esc(x.categoria || '')}" placeholder="Por ejemplo: Merchandising"></div>`}
         ${S.modOff ? '' : `<div class="row2" id="prmc" ${st.pack ? 'hidden' : ''}><label class="f" for="prmo">Modelo<input type="text" id="prmo" maxlength="60" value="${esc(x.modelo || '')}" placeholder="Por ejemplo: Rigel"></label>
           <label class="f" for="prco">Color<input type="text" id="prco" maxlength="60" value="${esc(x.color || '')}" placeholder="Por ejemplo: Azul y blanco"></label></div>`}
         <label class="f" for="prd">Descripción<span class="hint">Opcional. Qué incluye</span><textarea id="prd" maxlength="300" rows="2">${esc(x.descripcion)}</textarea></label>
         <label class="f" for="prp">Precio en euros<input type="text" id="prp" inputmode="decimal" value="${x.precio === '' ? '' : String(x.precio).replace('.', ',')}" placeholder="35,00"></label>
         <label class="f" for="prt" id="prt-w" ${st.pack ? 'hidden' : ''}>Tallas disponibles<span class="hint">Separadas por comas. Déjalo vacío si es talla única</span><input type="text" id="prt" value="${esc(x.tallas.join(', '))}" placeholder="6, 8, 10, 12, 14, S, M, L, XL"></label>
         <div class="pk-ed stack" id="pk-ed" ${st.pack ? '' : 'hidden'}></div>
-        ${S.oblOff ? '' : `<div class="opts-row"><div class="grow"><b id="pro-l">Obligatorio</b><small>Sale arriba, en “Lo obligatorio”. Por ejemplo, el pack de entrenamiento.</small></div>
+        ${S.oblOff ? '' : `<div class="opts-row"><div class="grow"><b id="pro-l">Obligatorio</b><small>Sale en el apartado “Obligatorio” de la tienda, el primero. Por ejemplo, el pack de entrenamiento.</small></div>
           <button type="button" class="tgl" role="switch" id="pro" aria-checked="${!!x.obligatorio}" aria-labelledby="pro-l"><span></span></button></div>`}
         <div class="opts-row"><div class="grow"><b id="pra-l">Se ve en la tienda</b><small>Si lo quitas, las familias no lo ven, pero no se borra.</small></div>
           <button type="button" class="tgl" role="switch" id="pra" aria-checked="${x.activo}" aria-labelledby="pra-l"><span></span></button></div>
@@ -433,6 +458,9 @@
     m.el.classList.add('rqd');
     $('#prn').focus();
     $('#pra').onclick = () => { x.activo = !x.activo; $('#pra').setAttribute('aria-checked', x.activo); };
+    const marcaCat = () => document.querySelectorAll('[data-cat]').forEach(b => b.setAttribute('aria-pressed', b.dataset.cat.toLowerCase() === $('#prc').value.trim().toLowerCase()));
+    document.querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { $('#prc').value = b.dataset.cat; marcaCat(); });
+    if ($('#prc')) $('#prc').oninput = marcaCat;
     if ($('#pro')) $('#pro').onclick = () => { x.obligatorio = !x.obligatorio; $('#pro').setAttribute('aria-checked', x.obligatorio); };
     /* Prendas del pack: cada prenda es un producto; si tiene varios modelos, la familia elige uno */
     const opt = (sel) => `<option value="">Elige un producto</option>${cands.map(y => `<option value="${y.id}" ${y.id === sel ? 'selected' : ''}>${esc(y.nombre)}${y.activo ? '' : ' (oculto)'}</option>`).join('')}`;
@@ -480,7 +508,7 @@
         if (st.slots.some(sl => new Set(sl).size !== sl.length)) return err('Hay un modelo repetido dentro de la misma prenda.');
         componentes = st.slots.map(sl => sl.slice()); tallas = [];
       }
-      const fila = { id: p && p.id, nombre, descripcion: $('#prd').value.trim(), precio: Math.round(precio * 100) / 100, tallas, componentes, activo: x.activo, obligatorio: !!x.obligatorio, foto: st.foto || null,
+      const fila = { id: p && p.id, nombre, descripcion: $('#prd').value.trim(), precio: Math.round(precio * 100) / 100, tallas, componentes, activo: x.activo, obligatorio: !!x.obligatorio, foto: st.foto || null, categoria: catNorm($('#prc') ? $('#prc').value : ''),
         modelo: !st.pack && $('#prmo') ? $('#prmo').value.trim() : '', color: !st.pack && $('#prco') ? $('#prco').value.trim() : '' };
       try { await API().producto(fila); } catch (_) { return err(S.shopOff ? 'Falta un paso en Supabase para poder guardar productos.' : 'No se ha podido guardar. Revisa la conexión.'); }
       await window.cargarTienda(); m.close(); render(); say(p ? 'Producto guardado.' : 'Producto añadido a la tienda.');

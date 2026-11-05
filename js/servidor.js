@@ -88,6 +88,7 @@
       if (!S.packOff) fila.componentes = x.componentes || [];
       if (!S.modOff) { fila.modelo = x.modelo || ''; fila.color = x.color || ''; }
       if (!S.oblOff) fila.obligatorio = !!x.obligatorio;
+      if (!S.catOff) fila.categoria = (x.categoria || '').trim();
       if (x.id) { ok(await sb.from('productos').update(fila).eq('id', x.id)); return x.id; }
       fila.orden = Math.max(0, ...(S.products || []).map(p => p.orden || 0)) + 1; /* los nuevos, al final */
       return ok(await sb.from('productos').insert(fila).select('id').single()).id;
@@ -254,7 +255,7 @@
     const cols = 'id, nombre, descripcion, precio, tallas, activo, orden, foto_hash';
     /* Columnas que llegan con pasos posteriores de Supabase: 11 packs, 12 modelo y color, 13 obligatorio.
        Si falta alguna, se mira cuál y se sigue sin ella */
-    const extra = [['componentes', 'packOff'], ['modelo, color', 'modOff'], ['obligatorio', 'oblOff']];
+    const extra = [['componentes', 'packOff'], ['modelo, color', 'modOff'], ['obligatorio', 'oblOff'], ['categoria', 'catOff']];
     let [pr, pe] = await Promise.all([
       sb.from('productos').select(cols + ', ' + extra.map(e => e[0]).join(', ')).order('orden').order('id'),
       sb.from('pedidos').select('id, familia, jugador, equipo, lineas, total, nota, contacto, estado, creado').order('creado', { ascending: false })
@@ -266,7 +267,7 @@
       pr = await sb.from('productos').select([cols, ...extra.filter(e => !S[e[1]]).map(e => e[0])].join(', ')).order('orden').order('id');
     }
     S.shopOff = !!pr.error;
-    S.products = (pr.data || []).map(x => ({ ...x, precio: +x.precio, componentes: Array.isArray(x.componentes) ? x.componentes : [], modelo: x.modelo || '', color: x.color || '', obligatorio: !!x.obligatorio }));
+    S.products = (pr.data || []).map(x => ({ ...x, precio: +x.precio, componentes: Array.isArray(x.componentes) ? x.componentes : [], modelo: x.modelo || '', color: x.color || '', obligatorio: !!x.obligatorio, categoria: (x.categoria || '').trim() }));
     S.orders = (pe.data || []).map(x => ({ ...x, total: +x.total }));
   }
   window.cargarTienda = cargarTienda;
