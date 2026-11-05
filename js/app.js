@@ -2433,7 +2433,25 @@ const teamsList = () => D.equipos.map(e => {
 /* Un aviso enviado con cuántos entrenadores lo han leído */
 const sentRow = (n, del) => `<div class="rq"><span class="ic b">${ic('bell')}</span>
   <div class="grow"><b>${esc(n.title)}</b><small>${esc(n.body)}</small><div class="meter" role="img" aria-label="Leído por ${n.readBy} de ${n.total}"><i style="width:${n.total ? n.readBy / n.total * 100 : 0}%"></i></div></div>
-  <span class="pill ${n.readBy === n.total ? '' : 'blue'}">${n.readBy} de ${n.total}</span>${del ? `<button type="button" class="btn red sm del" data-del="${n.id}" aria-label="Borrar el aviso ${esc(n.title)}">${ic('trash')} Borrar aviso</button>` : ''}</div>`;
+  <span class="pill ${n.readBy === n.total ? '' : 'blue'}">${n.readBy} de ${n.total}</span>${S.live && n.lectores ? `<button type="button" class="btn ghost sm lect" data-lect="${n.id}" aria-label="Ver quién lo ha leído">${ic('user')} <span>Ver quién<span class="lect-x"> lo ha leído</span></span></button>` : ''}${del ? `<button type="button" class="btn red sm del" data-del="${n.id}" aria-label="Borrar el aviso ${esc(n.title)}">${ic('trash')} Borrar aviso</button>` : ''}</div>`;
+/* Fecha y hora de lectura: "Hoy, 18:30", "Ayer, 9:05" o "3 nov, 10:00" */
+const horaLect = iso => { if (!iso) return ''; const d = new Date(iso), h = `${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
+  const dias = Math.round((new Date(TODAY) - new Date(ISO(d))) / 864e5);
+  return dias <= 0 ? `Hoy, ${h}` : dias === 1 ? `Ayer, ${h}` : `${d.getDate()} ${['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][d.getMonth()]}, ${h}`; };
+const bindLect = () => document.querySelectorAll('[data-lect]').forEach(b => b.onclick = () => { const n = S.notices.find(x => x.id == b.dataset.lect); n && lectoresModal(n); });
+/* Ventana con quién ha leído un aviso y quién no */
+function lectoresModal(n) {
+  const coaches = S.people.filter(p => p.rol === 'entrenador');
+  const leidos = n.lectores.map(l => ({ ...l, p: coaches.find(p => p.id === l.id) })).filter(l => l.p).sort((a, b) => String(b.en).localeCompare(String(a.en)));
+  const faltan = coaches.filter(p => !n.lectores.some(l => l.id === p.id));
+  const fila = (p, extra) => `<div class="tm">${avatar(p, 'av')}<div class="grow"><b>${esc(p.nombre)}</b><small>${extra}</small></div></div>`;
+  const eqs = p => p.equipos && p.equipos.length ? p.equipos.map(teamOf).join(', ') : 'Sin equipo asignado';
+  modal(`<h2 id="mdl-t">${esc(n.title)}</h2><p class="muted" style="margin:0">Leído por ${leidos.length} de ${coaches.length} entrenadores.</p>
+    <section class="stack lect-s" aria-labelledby="lc-si"><h3 id="lc-si" class="lect-h">${ic('check')} Lo han leído · ${leidos.length}</h3>
+      ${leidos.length ? leidos.map(l => fila(l.p, l.en ? 'Leído ' + horaLect(l.en).replace(/^Hoy/, 'hoy').replace(/^Ayer/, 'ayer').replace(/^(\d)/, 'el $1') : eqs(l.p))).join('') : '<p class="muted" style="margin:0">Todavía no lo ha leído nadie.</p>'}</section>
+    <section class="stack lect-s" aria-labelledby="lc-no"><h3 id="lc-no" class="lect-h">${ic('clock')} Aún no lo han leído · ${faltan.length}</h3>
+      ${faltan.length ? faltan.map(p => fila(p, esc(eqs(p)))).join('') : '<p class="muted" style="margin:0">Ya lo han leído todos.</p>'}</section>`, 'dialog', () => {});
+}
 const coachCount = () => S.people.filter(p => p.rol === 'entrenador').length;
 const teamOf = id => (D.equipos.find(e => e.id === id) || {}).nombre || id;
 /* Entrenadores y junta con sus equipos; alta de cuentas nuevas */
@@ -2890,8 +2908,8 @@ const BOARD = {
         <p id="nerr" class="err" role="alert" hidden>Escribe el mensaje.</p>
         <button type="submit" class="btn gold block">${ic('send')} Enviar aviso</button></form>
         ${card('h-last', 'Últimos avisos enviados', S.notices.length ? S.notices.slice(0, 4).map(n => sentRow(n)).join('') : '<p class="muted" style="margin:0">Aún no has enviado avisos.</p>', '', S.notices.length > 4 ? '<button type="button" class="more" data-go="msg">Ver todos</button>' : '')}</div>`,
-      bind() { $('#nf').onsubmit = async e => { e.preventDefault();
-        const n = { id: Date.now(), from: 'Junta directiva', title: $('#nt').value.trim() || 'Aviso', body: $('#nb').value.trim(), read: false, readBy: 0, total: S.live ? coachCount() : 24 };
+      bind() { bindLect(); $('#nf').onsubmit = async e => { e.preventDefault();
+        const n = { id: Date.now(), from: 'Junta directiva', title: $('#nt').value.trim() || 'Aviso', body: $('#nb').value.trim(), read: false, readBy: 0, lectores: [], total: S.live ? coachCount() : 24 };
         if (!n.body) { $('#nerr').hidden = false; $('#nb').focus(); return; }
         try { if (API()) n.id = await API().aviso(n); } catch (_) { say('No se ha podido enviar. Revisa la conexión.'); return; }
         S.notices.unshift(n);
@@ -2904,7 +2922,7 @@ const BOARD = {
       kicker: 'Comunicación', title: 'Avisos enviados',
       body: S.notices.length ? `<div class="cards-grid">${S.notices.map(n => `<section class="card sent" aria-label="${esc(n.title)}">${sentRow(n, true)}</section>`).join('')}</div>`
         : emptyPage('bell', 'Aún no has enviado avisos', 'Cuando envíes uno, aquí verás quién lo ha leído.', '', '<button type="button" class="btn blue" data-go="ask">' + ic('send') + ' Enviar un aviso</button>'),
-      bind() { document.querySelectorAll('[data-del]').forEach(b => b.onclick = async () => {
+      bind() { bindLect(); document.querySelectorAll('[data-del]').forEach(b => b.onclick = async () => {
         const n = S.notices.find(x => x.id == b.dataset.del);
         if (!(await ask(`¿Borrar “${n.title}”?`, 'Desaparecerá también de los móviles de los entrenadores. No se puede deshacer.', 'Sí, borrar'))) return;
         try { API() && await API().borrarAviso(n.id); } catch (_) { say('No se ha podido borrar. Revisa la conexión.'); return; }

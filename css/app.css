@@ -1510,3 +1510,11 @@ small.pk-z { display: block; white-space: pre-line !important; overflow: visible
 .pr-cat-h small { display: block; color: var(--muted); font-size: .88rem; }
 .pr-ord.h { flex-direction: row; }
 @media (max-width: 480px) { .ped-a { grid-template-columns: minmax(0, 1fr); } }
+/* Avisos: quién lo ha leído */
+.lect-h { margin: 8px 0 0; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+.lect-s .tm:last-child { border-bottom: 0; }
+.lect-s .tm .grow { min-width: 0; } .lect-s .tm b { display: block; white-space: normal; overflow-wrap: anywhere; }
+.card.sent .lect, .rq .lect { flex: none; }
+@container (max-width: 620px) { .card.sent .rq .lect .lect-x { display: none; } }
+[aria-labelledby="h-last"] .rq .grow { flex-basis: calc(100% - 140px); }
+[aria-labelledby="h-last"] .rq .lect { margin-left: 56px; }
