@@ -398,14 +398,14 @@
       const os = S.orders || [], c = st => os.filter(o => o.estado === st).length;
       const body = S.shopOff ? falta() : `<div class="kpis ped-k"><div class="kpi dark blue"><small>Recibidos</small><b>${c(0)}</b></div><div class="kpi"><small>Pedidos al proveedor</small><b>${c(1)}</b></div>
           <div class="kpi"><small>Listos para recoger</small><b>${c(2)}</b></div><div class="kpi"><small>Entregados</small><b>${c(3)}</b></div></div>
-        <div class="btn-row ped-btns"><button type="button" class="btn blue" id="xls" ${os.length ? '' : 'disabled'}>${ic('list')} Exportar a Excel</button><button type="button" class="btn blue" id="pr-new">${ic('plus')} Añadir producto</button></div>
+        <div class="btn-row ped-btns"><button type="button" class="btn blue" id="xls" ${os.length ? '' : 'disabled'}>${ic('list')} Exportar a Excel</button><button type="button" class="btn blue" id="mail" ${os.length ? '' : 'disabled'}>${ic('send')} Copiar para el correo</button><button type="button" class="btn blue" id="pr-new">${ic('plus')} Añadir producto</button></div>
         ${os.length ? `<div class="cards-grid">${os.map(o => orderCard(o, true)).join('')}</div>` : emptyPage('box', 'Todavía no hay pedidos', 'Cuando una familia haga un pedido en la tienda, aparecerá aquí.')}
         ${card('h-prs', `Productos de la tienda · ${(S.products || []).length}`, (S.products || []).length ? `<p class="muted" style="margin:0">Las familias ven los productos en este orden. Usa las flechas para subir o bajar cada uno.</p>` + (S.products || []).map((p, i, a) => `<div class="tm pr-row"><div class="pr-ord"><button type="button" class="pr-mv" data-mv="-1" data-id="${p.id}" aria-label="Subir ${esc(p.nombre)}" ${i ? '' : 'disabled'}>${ic('up')}</button><button type="button" class="pr-mv" data-mv="1" data-id="${p.id}" aria-label="Bajar ${esc(p.nombre)}" ${i < a.length - 1 ? '' : 'disabled'}>${ic('down')}</button></div>${prFoto(p, 'pr-th')}
             <div class="grow"><b>${esc(p.nombre)}</b><small>${p.categoria ? esc(p.categoria) + ' · ' : ''}${euro(p.precio)}${modTxt(p) ? ' · ' + esc(modTxt(p)) : ''}${esPack(p) ? ' · Pack: ' + esc(p.componentes.map(sl => slotNombre(sl)).join(' + ')) : (p.colores.length ? ' · Colores ' + esc(p.colores.join(', ')) : '') + (p.tallas.length ? ' · Tallas ' + esc(p.tallas.join(', ')) : ' · Talla única')}</small></div>
             ${p.obligatorio ? '<span class="pill blue">Obligatorio</span>' : ''}${p.activo ? '' : '<span class="pill grey">Oculto</span>'}<button type="button" class="btn ghost sm" data-pr="${p.id}">${ic('pen')} Editar</button></div>`).join('')
           : '<p class="muted" style="margin:0">Añade el primer producto con el botón “Añadir producto”.</p>')}`;
       return { body: `<div class="stack">${inboxSeg()}${body}</div>`, bind() { bindInboxSeg(); bindOrders(true); traerFotos();
-        if ($('#xls')) $('#xls').onclick = exportar; if ($('#pr-new')) $('#pr-new').onclick = () => productoForm(null);
+        if ($('#xls')) $('#xls').onclick = () => exportar(); if ($('#mail')) $('#mail').onclick = () => exportar('correo'); if ($('#pr-new')) $('#pr-new').onclick = () => productoForm(null);
         document.querySelectorAll('[data-pr]').forEach(b => b.onclick = () => productoForm(S.products.find(p => p.id == b.dataset.pr)));
         document.querySelectorAll('[data-mv]').forEach(b => b.onclick = () => moverProducto(+b.dataset.id, +b.dataset.mv)); } };
     }
@@ -603,9 +603,10 @@
   }
 
   /* ---------- Exportar pedidos a Excel (.xlsx hecho aquí mismo, sin librerías) ---------- */
-  async function exportar() {
+  async function exportar(modo) {
+    const correo = modo === 'correo';
     const os = S.orders || [], nuevos = os.filter(o => o.estado === 0), abiertos = os.filter(o => o.estado < 3);
-    const v = await choose('Exportar pedidos a Excel', 'Elige qué pedidos van en el archivo', [
+    const v = await choose(correo ? 'Copiar el pedido para el correo' : 'Exportar pedidos a Excel', correo ? 'Elige qué pedidos van en la tabla' : 'Elige qué pedidos van en el archivo', [
       ['0', `Solo los nuevos (Recibido) · ${nuevos.length}`, 'box', 'blue'], ['1', `Todos los que faltan por entregar · ${abiertos.length}`, 'list'], ['2', `Todos · ${os.length}`, 'list']]);
     if (v === undefined) return;
     const sel = v === '0' ? nuevos : v === '1' ? abiertos : os;
@@ -619,7 +620,7 @@
     for (const { l } of lin) for (const z of l.piezas || [l]) {
       /* Se agrupa por producto (con su nombre de ahora); si ya no existe, por el nombre que tenía en el pedido */
       const pr = prodId(z.producto), mo = mc(z.producto)[0], co = z.color || mc(z.producto)[1], k = (pr ? 'p' + pr.id : ['n', z.nombre, mo].join('\u0000')) + '\u0000' + co, t = z.talla || 'Única';
-      if (!filas.has(k)) filas.set(k, { nombre: pr ? pr.nombre : z.nombre, mo, co, n: {} });
+      if (!filas.has(k)) filas.set(k, { nombre: pr ? pr.nombre : z.nombre, mo, co, pid: pr ? pr.id : null, n: {} });
       const f = filas.get(k); f.n[t] = (f.n[t] || 0) + l.cantidad;
     }
     /* Columnas de tallas, ordenadas: números (8, 10, 12… y 31-34, 35-38…), luego letras (XS, S, M, L, XL…), y la talla única al final */
@@ -636,6 +637,10 @@
     const SECC = [['r', 'Ropa · tallas de niño y de adulto'], ['p', 'Medias y calzado · tallas de pie'], ['u', 'Talla única']];
     const X = (v, s, span) => ({ v, s, span: span || 1 });
     const prendas = lista.reduce((a, f) => a + total(f), 0), hoy = new Date();
+    if (correo) {
+      const secs = SECC.map(([k, tit]) => { const fs = lista.filter(f => tipo(f) === k); return { tit, fs, ts: cols.filter(t => fs.some(f => f.n[t])) }; }).filter(x => x.fs.length);
+      return correoModal(sel, secs, prendas, total);
+    }
     const hoja1 = [[X('C.D. Aznalcóllar Fútbol Base · Pedido al proveedor', 'title')],
       [X(`${sel.length === 1 ? '1 pedido' : sel.length + ' pedidos'} de familias · ${prendas === 1 ? '1 prenda' : prendas + ' prendas'} en total · ${hoy.getDate()}/${hoy.getMonth() + 1}/${hoy.getFullYear()}`, 'sub')], []];
     for (const [k, tit] of SECC) {
@@ -656,10 +661,85 @@
     const blob = xlsx([['Para el proveedor', hoja1, { estilo: true }], ['Pedidos', hoja2]]);
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `pedidos-cd-aznalcollar-${TODAY}.xlsx`;
     document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    marcarPedidos(sel, 'Excel descargado.');
+  }
+  /* Después de mandar el pedido al proveedor: ¿marcar los nuevos como "Pedido al proveedor"? */
+  async function marcarPedidos(sel, hecho) {
     const n0 = sel.filter(o => o.estado === 0);
     if (n0.length && await confirmar(`¿Marcar ${n0.length === 1 ? 'el pedido' : `los ${n0.length} pedidos`} como “Pedido al proveedor”?`, 'Así las familias saben que ya se ha pedido su ropa.', 'Sí, marcar')) {
       try { await API().estadoPedidos(n0.map(o => o.id), 1); n0.forEach(o => { o.estado = 1; }); render(); say('Pedidos marcados como “Pedido al proveedor”.'); } catch (_) { say('No se ha podido guardar. Revisa la conexión.'); }
-    } else say('Excel descargado.');
+    } else say(hecho);
+  }
+  /* Miniatura cuadrada (fondo blanco) para el correo: pesa poco y se ve igual en todos los correos */
+  function miniatura(src, lado = 96) {
+    return new Promise(res => {
+      if (!src) return res('');
+      const im = new Image();
+      im.onload = () => { try {
+        const c = document.createElement('canvas'); c.width = c.height = lado; const g = c.getContext('2d');
+        g.fillStyle = '#fff'; g.fillRect(0, 0, lado, lado);
+        const k = Math.min(lado / im.width, lado / im.height), w = im.width * k, h = im.height * k;
+        g.drawImage(im, (lado - w) / 2, (lado - h) / 2, w, h); res(c.toDataURL('image/jpeg', .82)); } catch (_) { res(''); } };
+      im.onerror = () => res(''); im.src = src;
+    });
+  }
+  /* Tabla para pegar en el cuerpo del correo: la misma que la hoja del Excel, con estilos dentro
+     de cada celda (los correos no leen hojas de estilo) y una foto pequeña de cada prenda */
+  async function correoModal(sel, secs, prendas, total) {
+    say('Preparando la tabla…');
+    try { await traerFotos(); await traerFotosColor(); } catch (_) {}
+    const fotoFila = f => { const pr = f.pid && prodId(f.pid); if (!pr) return ''; return ((fotosColorDe(pr) || {})[f.co]) || fotoDe(pr) || fotoPrincipal(pr) || ''; };
+    const minis = new Map();
+    for (const x of secs) for (const f of x.fs) minis.set(f, await miniatura(fotoFila(f)));
+    const conFoto = [...minis.values()].some(Boolean), hoy = new Date();
+    const FT = 'font-family:Calibri,Arial,Helvetica,sans-serif;font-size:14px;';
+    const B = 'border:1px solid #D5DCE8;padding:6px 10px;' + FT;
+    const st = {
+      h: B + 'background:#0034DF;color:#FFFFFF;font-weight:bold;text-align:center;white-space:nowrap;',
+      hl: B + 'background:#0034DF;color:#FFFFFF;font-weight:bold;text-align:left;',
+      sec: B + 'background:#111111;color:#FFFFFF;font-weight:bold;font-size:15px;text-align:left;',
+      t: B + 'background:#FFC72C;color:#111111;font-weight:bold;text-align:center;',
+      tl: B + 'background:#FFC72C;color:#111111;font-weight:bold;text-align:left;',
+      n: B + 'color:#111111;text-align:center;', nb: B + 'color:#111111;text-align:center;font-weight:bold;',
+      l: B + 'color:#111111;text-align:left;', lb: B + 'color:#111111;text-align:left;font-weight:bold;', foto: 'border:1px solid #D5DCE8;padding:4px;background:#FFFFFF;text-align:center;width:56px;'
+    };
+    const bg = { h: '#0034DF', hl: '#0034DF', sec: '#111111', t: '#FFC72C', tl: '#FFC72C' };
+    const td = (v, s, span) => `<td${span > 1 ? ` colspan="${span}"` : ''}${bg[s] ? ` bgcolor="${bg[s]}"` : ''} style="${st[s]}">${v === '' || v == null ? '&nbsp;' : esc(String(v))}</td>`;
+    const tabla = x => {
+      const fc = conFoto ? 1 : 0, ancho = fc + 4 + x.ts.length;
+      return `<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0 0 18px 0;">
+<tr>${td(x.tit, 'sec', ancho)}</tr>
+<tr>${conFoto ? td('Foto', 'h') : ''}${td('Prenda', 'hl')}${td('Modelo', 'h')}${td('Color', 'h')}${x.ts.map(t => td(t === 'Única' ? 'Talla única' : 'Talla ' + t, 'h')).join('')}${td('Total', 'h')}</tr>
+${x.fs.map(f => `<tr>${conFoto ? `<td style="${st.foto}">${minis.get(f) ? `<img src="${minis.get(f)}" width="48" height="48" alt="${esc(f.nombre)}" style="display:block;width:48px;height:48px;border:0;margin:0 auto;">` : '&nbsp;'}</td>` : ''}${td(f.nombre, 'lb')}${td(f.mo, 'l')}${td(f.co, 'l')}${x.ts.map(t => td(f.n[t] || '', 'n')).join('')}${td(total(f), 'nb')}</tr>`).join('')}
+<tr>${td('Total', 'tl', fc + 3)}${x.ts.map(t => td(x.fs.reduce((a, f) => a + (f.n[t] || 0), 0) || '', 't')).join('')}${td(x.fs.reduce((a, f) => a + total(f), 0), 't')}</tr>
+</table>`;
+    };
+    const html = `<div style="${FT}color:#111111;">
+<p style="margin:0 0 2px 0;font-family:Calibri,Arial,Helvetica,sans-serif;font-size:20px;font-weight:bold;color:#0034DF;">C.D. Aznalcóllar Fútbol Base · Pedido al proveedor</p>
+<p style="margin:0 0 14px 0;font-family:Calibri,Arial,Helvetica,sans-serif;font-size:14px;font-style:italic;color:#555555;">${sel.length === 1 ? '1 pedido' : sel.length + ' pedidos'} de familias · ${prendas === 1 ? '1 prenda' : prendas + ' prendas'} en total · ${hoy.getDate()}/${hoy.getMonth() + 1}/${hoy.getFullYear()}</p>
+${secs.map(tabla).join('')}
+<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tr>${td('Total de prendas', 'tl')}${td(prendas, 't')}</tr></table></div>`;
+    /* Texto sin formato, por si el correo no admite tablas */
+    const txt = ['C.D. Aznalcóllar Fútbol Base · Pedido al proveedor', ''].concat(...secs.map(x => [x.tit.toUpperCase(),
+      ...x.fs.map(f => `${f.nombre}${f.mo ? ' · ' + f.mo : ''}${f.co ? ' · ' + f.co : ''}: ${x.ts.filter(t => f.n[t]).map(t => (t === 'Única' ? 'talla única' : 'talla ' + t) + ' × ' + f.n[t]).join(', ')} (total ${total(f)})`), ''])).concat('Total de prendas: ' + prendas).join('\n');
+    const m = modal(`<h2 id="mdl-t">Copiar para el correo</h2>
+      <p class="muted" style="margin:0">Toca “Copiar tabla” y pégala en el cuerpo del correo para el proveedor. Así se verá:</p>
+      <div class="mail-prev" id="mailp">${html}</div>
+      <button type="button" class="btn blue block" id="mail-copy">${ic('check')} Copiar tabla</button>`, 'dialog', () => {});
+    m.el.classList.add('rqd');
+    m.el.querySelector('#mail-copy').onclick = async () => {
+      let ok = false;
+      try {
+        if (!window.ClipboardItem || !navigator.clipboard || !navigator.clipboard.write) throw 0;
+        await navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }), 'text/plain': new Blob([txt], { type: 'text/plain' }) })]); ok = true;
+      } catch (_) {
+        /* Si el navegador no deja escribir en el portapapeles, se selecciona la tabla y se copia */
+        try { const box = m.el.querySelector('#mailp'), r = document.createRange(); r.selectNodeContents(box); const sl = getSelection(); sl.removeAllRanges(); sl.addRange(r); ok = document.execCommand('copy'); sl.removeAllRanges(); } catch (_) {}
+      }
+      if (!ok) return say('No se ha podido copiar. Mantén el dedo sobre la tabla, elige “Seleccionar todo” y luego “Copiar”.');
+      m.close(false);
+      marcarPedidos(sel, 'Tabla copiada. Pégala en el correo.');
+    };
   }
   const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
   const crc32 = b => { let c = 0xFFFFFFFF; for (let i = 0; i < b.length; i++) c = CRC[(c ^ b[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
