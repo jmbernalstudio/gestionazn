@@ -455,8 +455,8 @@
   window.addEventListener('online', () => refrescar());
   /* Cada 10 segundos, una comprobación muy ligera (solo números de peticiones, estados y avisos);
      si algo ha cambiado, se trae todo */
-  let huella = '', vueltaFam = 0;
-  /* Familias: solo miran el estado de sus pedidos que aún no se han entregado, cada 20 segundos.
+  let huella = '';
+  /* Familias: solo miran el estado de sus pedidos que aún no se han entregado, cada 10 segundos.
      Así ven al momento cuándo la junta lo pide al proveedor o lo tiene listo, y el servidor aguanta a cientos de familias */
   async function estadoPedidosFamilia() {
     const abiertos = (S.orders || []).filter(o => o.estado < 3);
@@ -472,7 +472,7 @@
   }
   setInterval(async () => {
     if (document.visibilityState !== 'visible' || !S.live) return;
-    if (S.role === 'family') { if (++vueltaFam % 2 === 0) try { await estadoPedidosFamilia(); } catch (_) {} return; }
+    if (S.role === 'family') { try { await estadoPedidosFamilia(); } catch (_) {} return; }
     try {
       const [p, a, l] = await Promise.all([sb.from('peticiones').select('id, estado'), sb.from('avisos').select('id'), sb.from('avisos_leidos').select('aviso, perfil')].map(q => Promise.resolve(q).then(ok)));
       /* La junta, además, solicitudes de familias y pedidos (si aún no existen, no cuentan) */
