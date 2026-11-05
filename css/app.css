@@ -1483,3 +1483,15 @@ small.pk-z { display: block; white-space: pre-line !important; overflow: visible
 @media (min-width: 900px) { .sh-tabs button { flex: 0 1 auto; } }
 /* Pack con modelo y color: el modelo ocupa toda la fila; color y talla debajo */
 .pk-f.tres > :first-child { grid-column: 1 / -1; }
+/* Junta: una foto por color */
+.pr-fc { display: flex; flex-direction: column; gap: 8px; }
+.pr-fc small { display: block; font-size: .9rem; }
+.pr-fcl { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr)); }
+.pr-fct { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 8px; border: 2px dashed #C9D1E0; border-radius: 16px; cursor: pointer; font-weight: 600; min-width: 0; }
+.pr-fct .pr-f { width: 100%; aspect-ratio: 1; border-radius: 12px; }
+.pr-fct > span:not(.pr-f) { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pr-fct:focus-within { outline: 3px solid var(--club); outline-offset: 2px; }
+/* Ficha con color y talla: los dos del mismo ancho, y la cantidad debajo */
+.pr-c:has(> label.f + label.f) { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.pr-c:has(> label.f + label.f) > div.f { grid-column: 1 / -1; }
+.pr-c:has(> label.f + label.f) > div.f .qty { align-self: flex-start; }
