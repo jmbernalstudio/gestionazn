@@ -90,12 +90,14 @@
       if (!S.oblOff) fila.obligatorio = !!x.obligatorio;
       if (!S.catOff) fila.categoria = (x.categoria || '').trim();
       if (!S.colOff) fila.colores = x.colores || [];
+      if (!S.fcOff && x.fotos_color) fila.fotos_color = x.fotos_color;
       if (x.id) { ok(await sb.from('productos').update(fila).eq('id', x.id)); return x.id; }
       fila.orden = Math.max(0, ...(S.products || []).map(p => p.orden || 0)) + 1; /* los nuevos, al final */
       return ok(await sb.from('productos').insert(fila).select('id').single()).id;
     },
     async ordenProductos(l) { (await Promise.all(l.map(x => sb.from('productos').update({ orden: x.orden }).eq('id', x.id)))).forEach(ok); },
     async borrarProducto(id) { ok(await sb.from('productos').delete().eq('id', id)); },
+    async fotosColor(ids) { return ids.length ? ok(await sb.from('productos').select('id, fotos_color, fotos_color_hash').in('id', ids)) : []; },
     async fotosProductos(ids) { return ids.length ? ok(await sb.from('productos').select('id, foto, foto_hash').in('id', ids)) : []; },
     async hacerPedido(jugador, lineas, nota) { return ok(await sb.rpc('hacer_pedido', { p_jugador: jugador, p_lineas: lineas, p_nota: nota })); },
     async estadoPedido(id, st) { ok(await sb.from('pedidos').update({ estado: st }).eq('id', id)); },
@@ -256,7 +258,7 @@
     const cols = 'id, nombre, descripcion, precio, tallas, activo, orden, foto_hash';
     /* Columnas que llegan con pasos posteriores de Supabase: 11 packs, 12 modelo y color, 13 obligatorio.
        Si falta alguna, se mira cuál y se sigue sin ella */
-    const extra = [['componentes', 'packOff'], ['modelo, color', 'modOff'], ['obligatorio', 'oblOff'], ['categoria', 'catOff'], ['colores', 'colOff']];
+    const extra = [['componentes', 'packOff'], ['modelo, color', 'modOff'], ['obligatorio', 'oblOff'], ['categoria', 'catOff'], ['colores', 'colOff'], ['fotos_color_hash', 'fcOff']];
     let [pr, pe] = await Promise.all([
       sb.from('productos').select(cols + ', ' + extra.map(e => e[0]).join(', ')).order('orden').order('id'),
       sb.from('pedidos').select('id, familia, jugador, equipo, lineas, total, nota, contacto, estado, creado').order('creado', { ascending: false })

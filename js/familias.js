@@ -54,8 +54,19 @@
     try { const v = localStorage.getItem(fotoKey(p.foto_hash)); if (v) return (c[p.foto_hash] = v); } catch (_) {}
     return undefined;
   }
-  let pidiendo = false;
+  /* Fotos de cada color: { Azul: foto, Negro: foto }. undefined = aún no descargadas */
+  const fcKey = h => 'pfc-' + h;
+  function fotosColorDe(p) {
+    if (!p || !p.fotos_color_hash) return {};
+    const c = F().fotosC || {}; if (c[p.fotos_color_hash] !== undefined) return c[p.fotos_color_hash];
+    try { const v = localStorage.getItem(fcKey(p.fotos_color_hash)); if (v) return (c[p.fotos_color_hash] = JSON.parse(v)); } catch (_) {}
+    return undefined;
+  }
+  /* Foto de la tarjeta: la del producto o, si no tiene, la del primer color que tenga foto */
+  const fotoPrincipal = p => { const f = fotoDe(p); if (f) return f; const fc = fotosColorDe(p) || {}; const c = (p.colores || []).find(c => fc[c]); return c ? fc[c] : f; };
+  let pidiendo = false, pidiendoC = null;
   async function traerFotos() {
+    traerFotosColor();
     const faltan = (S.products || []).filter(p => p.foto_hash && fotoDe(p) === undefined);
     if (!faltan.length || pidiendo || !API()) return;
     pidiendo = true;
@@ -69,7 +80,25 @@
       }
     } catch (_) {} finally { pidiendo = false; }
   }
-  const prFoto = (p, cls = 'pr-f') => { const f = fotoDe(p); return `<span class="${cls}" data-pf="${p.id}" aria-hidden="true">${f ? `<img src="${f}" alt="">` : ic('box')}</span>`; };
+  function traerFotosColor() {
+    const faltan = (S.products || []).filter(p => p.fotos_color_hash && fotosColorDe(p) === undefined);
+    if (!faltan.length || !API() || !API().fotosColor) return Promise.resolve();
+    if (pidiendoC) return pidiendoC;
+    return (pidiendoC = (async () => {
+      try {
+        const filas = await API().fotosColor(faltan.map(p => p.id));
+        S.fam = S.fam || { kids: [], teams: [], train: {}, cart: [], fotos: {} }; S.fam.fotosC = S.fam.fotosC || {};
+        for (const r of filas) {
+          if (!r.fotos_color_hash) continue;
+          S.fam.fotosC[r.fotos_color_hash] = r.fotos_color || {};
+          try { localStorage.setItem(fcKey(r.fotos_color_hash), JSON.stringify(r.fotos_color || {})); } catch (_) {}
+          const p = prodId(r.id), f = p && fotoPrincipal(p);
+          if (f) document.querySelectorAll(`[data-pf="${r.id}"]`).forEach(el => { if (!el.querySelector('img')) el.innerHTML = `<img src="${f}" alt="">`; });
+        }
+      } catch (_) {} finally { pidiendoC = null; }
+    })());
+  }
+  const prFoto = (p, cls = 'pr-f') => { const f = fotoPrincipal(p); return `<span class="${cls}" data-pf="${p.id}" aria-hidden="true">${f ? `<img src="${f}" alt="">` : ic('box')}</span>`; };
 
   /* ---------- FAMILIA ---------- */
   function nextCard(team, i) {
@@ -217,6 +246,15 @@
       <button type="button" class="btn blue block" data-add="${p.id}" ${roto ? 'disabled' : ''}>${ic('plus')} Añadir al pedido</button>`, 'dialog', () => render());
     m.el.classList.add('rqd', 'pr-mdl');
     traerFotos();
+          /* Al elegir el color, sale la foto de ese color (si la junta la ha puesto) */
+          if ($('#c' + p.id)) $('#c' + p.id).onchange = async () => {
+            const sel = $('#c' + p.id), c = sel.value;
+            if (fotosColorDe(p) === undefined) await traerFotosColor();
+            if (sel.value !== c) return;
+            /* Si ese color no tiene foto, la general del producto (nunca la de otro color) */
+            const f = c ? (fotosColorDe(p) || {})[c] || fotoDe(p) : fotoPrincipal(p), box = m.el.querySelector('.pr-d [data-pf]');
+            if (box) box.innerHTML = f ? `<img src="${f}" alt="">` : ic('box');
+          };
           document.querySelectorAll('[data-qty]').forEach(b => b.onclick = () => { const i = $('#q' + b.dataset.qty), v = Math.min(20, Math.max(1, +i.value + +b.dataset.d)); i.value = v; $('#qv' + b.dataset.qty).textContent = v; });
           /* Pack: al elegir el modelo, salen las tallas de ese modelo */
           document.querySelectorAll('[data-pm]').forEach(s => s.onchange = () => {
@@ -441,9 +479,10 @@
     if (!v) return '';
     return catsSug().find(c => c.toLowerCase() === v.toLowerCase()) || v.charAt(0).toUpperCase() + v.slice(1);
   }
+  const parseColores = v => [...new Set((v || '').split(',').map(t => t.trim().replace(/\s+/g, ' ')).filter(Boolean).map(t => t.charAt(0).toUpperCase() + t.slice(1)))];
   function productoForm(p) {
     const x = p ? { ...p, tallas: p.tallas.slice() } : { nombre: '', descripcion: '', precio: '', tallas: [], colores: [], activo: true };
-    const st = { foto: p ? fotoDe(p) : null, cambiada: false, pack: esPack(p), slots: esPack(p) ? p.componentes.map(sl => sl.slice()) : [] };
+    const st = { foto: p ? fotoDe(p) : null, cambiada: false, fc: p ? fotosColorDe(p) : {}, fcCambiada: false, pack: esPack(p), slots: esPack(p) ? p.componentes.map(sl => sl.slice()) : [] };
     /* Prendas que se pueden meter en un pack: productos normales (no otros packs), estén o no a la vista en la tienda */
     const cands = (S.products || []).filter(y => !esPack(y) && (!p || y.id !== p.id));
     const m = modal(`<h2 id="mdl-t">${p ? 'Editar producto' : 'Añadir producto'}</h2>
@@ -462,6 +501,7 @@
         <label class="f" for="prp">Precio en euros<input type="text" id="prp" inputmode="decimal" value="${x.precio === '' ? '' : String(x.precio).replace('.', ',')}" placeholder="35,00"></label>
         <label class="f" for="prt" id="prt-w" ${st.pack ? 'hidden' : ''}>Tallas disponibles<span class="hint">Separadas por comas. Déjalo vacío si es talla única</span><input type="text" id="prt" value="${esc(x.tallas.join(', '))}" placeholder="6, 8, 10, 12, 14, S, M, L, XL"></label>
         ${S.colOff ? '' : `<label class="f" for="prcl" id="prcl-w" ${st.pack ? 'hidden' : ''}>Colores para elegir<span class="hint">Si viene en varios colores. Separados por comas</span><input type="text" id="prcl" value="${esc((x.colores || []).join(', '))}" placeholder="Azul, Negro, Blanco"></label>`}
+        ${S.colOff || S.fcOff ? '' : `<div class="pr-fc" id="prfc" ${st.pack ? 'hidden' : ''}></div>`}
         <div class="pk-ed stack" id="pk-ed" ${st.pack ? '' : 'hidden'}></div>
         ${S.oblOff ? '' : `<div class="opts-row"><div class="grow"><b id="pro-l">Obligatorio</b><small>Sale en el apartado “Obligatorio” de la tienda, el primero. Por ejemplo, el pack de entrenamiento.</small></div>
           <button type="button" class="tgl" role="switch" id="pro" aria-checked="${!!x.obligatorio}" aria-labelledby="pro-l"><span></span></button></div>`}
@@ -498,9 +538,28 @@
     if (st.pack) drawPk();
     if ($('#prk')) $('#prk').onclick = () => {
       st.pack = !st.pack; $('#prk').setAttribute('aria-checked', st.pack);
-      $('#prt-w').hidden = st.pack; $('#pk-ed').hidden = !st.pack; if ($('#prmc')) $('#prmc').hidden = st.pack; if ($('#prcl-w')) $('#prcl-w').hidden = st.pack;
+      $('#prt-w').hidden = st.pack; $('#pk-ed').hidden = !st.pack; if ($('#prmc')) $('#prmc').hidden = st.pack; if ($('#prcl-w')) $('#prcl-w').hidden = st.pack; if ($('#prfc')) $('#prfc').hidden = st.pack;
       if (st.pack) { if (!st.slots.length) st.slots = [[null]]; drawPk(); }
     };
+    /* Una foto por color (opcional): al elegir el color en la tienda, sale su foto */
+    const drawFc = () => {
+      const box = $('#prfc'); if (!box) return;
+      const cols = $('#prcl') ? parseColores($('#prcl').value) : [];
+      if (!cols.length) { box.innerHTML = ''; return; }
+      if (st.fc === undefined) { box.innerHTML = '<p class="muted" style="margin:0">Cargando las fotos de cada color…</p>'; return; }
+      box.innerHTML = `<div><b>Foto de cada color</b><small class="muted">Opcional. Cuando la familia elige el color, ve esta foto</small></div>
+        <div class="pr-fcl">${cols.map((c, i) => `<label class="pr-fct" for="prfc${i}">${st.fc[c] ? `<span class="pr-f"><img src="${st.fc[c]}" alt=""></span>` : `<span class="pr-f">${ic('camera')}</span>`}<span>${esc(c)}</span>
+          <input type="file" id="prfc${i}" accept="image/*" class="sr" data-fc="${esc(c)}" aria-label="${st.fc[c] ? 'Cambiar' : 'Añadir'} foto del color ${esc(c)}"></label>`).join('')}</div>`;
+      box.querySelectorAll('[data-fc]').forEach(inp => inp.onchange = async () => {
+        const fl = inp.files[0]; if (!fl) return;
+        try { st.fc[inp.dataset.fc] = await readImage(fl, 640); st.fcCambiada = true; } catch (_) { return say('No se ha podido leer esa foto. Prueba con otra.'); }
+        drawFc();
+      });
+    };
+    if ($('#prcl')) $('#prcl').oninput = drawFc;
+    drawFc();
+    if (st.fc === undefined) traerFotosColor().then(() => { st.fc = { ...(fotosColorDe(p) || {}) }; drawFc(); });
+    else st.fc = { ...st.fc };
     $('#prfo').onchange = async () => { const fl = $('#prfo').files[0]; if (!fl) return;
       try { st.foto = await readImage(fl, 640); st.cambiada = true; } catch (_) { return say('No se ha podido leer esa foto. Prueba con otra.'); }
       m.el.querySelector('.pr-ph .pr-f').innerHTML = `<img src="${st.foto}" alt="">`; $('#prfo-t').textContent = 'Foto añadida · toca para cambiarla'; };
@@ -518,14 +577,14 @@
       if (!nombre) return err('Escribe el nombre del producto.');
       if (!$('#prp').value.trim() || isNaN(precio) || precio < 0) return err('Escribe el precio. Por ejemplo: 35,00');
       let tallas = [...new Set($('#prt').value.split(',').map(t => t.trim()).filter(Boolean))], componentes = [];
-      let colores = $('#prcl') ? [...new Set($('#prcl').value.split(',').map(t => t.trim().replace(/\s+/g, ' ')).filter(Boolean).map(t => t.charAt(0).toUpperCase() + t.slice(1)))] : [];
+      let colores = $('#prcl') ? parseColores($('#prcl').value) : [];
       if (st.pack) {
         if (!st.slots.length) return err('Añade al menos una prenda al pack.');
         if (st.slots.some(sl => sl.some(id => !id))) return err('Elige el producto de cada prenda, o quita las que sobren.');
         if (st.slots.some(sl => new Set(sl).size !== sl.length)) return err('Hay un modelo repetido dentro de la misma prenda.');
         componentes = st.slots.map(sl => sl.slice()); tallas = []; colores = [];
       }
-      const fila = { id: p && p.id, nombre, descripcion: $('#prd').value.trim(), precio: Math.round(precio * 100) / 100, tallas, componentes, activo: x.activo, obligatorio: !!x.obligatorio, colores, foto: st.foto || null, categoria: catNorm($('#prc') ? $('#prc').value : ''),
+      const fila = { id: p && p.id, nombre, descripcion: $('#prd').value.trim(), precio: Math.round(precio * 100) / 100, tallas, componentes, activo: x.activo, obligatorio: !!x.obligatorio, colores, ...(st.fc && (st.fcCambiada || Object.keys(st.fc).some(c => !colores.includes(c))) ? { fotos_color: Object.fromEntries(colores.filter(c => st.fc[c]).map(c => [c, st.fc[c]])) } : {}), foto: st.foto || null, categoria: catNorm($('#prc') ? $('#prc').value : ''),
         modelo: !st.pack && $('#prmo') ? $('#prmo').value.trim() : '', color: !st.pack && $('#prco') ? $('#prco').value.trim() : '' };
       try { await API().producto(fila); } catch (_) { return err(S.shopOff ? 'Falta un paso en Supabase para poder guardar productos.' : 'No se ha podido guardar. Revisa la conexión.'); }
       await window.cargarTienda(); m.close(); render(); say(p ? 'Producto guardado.' : 'Producto añadido a la tienda.');
