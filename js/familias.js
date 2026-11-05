@@ -379,18 +379,54 @@
   }
   function bindInboxSeg() { document.querySelectorAll('[data-inbox]').forEach(b => b.onclick = () => { S.inbox = b.dataset.inbox; render(); }); }
   const falta = () => emptyPage('box', 'Falta un paso en Supabase', 'Pega el SQL “Paso 10 - familias y tienda” en Supabase y vuelve a abrir la app.');
-  /* Cambiar el orden en el que las familias ven los productos */
-  async function moverProducto(id, d) {
-    const a = S.products, i = a.findIndex(p => p.id === id), j = i + d;
-    if (i < 0 || j < 0 || j >= a.length) return;
-    [a[i], a[j]] = [a[j], a[i]];
-    const cambios = a.map((p, k) => ({ p, orden: k + 1 })).filter(x => x.p.orden !== x.orden);
+  /* Orden de la tienda: los productos van juntos por categoría (en el orden en que aparece cada categoría)
+     y dentro de cada categoría en el orden que elige la junta */
+  const catDe = p => p.categoria || '';
+  /* "Sin categoría" siempre al final, como "Otros" en la tienda */
+  const ordenCats = l => { const c = [...new Set(l.map(catDe))]; return c.filter(Boolean).concat(c.includes('') ? [''] : []); };
+  function agrupar(l) { return ordenCats(l).flatMap(c => l.filter(p => catDe(p) === c)); }
+  async function guardarOrden(lista, foco) {
+    S.products = lista;
+    const cambios = lista.map((p, k) => ({ p, orden: k + 1 })).filter(x => x.p.orden !== x.orden);
     cambios.forEach(x => { x.p.orden = x.orden; });
     render();
-    const b = document.querySelector(`[data-id="${id}"][data-mv="${d}"]:not([disabled])`) || document.querySelector(`[data-id="${id}"][data-mv="${-d}"]`);
-    if (b) b.focus();
+    const b = foco && (document.querySelector(foco[0]) || document.querySelector(foco[1])); if (b) b.focus();
+    if (!cambios.length) return;
     try { await API().ordenProductos(cambios.map(x => ({ id: x.p.id, orden: x.orden }))); }
     catch (e) { say('No se pudo guardar el orden. Inténtalo otra vez.'); }
+  }
+  /* Subir o bajar un producto dentro de su categoría */
+  function moverProducto(id, d) {
+    const a = agrupar(S.products), i = a.findIndex(p => p.id === id), j = i + d;
+    if (i < 0 || j < 0 || j >= a.length || catDe(a[j]) !== catDe(a[i])) return;
+    [a[i], a[j]] = [a[j], a[i]];
+    guardarOrden(a, [`[data-id="${id}"][data-mv="${d}"]:not([disabled])`, `[data-id="${id}"][data-mv="${-d}"]`]);
+  }
+  /* Subir o bajar una categoría entera: en la tienda, sus apartados salen en este orden */
+  function moverCategoria(cat, d) {
+    const a = agrupar(S.products), cats = ordenCats(a), i = cats.indexOf(cat), j = i + d;
+    if (!cat || i < 0 || j < 0 || j >= cats.length || !cats[j]) return;
+    [cats[i], cats[j]] = [cats[j], cats[i]];
+    const sel = c => `[data-cat="${CSS.escape(cat)}"][data-mvc="${c}"]`;
+    guardarOrden(cats.flatMap(c => a.filter(p => catDe(p) === c)), [sel(d) + ':not([disabled])', sel(-d)]);
+  }
+  /* Junta: productos de la tienda, por categorías, con filtro y flechas para ordenar */
+  function listaProductos() {
+    const all = agrupar(S.products || []);
+    if (!all.length) return card('h-prs', 'Productos de la tienda · 0', '<p class="muted" style="margin:0">Añade el primer producto con el botón “Añadir producto”.</p>');
+    const cats = ordenCats(all), nom = c => c || 'Sin categoría', conNombre = cats.filter(Boolean);
+    const f = cats.includes(S.prCat) ? S.prCat : '*', ver = f === '*' ? cats : [f];
+    const n = c => all.filter(p => catDe(p) === c).length;
+    const fila = (p, i, a) => `<div class="tm pr-row"><div class="pr-ord"><button type="button" class="pr-mv" data-mv="-1" data-id="${p.id}" aria-label="Subir ${esc(p.nombre)}" ${i ? '' : 'disabled'}>${ic('up')}</button><button type="button" class="pr-mv" data-mv="1" data-id="${p.id}" aria-label="Bajar ${esc(p.nombre)}" ${i < a.length - 1 ? '' : 'disabled'}>${ic('down')}</button></div>${prFoto(p, 'pr-th')}
+            <div class="grow"><b>${esc(p.nombre)}</b><small>${euro(p.precio)}${modTxt(p) ? ' · ' + esc(modTxt(p)) : ''}${esPack(p) ? ' · Pack: ' + esc(p.componentes.map(sl => slotNombre(sl)).join(' + ')) : (p.colores.length ? ' · Colores ' + esc(p.colores.join(', ')) : '') + (p.tallas.length ? ' · Tallas ' + esc(p.tallas.join(', ')) : ' · Talla única')}</small></div>
+            ${p.obligatorio ? '<span class="pill blue">Obligatorio</span>' : ''}${p.activo ? '' : '<span class="pill grey">Oculto</span>'}<button type="button" class="btn ghost sm" data-pr="${p.id}">${ic('pen')} Editar</button></div>`;
+    const grupo = c => { const l = all.filter(p => catDe(p) === c), ci = cats.indexOf(c);
+      return `<section class="pr-cg" aria-label="${esc(nom(c))}"><div class="pr-cat-h">${f === '*' && c && conNombre.length > 1 ? `<div class="pr-ord h"><button type="button" class="pr-mv" data-mvc="-1" data-cat="${esc(c)}" aria-label="Subir la categoría ${esc(nom(c))}" ${ci ? '' : 'disabled'}>${ic('up')}</button><button type="button" class="pr-mv" data-mvc="1" data-cat="${esc(c)}" aria-label="Bajar la categoría ${esc(nom(c))}" ${ci < conNombre.length - 1 ? '' : 'disabled'}>${ic('down')}</button></div>` : ''}
+        <div class="grow"><b>${esc(nom(c))}</b><small>${l.length === 1 ? '1 producto' : l.length + ' productos'}</small></div></div>${l.map(fila).join('')}</section>`; };
+    return card('h-prs', `Productos de la tienda · ${all.length}`, `<div class="pr-filt">
+        <label class="f" for="prcf">Ver<select id="prcf"><option value="*">Todas las categorías · ${all.length}</option>${cats.map(c => `<option value="${esc(c)}" ${c === f ? 'selected' : ''}>${esc(nom(c))} · ${n(c)}</option>`).join('')}</select></label>
+        <p class="muted">Las familias ven los productos en este orden. Con las flechas de cada producto lo subes o bajas dentro de su categoría.${f === '*' && conNombre.length > 1 ? ' Con las flechas de la categoría cambias el orden de los apartados de la tienda.' : ''}</p></div>
+      ${ver.map(grupo).join('')}`);
   }
   function boardInbox() {
     const v = S.inbox;
@@ -400,14 +436,13 @@
           <div class="kpi"><small>Listos para recoger</small><b>${c(2)}</b></div><div class="kpi"><small>Entregados</small><b>${c(3)}</b></div></div>
         <div class="btn-row ped-btns"><button type="button" class="btn blue" id="xls" ${os.length ? '' : 'disabled'}>${ic('list')} Exportar a Excel</button><button type="button" class="btn blue" id="mail" ${os.length ? '' : 'disabled'}>${ic('send')} Copiar para el correo</button><button type="button" class="btn blue" id="pr-new">${ic('plus')} Añadir producto</button></div>
         ${os.length ? `<div class="cards-grid">${os.map(o => orderCard(o, true)).join('')}</div>` : emptyPage('box', 'Todavía no hay pedidos', 'Cuando una familia haga un pedido en la tienda, aparecerá aquí.')}
-        ${card('h-prs', `Productos de la tienda · ${(S.products || []).length}`, (S.products || []).length ? `<p class="muted" style="margin:0">Las familias ven los productos en este orden. Usa las flechas para subir o bajar cada uno.</p>` + (S.products || []).map((p, i, a) => `<div class="tm pr-row"><div class="pr-ord"><button type="button" class="pr-mv" data-mv="-1" data-id="${p.id}" aria-label="Subir ${esc(p.nombre)}" ${i ? '' : 'disabled'}>${ic('up')}</button><button type="button" class="pr-mv" data-mv="1" data-id="${p.id}" aria-label="Bajar ${esc(p.nombre)}" ${i < a.length - 1 ? '' : 'disabled'}>${ic('down')}</button></div>${prFoto(p, 'pr-th')}
-            <div class="grow"><b>${esc(p.nombre)}</b><small>${p.categoria ? esc(p.categoria) + ' · ' : ''}${euro(p.precio)}${modTxt(p) ? ' · ' + esc(modTxt(p)) : ''}${esPack(p) ? ' · Pack: ' + esc(p.componentes.map(sl => slotNombre(sl)).join(' + ')) : (p.colores.length ? ' · Colores ' + esc(p.colores.join(', ')) : '') + (p.tallas.length ? ' · Tallas ' + esc(p.tallas.join(', ')) : ' · Talla única')}</small></div>
-            ${p.obligatorio ? '<span class="pill blue">Obligatorio</span>' : ''}${p.activo ? '' : '<span class="pill grey">Oculto</span>'}<button type="button" class="btn ghost sm" data-pr="${p.id}">${ic('pen')} Editar</button></div>`).join('')
-          : '<p class="muted" style="margin:0">Añade el primer producto con el botón “Añadir producto”.</p>')}`;
+        ${listaProductos()}`;
       return { body: `<div class="stack">${inboxSeg()}${body}</div>`, bind() { bindInboxSeg(); bindOrders(true); traerFotos();
         if ($('#xls')) $('#xls').onclick = () => exportar(); if ($('#mail')) $('#mail').onclick = () => exportar('correo'); if ($('#pr-new')) $('#pr-new').onclick = () => productoForm(null);
         document.querySelectorAll('[data-pr]').forEach(b => b.onclick = () => productoForm(S.products.find(p => p.id == b.dataset.pr)));
-        document.querySelectorAll('[data-mv]').forEach(b => b.onclick = () => moverProducto(+b.dataset.id, +b.dataset.mv)); } };
+        document.querySelectorAll('[data-mv]').forEach(b => b.onclick = () => moverProducto(+b.dataset.id, +b.dataset.mv));
+        document.querySelectorAll('[data-mvc]').forEach(b => b.onclick = () => moverCategoria(b.dataset.cat, +b.dataset.mvc));
+        if ($('#prcf')) $('#prcf').onchange = () => { S.prCat = $('#prcf').value; render(); }; } };
     }
     /* Familias: solicitudes pendientes y familias con acceso */
     const pend = famPend(), acc = (S.fams || []).filter(f => f.estado === 'aceptada');

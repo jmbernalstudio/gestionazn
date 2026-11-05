@@ -1498,3 +1498,12 @@ small.pk-z { display: block; white-space: pre-line !important; overflow: visible
 .ped-x { margin: 0; font-size: .92rem; }
 .mail-prev { background: #fff; color: #111; border: 1px solid var(--line); border-radius: 14px; padding: 16px; overflow-x: auto; }
 @media (max-width: 600px) { .ped-btns .btn { flex: 1 1 100%; } }
+/* Junta: productos por categoría, con filtro y orden */
+.pr-filt { display: flex; flex-direction: column; gap: 8px; }
+.pr-filt p { margin: 0; }
+.pr-cg { display: flex; flex-direction: column; }
+.pr-cat-h { display: flex; align-items: center; gap: 12px; background: var(--shell); border-radius: 14px; padding: 10px 12px; margin-top: 14px; }
+.pr-cat-h b { font-size: 1.05rem; }
+.pr-cat-h small { display: block; color: var(--muted); font-size: .88rem; }
+.pr-ord.h { flex-direction: row; }
+@media (max-width: 480px) { .ped-a { grid-template-columns: minmax(0, 1fr); } }
