@@ -310,6 +310,19 @@
   }
   function bindInboxSeg() { document.querySelectorAll('[data-inbox]').forEach(b => b.onclick = () => { S.inbox = b.dataset.inbox; render(); }); }
   const falta = () => emptyPage('box', 'Falta un paso en Supabase', 'Pega el SQL “Paso 10 - familias y tienda” en Supabase y vuelve a abrir la app.');
+  /* Cambiar el orden en el que las familias ven los productos */
+  async function moverProducto(id, d) {
+    const a = S.products, i = a.findIndex(p => p.id === id), j = i + d;
+    if (i < 0 || j < 0 || j >= a.length) return;
+    [a[i], a[j]] = [a[j], a[i]];
+    const cambios = a.map((p, k) => ({ p, orden: k + 1 })).filter(x => x.p.orden !== x.orden);
+    cambios.forEach(x => { x.p.orden = x.orden; });
+    render();
+    const b = document.querySelector(`[data-id="${id}"][data-mv="${d}"]:not([disabled])`) || document.querySelector(`[data-id="${id}"][data-mv="${-d}"]`);
+    if (b) b.focus();
+    try { await API().ordenProductos(cambios.map(x => ({ id: x.p.id, orden: x.orden }))); }
+    catch (e) { say('No se pudo guardar el orden. Inténtalo otra vez.'); }
+  }
   function boardInbox() {
     const v = S.inbox;
     if (v === 'ped') {
@@ -318,13 +331,14 @@
           <div class="kpi"><small>Listos para recoger</small><b>${c(2)}</b></div><div class="kpi"><small>Entregados</small><b>${c(3)}</b></div></div>
         <div class="btn-row ped-btns"><button type="button" class="btn blue" id="xls" ${os.length ? '' : 'disabled'}>${ic('list')} Exportar a Excel</button><button type="button" class="btn blue" id="pr-new">${ic('plus')} Añadir producto</button></div>
         ${os.length ? `<div class="cards-grid">${os.map(o => orderCard(o, true)).join('')}</div>` : emptyPage('box', 'Todavía no hay pedidos', 'Cuando una familia haga un pedido en la tienda, aparecerá aquí.')}
-        ${card('h-prs', `Productos de la tienda · ${(S.products || []).length}`, (S.products || []).length ? (S.products || []).map(p => `<div class="tm pr-row">${prFoto(p, 'pr-th')}
+        ${card('h-prs', `Productos de la tienda · ${(S.products || []).length}`, (S.products || []).length ? `<p class="muted" style="margin:0">Las familias ven los productos en este orden. Usa las flechas para subir o bajar cada uno.</p>` + (S.products || []).map((p, i, a) => `<div class="tm pr-row"><div class="pr-ord"><button type="button" class="pr-mv" data-mv="-1" data-id="${p.id}" aria-label="Subir ${esc(p.nombre)}" ${i ? '' : 'disabled'}>${ic('up')}</button><button type="button" class="pr-mv" data-mv="1" data-id="${p.id}" aria-label="Bajar ${esc(p.nombre)}" ${i < a.length - 1 ? '' : 'disabled'}>${ic('down')}</button></div>${prFoto(p, 'pr-th')}
             <div class="grow"><b>${esc(p.nombre)}</b><small>${euro(p.precio)}${modTxt(p) ? ' · ' + esc(modTxt(p)) : ''}${esPack(p) ? ' · Pack: ' + esc(p.componentes.map(sl => slotNombre(sl)).join(' + ')) : p.tallas.length ? ' · Tallas ' + esc(p.tallas.join(', ')) : ' · Talla única'}</small></div>
             ${p.obligatorio ? '<span class="pill blue">Obligatorio</span>' : ''}${p.activo ? '' : '<span class="pill grey">Oculto</span>'}<button type="button" class="btn ghost sm" data-pr="${p.id}">${ic('pen')} Editar</button></div>`).join('')
           : '<p class="muted" style="margin:0">Añade el primer producto con el botón “Añadir producto”.</p>')}`;
       return { body: `<div class="stack">${inboxSeg()}${body}</div>`, bind() { bindInboxSeg(); bindOrders(true); traerFotos();
         if ($('#xls')) $('#xls').onclick = exportar; if ($('#pr-new')) $('#pr-new').onclick = () => productoForm(null);
-        document.querySelectorAll('[data-pr]').forEach(b => b.onclick = () => productoForm(S.products.find(p => p.id == b.dataset.pr))); } };
+        document.querySelectorAll('[data-pr]').forEach(b => b.onclick = () => productoForm(S.products.find(p => p.id == b.dataset.pr)));
+        document.querySelectorAll('[data-mv]').forEach(b => b.onclick = () => moverProducto(+b.dataset.id, +b.dataset.mv)); } };
     }
     /* Familias: solicitudes pendientes y familias con acceso */
     const pend = famPend(), acc = (S.fams || []).filter(f => f.estado === 'aceptada');
