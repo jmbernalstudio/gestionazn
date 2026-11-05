@@ -87,6 +87,7 @@
       const fila = { nombre: x.nombre, descripcion: x.descripcion, precio: x.precio, tallas: x.tallas, activo: x.activo, foto: x.foto || null };
       if (!S.packOff) fila.componentes = x.componentes || [];
       if (!S.modOff) { fila.modelo = x.modelo || ''; fila.color = x.color || ''; }
+      if (!S.oblOff) fila.obligatorio = !!x.obligatorio;
       if (x.id) { ok(await sb.from('productos').update(fila).eq('id', x.id)); return x.id; }
       return ok(await sb.from('productos').insert(fila).select('id').single()).id;
     },
@@ -249,19 +250,21 @@
   /* Productos (sin fotos: van aparte y solo cuando cambian) y pedidos. Si la tienda aún no existe, se sigue sin ella */
   async function cargarTienda() {
     const cols = 'id, nombre, descripcion, precio, tallas, activo, orden, foto_hash';
+    /* Columnas que llegan con pasos posteriores de Supabase: 11 packs, 12 modelo y color, 13 obligatorio.
+       Si falta alguna, se mira cuál y se sigue sin ella */
+    const extra = [['componentes', 'packOff'], ['modelo, color', 'modOff'], ['obligatorio', 'oblOff']];
     let [pr, pe] = await Promise.all([
-      sb.from('productos').select(cols + ', componentes, modelo, color').order('orden').order('id'),
+      sb.from('productos').select(cols + ', ' + extra.map(e => e[0]).join(', ')).order('orden').order('id'),
       sb.from('pedidos').select('id, familia, jugador, equipo, lineas, total, nota, contacto, estado, creado').order('creado', { ascending: false })
     ]);
-    /* Sin el Paso 11 no hay packs y sin el Paso 12 no hay modelo ni color: se prueba cada uno por separado y se sigue sin lo que falte */
-    S.packOff = false; S.modOff = false;
-    for (const [extra, pk, md] of [[', modelo, color', true, false], [', componentes', false, true], ['', true, true]]) {
-      if (!pr.error) break;
-      pr = await sb.from('productos').select(cols + extra).order('orden').order('id');
-      S.packOff = pk; S.modOff = md;
+    extra.forEach(e => { S[e[1]] = false; });
+    if (pr.error) {
+      const hay = await Promise.all(extra.map(e => sb.from('productos').select('id, ' + e[0]).limit(1)));
+      extra.forEach((e, i) => { S[e[1]] = !!hay[i].error; });
+      pr = await sb.from('productos').select([cols, ...extra.filter(e => !S[e[1]]).map(e => e[0])].join(', ')).order('orden').order('id');
     }
     S.shopOff = !!pr.error;
-    S.products = (pr.data || []).map(x => ({ ...x, precio: +x.precio, componentes: Array.isArray(x.componentes) ? x.componentes : [], modelo: x.modelo || '', color: x.color || '' }));
+    S.products = (pr.data || []).map(x => ({ ...x, precio: +x.precio, componentes: Array.isArray(x.componentes) ? x.componentes : [], modelo: x.modelo || '', color: x.color || '', obligatorio: !!x.obligatorio }));
     S.orders = (pe.data || []).map(x => ({ ...x, total: +x.total }));
   }
   window.cargarTienda = cargarTienda;
