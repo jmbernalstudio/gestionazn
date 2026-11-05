@@ -1,6 +1,6 @@
 /* Generado por herramientas/actualizar.py desde rfaf.es y educationleague.es. No editar a mano. */
 window.DATOS = {
- "actualizado": "2026-11-04T13:53:08+00:00",
+ "actualizado": "2026-11-05T13:07:05+00:00",
  "equipos": [
   {
    "id": "senior",
@@ -3070,6 +3070,12 @@ window.DATOS = {
        "h": "17:30"
       },
       {
+       "l": "U.D. CONSOLACION",
+       "v": "C.D. ISIDRO REGUERA",
+       "f": "2026-11-07",
+       "h": "17:30"
+      },
+      {
        "l": "ESPARTINAS C.F. \"B\"",
        "v": "C.D. TORRE REINA",
        "f": "2026-11-07",
@@ -3080,11 +3086,6 @@ window.DATOS = {
        "v": "CASTILLEJA C.F.",
        "f": "2026-11-07",
        "h": "19:00"
-      },
-      {
-       "l": "U.D. CONSOLACION",
-       "v": "C.D. ISIDRO REGUERA",
-       "f": "2026-11-08"
       },
       {
        "l": "P.D. ROCIERA \"A\"",
@@ -6246,6 +6247,17 @@ window.DATOS = {
    "tabla": [
     {
      "pos": 1,
+     "equipo": "U.D. VILLAVERDE \"B\"",
+     "pts": 12,
+     "j": 4,
+     "g": 4,
+     "e": 0,
+     "p": 0,
+     "gf": 29,
+     "gc": 10
+    },
+    {
+     "pos": 2,
      "equipo": "C.D. TORO TOCINA LOS ROSALES \"B\"",
      "pts": 9,
      "j": 3,
@@ -6256,18 +6268,18 @@ window.DATOS = {
      "gc": 1
     },
     {
-     "pos": 2,
-     "equipo": "U.D. VILLAVERDE \"B\"",
+     "pos": 3,
+     "equipo": "C.D. CASTILBLANCO F.C.",
      "pts": 9,
      "j": 3,
      "g": 3,
      "e": 0,
      "p": 0,
-     "gf": 19,
-     "gc": 7
+     "gf": 21,
+     "gc": 2
     },
     {
-     "pos": 3,
+     "pos": 4,
      "equipo": "ALCALA DEL RIO C.F. \"B\"",
      "pts": 9,
      "j": 3,
@@ -6278,7 +6290,7 @@ window.DATOS = {
      "gc": 3
     },
     {
-     "pos": 4,
+     "pos": 5,
      "equipo": "ATCO. ALGABEÑO \"B\"",
      "pts": 9,
      "j": 3,
@@ -6287,17 +6299,6 @@ window.DATOS = {
      "p": 0,
      "gf": 16,
      "gc": 6
-    },
-    {
-     "pos": 5,
-     "equipo": "C.D. CASTILBLANCO F.C.",
-     "pts": 6,
-     "j": 2,
-     "g": 2,
-     "e": 0,
-     "p": 0,
-     "gf": 11,
-     "gc": 2
     },
     {
      "pos": 6,
@@ -6325,12 +6326,12 @@ window.DATOS = {
      "pos": 8,
      "equipo": "CENTRO HISTORICO AA.VV. \"C\"",
      "pts": 1,
-     "j": 3,
+     "j": 4,
      "g": 0,
      "e": 1,
-     "p": 2,
-     "gf": 8,
-     "gc": 10
+     "p": 3,
+     "gf": 11,
+     "gc": 20
     },
     {
      "pos": 9,
@@ -6356,17 +6357,6 @@ window.DATOS = {
     },
     {
      "pos": 11,
-     "equipo": "BRENES BALOMPIE \"B\"",
-     "pts": 0,
-     "j": 2,
-     "g": 0,
-     "e": 0,
-     "p": 2,
-     "gf": 2,
-     "gc": 18
-    },
-    {
-     "pos": 12,
      "equipo": "GUILLENA C.F. \"B\"",
      "pts": 0,
      "j": 3,
@@ -6375,6 +6365,17 @@ window.DATOS = {
      "p": 3,
      "gf": 1,
      "gc": 26
+    },
+    {
+     "pos": 12,
+     "equipo": "BRENES BALOMPIE \"B\"",
+     "pts": 0,
+     "j": 3,
+     "g": 0,
+     "e": 0,
+     "p": 3,
+     "gf": 2,
+     "gc": 28
     }
    ],
    "escudos": {
@@ -6581,6 +6582,10 @@ window.DATOS = {
       {
        "l": "BRENES BALOMPIE \"B\"",
        "v": "C.D. CASTILBLANCO F.C.",
+       "g": [
+        0,
+        10
+       ],
        "f": "2026-11-04",
        "h": "18:30"
       }
@@ -6593,6 +6598,10 @@ window.DATOS = {
       {
        "l": "U.D. VILLAVERDE \"B\"",
        "v": "CENTRO HISTORICO AA.VV. \"C\"",
+       "g": [
+        10,
+        3
+       ],
        "f": "2026-11-04",
        "h": "18:30"
       },
