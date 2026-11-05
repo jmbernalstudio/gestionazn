@@ -7,3 +7,6 @@
 -- ============================================================================
 alter table public.productos add column if not exists modelo text not null default $t$$t$;
 alter table public.productos add column if not exists color  text not null default $t$$t$;
+
+-- Que la app vea ya las columnas nuevas
+notify pgrst, $$reload schema$$;

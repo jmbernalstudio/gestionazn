@@ -253,10 +253,13 @@
       sb.from('productos').select(cols + ', componentes, modelo, color').order('orden').order('id'),
       sb.from('pedidos').select('id, familia, jugador, equipo, lineas, total, nota, contacto, estado, creado').order('creado', { ascending: false })
     ]);
-    /* Sin el Paso 12 no hay modelo ni color, y sin el Paso 11 no hay packs: se sigue sin ellos */
-    S.modOff = !!pr.error; S.packOff = false;
-    if (pr.error) pr = await sb.from('productos').select(cols + ', componentes').order('orden').order('id');
-    if (pr.error) { S.packOff = true; pr = await sb.from('productos').select(cols).order('orden').order('id'); }
+    /* Sin el Paso 11 no hay packs y sin el Paso 12 no hay modelo ni color: se prueba cada uno por separado y se sigue sin lo que falte */
+    S.packOff = false; S.modOff = false;
+    for (const [extra, pk, md] of [[', modelo, color', true, false], [', componentes', false, true], ['', true, true]]) {
+      if (!pr.error) break;
+      pr = await sb.from('productos').select(cols + extra).order('orden').order('id');
+      S.packOff = pk; S.modOff = md;
+    }
     S.shopOff = !!pr.error;
     S.products = (pr.data || []).map(x => ({ ...x, precio: +x.precio, componentes: Array.isArray(x.componentes) ? x.componentes : [], modelo: x.modelo || '', color: x.color || '' }));
     S.orders = (pe.data || []).map(x => ({ ...x, total: +x.total }));
