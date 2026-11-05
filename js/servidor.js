@@ -291,7 +291,7 @@
       sb.from('peticiones').select('id, equipo, tipo, titulo, lugar, urgente, estado, creada, con_foto, perfiles(nombre)').order('creada', { ascending: false })
         .then(r => r.error ? sb.from('peticiones').select('id, equipo, tipo, titulo, lugar, urgente, estado, creada, perfiles(nombre)').order('creada', { ascending: false }) : r),
       sb.from('avisos').select('*').order('creado', { ascending: false }).limit(50),
-      sb.from('avisos_leidos').select('aviso, perfil'),
+      sb.from('avisos_leidos').select('aviso, perfil, leido_en').then(r => r.error ? sb.from('avisos_leidos').select('aviso, perfil') : r),
       junta ? sb.from('perfiles').select('id, usuario, nombre, rol, foto').order('nombre') : Promise.resolve({ data: [] })
     ].map(q => Promise.resolve(q).then(ok)));
 
@@ -346,7 +346,10 @@
     S.people = gente.map(p => ({ ...p, equipos: asig.filter(a => a.perfil === p.id).map(a => a.equipo) }));
     const total = S.people.filter(p => p.rol === 'entrenador').length;
     S.notices = avi.map(n => ({ id: n.id, from: 'Junta directiva', title: n.titulo, body: n.texto,
-      read: lei.some(l => l.aviso === n.id && l.perfil === yo.id), readBy: lei.filter(l => l.aviso === n.id).length, total }));
+      read: lei.some(l => l.aviso === n.id && l.perfil === yo.id), total,
+      /* Quién lo ha leído y cuándo (la junta ve a todos; cuenta solo a los entrenadores) */
+      lectores: lei.filter(l => l.aviso === n.id).map(l => ({ id: l.perfil, en: l.leido_en || null })),
+      readBy: lei.filter(l => l.aviso === n.id && (!junta || S.people.some(p => p.id === l.perfil && p.rol === 'entrenador'))).length }));
     if (!S.teams[S.team]) S.team = Object.keys(S.teams)[0] || null;
     /* Junta: familias (solicitudes y accesos), pedidos y productos de la tienda. Si aún no existen, se sigue sin ellos */
     if (junta) {
