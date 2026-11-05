@@ -21,7 +21,10 @@
   const nomFam = (o, ops) => ops.filter(x => x.nombre === o.nombre).length > 1 ? `${o.nombre} ${o.modelo || o.color || ''}`.trim() : o.nombre;
   const nomMod = p => p.nombre + (p.modelo && !p.nombre.toLowerCase().includes(p.modelo.toLowerCase()) ? ' ' + p.modelo : '');
   const modTxt = p => p ? [p.modelo && 'Modelo ' + p.modelo, p.color].filter(Boolean).join(' · ') : '';
-  const piezasTxt = l => (l.piezas || []).map(z => `${z.nombre}${z.talla ? ' · talla ' + z.talla : ''}`).join('\n');
+  const piezasTxt = l => (l.piezas || []).map(z => `${z.nombre}${z.color ? ' · ' + z.color : ''}${z.talla ? ' · talla ' + z.talla : ''}`).join('\n');
+  /* Colores: si un producto viene en varios, la familia elige uno */
+  const colorOpts = pr => `<option value="">Elige</option>${(pr.colores || []).map(c => `<option>${esc(c)}</option>`).join('')}`;
+  const elegirTxt = p => esPack(p) ? 'Elegir tallas' : (p.colores || []).length ? (p.tallas.length ? 'Elegir color y talla' : 'Elegir color') : 'Elegir talla';
   const fecha = iso => { const d = new Date(iso); return `${d.getDate()} ${MES[d.getMonth()]} · ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`; };
   /* Tabla de goleadores oficial de la Federación Andaluza (competición y grupo de cada equipo de la RFAF) */
   const GOLEADORES = { senior: [48466186, 48466191], juvenil: [48466231, 48466242], infantil: [48466271, 48466273], alevin2: [48466388, 48466390],
@@ -184,18 +187,22 @@
     return `<div class="pk-l" role="group" aria-label="Prendas del pack">${p.componentes.map((sl, i) => {
       const ops = sl.map(prodId).filter(Boolean), id = `${p.id}-${i}`;
       if (!ops.length) return `<p class="muted pk-s">Una prenda de este pack ya no está disponible.</p>`;
+      if (ops.length === 1 && ops[0].colores.length) return `<div class="pk-s"><b>${esc(ops[0].nombre)}</b><div class="pk-f">
+        <label class="f" for="pc${id}">Color<select id="pc${id}">${colorOpts(ops[0])}</select></label>
+        ${ops[0].tallas.length ? `<label class="f" for="pt${id}">Talla<select id="pt${id}" data-pt="${p.id}" data-i="${i}" data-pz="${ops[0].id}">${tallaOpts(ops[0])}</select></label>` : '<small class="muted">Talla única</small>'}</div></div>`;
       if (ops.length === 1) return `<div class="pk-s"><b>${esc(ops[0].nombre)}</b>${ops[0].tallas.length ? `<label class="f" for="pt${id}"><span class="sr">Talla de ${esc(ops[0].nombre)}</span><select id="pt${id}" data-pt="${p.id}" data-i="${i}" data-pz="${ops[0].id}">${tallaOpts(ops[0])}</select></label>` : '<small class="muted">Talla única</small>'}</div>`;
       return `<div class="pk-s"><b>${esc(ops.map(o => nomFam(o, ops)).join(' o '))}</b><div class="pk-f">
         <label class="f" for="pm${id}">Modelo<select id="pm${id}" data-pm="${id}"><option value="">Elige</option>${ops.map(o => `<option value="${o.id}">${esc(nomFam(o, ops))}</option>`).join('')}</select></label>
+        <label class="f" for="pc${id}" id="pcw${id}" hidden>Color<select id="pc${id}"></select></label>
         <label class="f" for="pt${id}">Talla<select id="pt${id}" data-pt="${p.id}" data-i="${i}" disabled><option value="">Elige antes el modelo</option></select></label></div></div>`;
     }).join('')}</div>`;
   }
   /* Tarjeta de la tienda: foto, nombre y precio. Al tocarla se abre la ficha para elegir tallas */
   function prodCard(p) {
     const yaN = (F().cart || []).filter(l => l.producto === p.id).reduce((a, l) => a + l.cantidad, 0);
-    return `<button type="button" class="card pr pr-pick" data-open="${p.id}" aria-label="${esc(p.nombre)}, ${euro(p.precio)}.${yaN ? ` Ya tienes ${yaN} en tu pedido.` : ''} Elegir ${esPack(p) ? 'tallas' : 'talla'}">${yaN ? `<span class="pill green pr-ya">${ic('check')} En tu pedido${yaN > 1 ? ' · ' + yaN : ''}</span>` : ''}${prFoto(p)}
+    return `<button type="button" class="card pr pr-pick" data-open="${p.id}" aria-label="${esc(p.nombre)}, ${euro(p.precio)}.${yaN ? ` Ya tienes ${yaN} en tu pedido.` : ''} ${elegirTxt(p)}">${yaN ? `<span class="pill green pr-ya">${ic('check')} En tu pedido${yaN > 1 ? ' · ' + yaN : ''}</span>` : ''}${prFoto(p)}
       <span class="pr-b"><b class="pr-n">${esc(p.nombre)}</b>${esPack(p) ? `<span class="pr-m">${esc(p.componentes.map(sl => slotNombre(sl, true)).join(' + '))}</span>` : ''}<b class="pr-p">${euro(p.precio)}</b></span>
-      <span class="btn blue block">${ic('plus')} ${esPack(p) ? 'Elegir tallas' : 'Elegir talla'}</span></button>`;
+      <span class="btn blue block">${ic('plus')} ${elegirTxt(p)}</span></button>`;
   }
   /* Ficha del producto (pantalla completa): tallas, modelo si hay que elegirlo y cantidad */
   function prodModal(p) {
@@ -203,7 +210,7 @@
     const m = modal(`<h2 id="mdl-t">${esc(p.nombre)}</h2>
       <div class="pr-d">${prFoto(p)}<div class="pr-b">${p.descripcion ? `<p>${esc(p.descripcion)}</p>` : ''}<b class="pr-p">${euro(p.precio)}</b></div></div>
       ${pk ? packCampos(p) : ''}
-      <div class="pr-c">${!pk && p.tallas.length ? `<label class="f" for="t${p.id}">Talla<select id="t${p.id}"><option value="">Elige</option>${p.tallas.map(t => `<option>${esc(t)}</option>`).join('')}</select></label>` : ''}
+      <div class="pr-c">${!pk && p.colores.length ? `<label class="f" for="c${p.id}">Color<select id="c${p.id}">${colorOpts(p)}</select></label>` : ''}${!pk && p.tallas.length ? `<label class="f" for="t${p.id}">Talla<select id="t${p.id}"><option value="">Elige</option>${p.tallas.map(t => `<option>${esc(t)}</option>`).join('')}</select></label>` : ''}
         <div class="f"><span id="ql${p.id}">Cantidad</span><div class="qty" role="group" aria-labelledby="ql${p.id}"><button type="button" class="iconbtn" data-qty="${p.id}" data-d="-1" aria-label="Uno menos">${ic('minus')}</button>
           <output id="qv${p.id}" aria-live="polite">1</output><input type="hidden" id="q${p.id}" value="1"><button type="button" class="iconbtn" data-qty="${p.id}" data-d="1" aria-label="Uno más">${ic('plus')}</button></div></div></div>
       <p class="err" id="te${p.id}" role="alert" hidden>Elige la talla.</p>
@@ -215,29 +222,37 @@
           document.querySelectorAll('[data-pm]').forEach(s => s.onchange = () => {
             const t = $('#pt' + s.dataset.pm), pr = prodId(s.value);
             t.dataset.pz = pr ? pr.id : ''; t.innerHTML = pr ? tallaOpts(pr) : '<option value="">Elige antes el modelo</option>'; t.disabled = !pr || !pr.tallas.length;
+            const cw = $('#pcw' + s.dataset.pm), cs = $('#pc' + s.dataset.pm), conC = !!(pr && pr.colores.length);
+            cw.hidden = !conC; cs.innerHTML = conC ? colorOpts(pr) : '';
+            s.closest('.pk-f').classList.toggle('tres', conC);
           });
           document.querySelectorAll('[data-add]').forEach(b => b.onclick = () => {
             const p = S.products.find(x => x.id == b.dataset.add), sel = $('#t' + p.id), cantidad = +$('#q' + p.id).value, e = $('#te' + p.id);
             const fallo = (t, el) => { e.textContent = t; e.hidden = false; if (el) el.focus(); };
-            let talla = '', piezas = null;
+            let talla = '', color = '', piezas = null;
             if (esPack(p)) {
               piezas = [];
               for (let i = 0; i < p.componentes.length; i++) {
                 const ops = p.componentes[i].map(prodId).filter(Boolean), m = $(`#pm${p.id}-${i}`), t = $(`#pt${p.id}-${i}`);
                 const pr = ops.length === 1 ? ops[0] : prodId(m && m.value);
                 if (!pr) return fallo(`Elige el modelo de ${ops.map(o => o.nombre).join(' o ')}.`, m);
+                const c = $(`#pc${p.id}-${i}`);
+                if (pr.colores.length && !(c && c.value)) return fallo(`Elige el color de ${pr.nombre}.`, c);
                 if (pr.tallas.length && !(t && t.value)) return fallo(`Elige la talla de ${pr.nombre}.`, t);
-                piezas.push({ producto: pr.id, nombre: pr.nombre, talla: pr.tallas.length ? t.value : '' });
+                piezas.push({ producto: pr.id, nombre: pr.nombre, talla: pr.tallas.length ? t.value : '', ...(pr.colores.length ? { color: c.value } : {}) });
               }
             } else {
+              const cs = $('#c' + p.id);
+              color = cs ? cs.value : '';
+              if (cs && !color) return fallo('Elige el color.', cs);
               talla = sel ? sel.value : '';
               if (sel && !talla) return fallo('Elige la talla.', sel);
             }
             e.hidden = true;
             S.fam.cart = S.fam.cart || [];
-            const k = JSON.stringify(piezas), l = S.fam.cart.find(x => x.producto === p.id && x.talla === talla && JSON.stringify(x.piezas || null) === k);
-            if (l) l.cantidad = Math.min(20, l.cantidad + cantidad); else S.fam.cart.push({ producto: p.id, nombre: p.nombre, talla, cantidad, precio: p.precio, ...(piezas ? { piezas } : {}) });
-            m.close(false); say(`Añadido: ${p.nombre}${talla ? ' (talla ' + talla + ')' : ''}`);
+            const k = JSON.stringify(piezas), l = S.fam.cart.find(x => x.producto === p.id && x.talla === talla && (x.color || '') === color && JSON.stringify(x.piezas || null) === k);
+            if (l) l.cantidad = Math.min(20, l.cantidad + cantidad); else S.fam.cart.push({ producto: p.id, nombre: p.nombre, talla, ...(color ? { color } : {}), cantidad, precio: p.precio, ...(piezas ? { piezas } : {}) });
+            m.close(false); say(`Añadido: ${p.nombre}${color || talla ? ' (' + [color, talla && 'talla ' + talla].filter(Boolean).join(', ') + ')' : ''}`);
             if (esPack(p)) sugerir(p);
           });
   }
@@ -258,7 +273,7 @@
     const draw = () => {
       const cart = f.cart, tot = cart.reduce((a, l) => a + l.cantidad * l.precio, 0);
       return `<div class="rqd-h"><div class="grow"><h2 id="mdl-t" class="st-h2">Tu pedido</h2><small>Se paga en efectivo en el club</small></div><button type="button" class="iconbtn" data-v="0" aria-label="Cerrar">${ic('x')}</button></div>
-        <div class="cart">${cart.map((l, i) => `<div class="cart-l"><div class="grow"><b>${esc(l.nombre)}</b>${l.piezas ? `<small class="pk-z">${esc(piezasTxt(l))}</small>` : ''}<small>${l.talla ? 'Talla ' + esc(l.talla) + ' · ' : ''}${l.cantidad} × ${euro(l.precio)}</small></div>
+        <div class="cart">${cart.map((l, i) => `<div class="cart-l"><div class="grow"><b>${esc(l.nombre)}</b>${l.piezas ? `<small class="pk-z">${esc(piezasTxt(l))}</small>` : ''}<small>${l.color ? esc(l.color) + ' · ' : ''}${l.talla ? 'Talla ' + esc(l.talla) + ' · ' : ''}${l.cantidad} × ${euro(l.precio)}</small></div>
           <b>${euro(l.cantidad * l.precio)}</b><button type="button" class="iconbtn" data-rm="${i}" aria-label="Quitar ${esc(l.nombre)}">${ic('trash')}</button></div>`).join('')}
           <div class="cart-t"><span>Total</span><b>${euro(tot)}</b></div></div>
         ${kids.length > 1 ? `<label class="f" for="ck">¿Para qué jugador es?<select id="ck"><option value="">Elige</option>${kids.map(k => `<option value="${k.id}">${esc(k.n)} · ${esc(k.team)}</option>`).join('')}</select></label>`
@@ -276,7 +291,7 @@
         const b = m.el.querySelector('#c-ok'), sel = m.el.querySelector('#ck'), kid = sel ? +sel.value : kids[0] && kids[0].id;
         if (!kid) { m.el.querySelector('#cerr').textContent = 'Elige para qué jugador es el pedido.'; m.el.querySelector('#cerr').hidden = false; sel.focus(); return; }
         b.disabled = true; b.textContent = 'Enviando…';
-        try { await API().hacerPedido(kid, f.cart.map(l => ({ producto: l.producto, talla: l.talla, cantidad: l.cantidad, ...(l.piezas ? { piezas: l.piezas.map(z => ({ producto: z.producto, talla: z.talla })) } : {}) })), m.el.querySelector('#cn').value.trim()); }
+        try { await API().hacerPedido(kid, f.cart.map(l => ({ producto: l.producto, talla: l.talla, ...(l.color ? { color: l.color } : {}), cantidad: l.cantidad, ...(l.piezas ? { piezas: l.piezas.map(z => ({ producto: z.producto, talla: z.talla, ...(z.color ? { color: z.color } : {}) })) } : {}) })), m.el.querySelector('#cn').value.trim()); }
         catch (x) { return err(/Failed to fetch|network/i.test(x.message || '') ? 'No hay conexión. Prueba otra vez en un momento.' : x.message || 'No se ha podido hacer el pedido.'); }
         f.cart = []; await window.cargarTienda(); S.shopView = 'mine'; m.close(false); say('¡Pedido hecho! La junta ya lo tiene. Lo pagas en efectivo en el club.');
       };
@@ -289,7 +304,7 @@
     return `<section class="card ped" aria-labelledby="pd${o.id}"><div class="ped-h"><div class="grow"><h2 id="pd${o.id}">Pedido nº ${o.id}</h2><small>${fecha(o.creado)}${o.jugador ? ' · ' + esc(o.jugador) : ''}${o.equipo ? ' · ' + esc(o.equipo) : ''}</small></div>
         ${junta ? '' : `<span class="pill ${pedCls(o.estado)}">${ESTADOS_PED[o.estado]}</span>`}</div>
       ${junta ? `<p class="ped-who">${ic('user')}<span>${esc(nom || 'Familia sin acceso')}${tel ? ` · <a href="tel:${esc(tel.replace(/\s/g, ''))}">${esc(tel)}</a>` : ''}</span></p>` : ''}
-      <ul class="ped-l">${ls.map(l => `<li><span>${l.cantidad} × ${esc(l.nombre)}${l.talla ? ` <small>talla ${esc(l.talla)}</small>` : ''}${l.piezas ? `<small class="pk-z">${esc(piezasTxt(l))}</small>` : ''}</span><b>${euro(l.cantidad * l.precio)}</b></li>`).join('')}</ul>
+      <ul class="ped-l">${ls.map(l => `<li><span>${l.cantidad} × ${esc(l.nombre)}${l.color || l.talla ? ` <small>${[l.color && esc(l.color), l.talla && 'talla ' + esc(l.talla)].filter(Boolean).join(' · ')}</small>` : ''}${l.piezas ? `<small class="pk-z">${esc(piezasTxt(l))}</small>` : ''}</span><b>${euro(l.cantidad * l.precio)}</b></li>`).join('')}</ul>
       ${o.nota ? `<p class="ped-n">“${esc(o.nota)}”</p>` : ''}
       <div class="ped-t"><span>Total · en efectivo</span><b>${euro(o.total)}</b></div>
       ${junta ? `<div class="ped-a"><label class="f" for="pe${o.id}">Estado<select id="pe${o.id}" data-pest="${o.id}">${ESTADOS_PED.map((s, i) => `<option value="${i}" ${i === o.estado ? 'selected' : ''}>${s}</option>`).join('')}</select></label>
@@ -344,7 +359,7 @@
         <div class="btn-row ped-btns"><button type="button" class="btn blue" id="xls" ${os.length ? '' : 'disabled'}>${ic('list')} Exportar a Excel</button><button type="button" class="btn blue" id="pr-new">${ic('plus')} Añadir producto</button></div>
         ${os.length ? `<div class="cards-grid">${os.map(o => orderCard(o, true)).join('')}</div>` : emptyPage('box', 'Todavía no hay pedidos', 'Cuando una familia haga un pedido en la tienda, aparecerá aquí.')}
         ${card('h-prs', `Productos de la tienda · ${(S.products || []).length}`, (S.products || []).length ? `<p class="muted" style="margin:0">Las familias ven los productos en este orden. Usa las flechas para subir o bajar cada uno.</p>` + (S.products || []).map((p, i, a) => `<div class="tm pr-row"><div class="pr-ord"><button type="button" class="pr-mv" data-mv="-1" data-id="${p.id}" aria-label="Subir ${esc(p.nombre)}" ${i ? '' : 'disabled'}>${ic('up')}</button><button type="button" class="pr-mv" data-mv="1" data-id="${p.id}" aria-label="Bajar ${esc(p.nombre)}" ${i < a.length - 1 ? '' : 'disabled'}>${ic('down')}</button></div>${prFoto(p, 'pr-th')}
-            <div class="grow"><b>${esc(p.nombre)}</b><small>${p.categoria ? esc(p.categoria) + ' · ' : ''}${euro(p.precio)}${modTxt(p) ? ' · ' + esc(modTxt(p)) : ''}${esPack(p) ? ' · Pack: ' + esc(p.componentes.map(sl => slotNombre(sl)).join(' + ')) : p.tallas.length ? ' · Tallas ' + esc(p.tallas.join(', ')) : ' · Talla única'}</small></div>
+            <div class="grow"><b>${esc(p.nombre)}</b><small>${p.categoria ? esc(p.categoria) + ' · ' : ''}${euro(p.precio)}${modTxt(p) ? ' · ' + esc(modTxt(p)) : ''}${esPack(p) ? ' · Pack: ' + esc(p.componentes.map(sl => slotNombre(sl)).join(' + ')) : (p.colores.length ? ' · Colores ' + esc(p.colores.join(', ')) : '') + (p.tallas.length ? ' · Tallas ' + esc(p.tallas.join(', ')) : ' · Talla única')}</small></div>
             ${p.obligatorio ? '<span class="pill blue">Obligatorio</span>' : ''}${p.activo ? '' : '<span class="pill grey">Oculto</span>'}<button type="button" class="btn ghost sm" data-pr="${p.id}">${ic('pen')} Editar</button></div>`).join('')
           : '<p class="muted" style="margin:0">Añade el primer producto con el botón “Añadir producto”.</p>')}`;
       return { body: `<div class="stack">${inboxSeg()}${body}</div>`, bind() { bindInboxSeg(); bindOrders(true); traerFotos();
@@ -427,7 +442,7 @@
     return catsSug().find(c => c.toLowerCase() === v.toLowerCase()) || v.charAt(0).toUpperCase() + v.slice(1);
   }
   function productoForm(p) {
-    const x = p ? { ...p, tallas: p.tallas.slice() } : { nombre: '', descripcion: '', precio: '', tallas: [], activo: true };
+    const x = p ? { ...p, tallas: p.tallas.slice() } : { nombre: '', descripcion: '', precio: '', tallas: [], colores: [], activo: true };
     const st = { foto: p ? fotoDe(p) : null, cambiada: false, pack: esPack(p), slots: esPack(p) ? p.componentes.map(sl => sl.slice()) : [] };
     /* Prendas que se pueden meter en un pack: productos normales (no otros packs), estén o no a la vista en la tienda */
     const cands = (S.products || []).filter(y => !esPack(y) && (!p || y.id !== p.id));
@@ -446,6 +461,7 @@
         <label class="f" for="prd">Descripción<span class="hint">Opcional. Qué incluye</span><textarea id="prd" maxlength="300" rows="2">${esc(x.descripcion)}</textarea></label>
         <label class="f" for="prp">Precio en euros<input type="text" id="prp" inputmode="decimal" value="${x.precio === '' ? '' : String(x.precio).replace('.', ',')}" placeholder="35,00"></label>
         <label class="f" for="prt" id="prt-w" ${st.pack ? 'hidden' : ''}>Tallas disponibles<span class="hint">Separadas por comas. Déjalo vacío si es talla única</span><input type="text" id="prt" value="${esc(x.tallas.join(', '))}" placeholder="6, 8, 10, 12, 14, S, M, L, XL"></label>
+        ${S.colOff ? '' : `<label class="f" for="prcl" id="prcl-w" ${st.pack ? 'hidden' : ''}>Colores para elegir<span class="hint">Si viene en varios colores. Separados por comas</span><input type="text" id="prcl" value="${esc((x.colores || []).join(', '))}" placeholder="Azul, Negro, Blanco"></label>`}
         <div class="pk-ed stack" id="pk-ed" ${st.pack ? '' : 'hidden'}></div>
         ${S.oblOff ? '' : `<div class="opts-row"><div class="grow"><b id="pro-l">Obligatorio</b><small>Sale en el apartado “Obligatorio” de la tienda, el primero. Por ejemplo, el pack de entrenamiento.</small></div>
           <button type="button" class="tgl" role="switch" id="pro" aria-checked="${!!x.obligatorio}" aria-labelledby="pro-l"><span></span></button></div>`}
@@ -482,7 +498,7 @@
     if (st.pack) drawPk();
     if ($('#prk')) $('#prk').onclick = () => {
       st.pack = !st.pack; $('#prk').setAttribute('aria-checked', st.pack);
-      $('#prt-w').hidden = st.pack; $('#pk-ed').hidden = !st.pack; if ($('#prmc')) $('#prmc').hidden = st.pack;
+      $('#prt-w').hidden = st.pack; $('#pk-ed').hidden = !st.pack; if ($('#prmc')) $('#prmc').hidden = st.pack; if ($('#prcl-w')) $('#prcl-w').hidden = st.pack;
       if (st.pack) { if (!st.slots.length) st.slots = [[null]]; drawPk(); }
     };
     $('#prfo').onchange = async () => { const fl = $('#prfo').files[0]; if (!fl) return;
@@ -502,13 +518,14 @@
       if (!nombre) return err('Escribe el nombre del producto.');
       if (!$('#prp').value.trim() || isNaN(precio) || precio < 0) return err('Escribe el precio. Por ejemplo: 35,00');
       let tallas = [...new Set($('#prt').value.split(',').map(t => t.trim()).filter(Boolean))], componentes = [];
+      let colores = $('#prcl') ? [...new Set($('#prcl').value.split(',').map(t => t.trim().replace(/\s+/g, ' ')).filter(Boolean).map(t => t.charAt(0).toUpperCase() + t.slice(1)))] : [];
       if (st.pack) {
         if (!st.slots.length) return err('Añade al menos una prenda al pack.');
         if (st.slots.some(sl => sl.some(id => !id))) return err('Elige el producto de cada prenda, o quita las que sobren.');
         if (st.slots.some(sl => new Set(sl).size !== sl.length)) return err('Hay un modelo repetido dentro de la misma prenda.');
-        componentes = st.slots.map(sl => sl.slice()); tallas = [];
+        componentes = st.slots.map(sl => sl.slice()); tallas = []; colores = [];
       }
-      const fila = { id: p && p.id, nombre, descripcion: $('#prd').value.trim(), precio: Math.round(precio * 100) / 100, tallas, componentes, activo: x.activo, obligatorio: !!x.obligatorio, foto: st.foto || null, categoria: catNorm($('#prc') ? $('#prc').value : ''),
+      const fila = { id: p && p.id, nombre, descripcion: $('#prd').value.trim(), precio: Math.round(precio * 100) / 100, tallas, componentes, activo: x.activo, obligatorio: !!x.obligatorio, colores, foto: st.foto || null, categoria: catNorm($('#prc') ? $('#prc').value : ''),
         modelo: !st.pack && $('#prmo') ? $('#prmo').value.trim() : '', color: !st.pack && $('#prco') ? $('#prco').value.trim() : '' };
       try { await API().producto(fila); } catch (_) { return err(S.shopOff ? 'Falta un paso en Supabase para poder guardar productos.' : 'No se ha podido guardar. Revisa la conexión.'); }
       await window.cargarTienda(); m.close(); render(); say(p ? 'Producto guardado.' : 'Producto añadido a la tienda.');
@@ -531,7 +548,7 @@
     const filas = new Map(), tallasDe = new Map();
     for (const { l } of lin) for (const z of l.piezas || [l]) {
       /* Se agrupa por producto (con su nombre de ahora); si ya no existe, por el nombre que tenía en el pedido */
-      const pr = prodId(z.producto), [mo, co] = mc(z.producto), k = pr ? 'p' + pr.id : ['n', z.nombre, mo, co].join('\u0000'), t = z.talla || 'Única';
+      const pr = prodId(z.producto), mo = mc(z.producto)[0], co = z.color || mc(z.producto)[1], k = (pr ? 'p' + pr.id : ['n', z.nombre, mo].join('\u0000')) + '\u0000' + co, t = z.talla || 'Única';
       if (!filas.has(k)) filas.set(k, { nombre: pr ? pr.nombre : z.nombre, mo, co, n: {} });
       const f = filas.get(k); f.n[t] = (f.n[t] || 0) + l.cantidad;
     }
@@ -547,8 +564,8 @@
       [], ['Total', '', '', ...cols.map(t => lista.reduce((a, f) => a + (f.n[t] || 0), 0) || ''), lista.reduce((a, f) => a + total(f), 0)]];
     const hoja2 = [['Pedido', 'Fecha', 'Familia', 'Teléfono', 'Jugador', 'Equipo', 'Producto', 'Modelo', 'Color', 'Talla', 'Cantidad', 'Precio', 'Importe', 'Estado', 'Nota'],
       ...lin.map(({ o, l }) => { const [nom, tel] = (o.contacto || '').split(' · '); const d = new Date(o.creado);
-        const fila = [o.id, `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`, nom || '', tel || '', o.jugador, o.equipo, l.nombre, ...(l.piezas ? ['', ''] : mc(l.producto)), l.piezas ? 'Pack' : l.talla || 'Única', l.cantidad, { m: +l.precio }, { m: Math.round(l.cantidad * l.precio * 100) / 100 }, ESTADOS_PED[o.estado], o.nota || ''];
-        return [fila, ...(l.piezas || []).map(z => [o.id, '', '', '', '', '', '   · ' + z.nombre, ...mc(z.producto), z.talla || 'Única', l.cantidad, '', '', '', ''])]; }).flat(),
+        const fila = [o.id, `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`, nom || '', tel || '', o.jugador, o.equipo, l.nombre, ...(l.piezas ? ['', ''] : [mc(l.producto)[0], l.color || mc(l.producto)[1]]), l.piezas ? 'Pack' : l.talla || 'Única', l.cantidad, { m: +l.precio }, { m: Math.round(l.cantidad * l.precio * 100) / 100 }, ESTADOS_PED[o.estado], o.nota || ''];
+        return [fila, ...(l.piezas || []).map(z => [o.id, '', '', '', '', '', '   · ' + z.nombre, mc(z.producto)[0], z.color || mc(z.producto)[1], z.talla || 'Única', l.cantidad, '', '', '', ''])]; }).flat(),
       [], ['', '', '', '', '', '', '', '', '', '', '', 'Total', { m: sel.reduce((a, o) => a + o.total, 0) }]];
     const blob = xlsx([['Para el proveedor', hoja1], ['Pedidos', hoja2]]);
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `pedidos-cd-aznalcollar-${TODAY}.xlsx`;

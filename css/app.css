@@ -1481,3 +1481,5 @@ small.pk-z { display: block; white-space: pre-line !important; overflow: visible
 .pr-cat-f .hint { font-weight: 400; color: var(--muted); font-size: .9rem; }
 @media (max-width: 440px) { .sh-tabs button { padding: 0 12px; gap: 6px; font-size: .95rem; } }
 @media (min-width: 900px) { .sh-tabs button { flex: 0 1 auto; } }
+/* Pack con modelo y color: el modelo ocupa toda la fila; color y talla debajo */
+.pk-f.tres > :first-child { grid-column: 1 / -1; }
