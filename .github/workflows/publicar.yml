@@ -30,3 +30,6 @@ jobs:
           path: _site
       - id: deploy
         uses: actions/deploy-pages@v4
+        with:
+          # Pages a veces tarda más de 10 minutos en procesar la subida: esperamos hasta 30
+          timeout: 1800000
