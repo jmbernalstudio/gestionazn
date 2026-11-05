@@ -1495,3 +1495,4 @@ small.pk-z { display: block; white-space: pre-line !important; overflow: visible
 .pr-c:has(> label.f + label.f) { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 .pr-c:has(> label.f + label.f) > div.f { grid-column: 1 / -1; }
 .pr-c:has(> label.f + label.f) > div.f .qty { align-self: flex-start; }
+.ped-x { margin: 0; font-size: .92rem; }
