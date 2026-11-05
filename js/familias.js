@@ -15,7 +15,9 @@
   /* Packs: "componentes" es una lista de huecos con los productos que se pueden elegir en cada uno */
   const esPack = p => !!(p && p.componentes && p.componentes.length);
   const prodId = id => (S.products || []).find(x => x.id === +id);
-  const slotNombre = sl => sl.map(id => (prodId(id) || {}).nombre || 'Prenda que ya no existe').join(' o ');
+  const slotNombre = sl => sl.map(id => prodId(id) ? nomMod(prodId(id)) : 'Prenda que ya no existe').join(' o ');
+  const nomMod = p => p.nombre + (p.modelo && !p.nombre.toLowerCase().includes(p.modelo.toLowerCase()) ? ' ' + p.modelo : '');
+  const modTxt = p => p ? [p.modelo && 'Modelo ' + p.modelo, p.color].filter(Boolean).join(' · ') : '';
   const piezasTxt = l => (l.piezas || []).map(z => `${z.nombre}${z.talla ? ' · talla ' + z.talla : ''}`).join('\n');
   const fecha = iso => { const d = new Date(iso); return `${d.getDate()} ${MES[d.getMonth()]} · ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`; };
   /* Tabla de goleadores oficial de la Federación Andaluza (competición y grupo de cada equipo de la RFAF) */
@@ -191,16 +193,16 @@
     return `<div class="pk-l" role="group" aria-label="Prendas del pack">${p.componentes.map((sl, i) => {
       const ops = sl.map(prodId).filter(Boolean), id = `${p.id}-${i}`;
       if (!ops.length) return `<p class="muted pk-s">Una prenda de este pack ya no está disponible.</p>`;
-      if (ops.length === 1) return `<div class="pk-s"><b>${esc(ops[0].nombre)}</b>${ops[0].tallas.length ? `<label class="f" for="pt${id}"><span class="sr">Talla de ${esc(ops[0].nombre)}</span><select id="pt${id}" data-pt="${p.id}" data-i="${i}" data-pz="${ops[0].id}">${tallaOpts(ops[0])}</select></label>` : '<small class="muted">Talla única</small>'}</div>`;
-      return `<div class="pk-s"><b>${esc(ops.map(o => o.nombre).join(' o '))}</b><div class="pk-f">
-        <label class="f" for="pm${id}">Modelo<select id="pm${id}" data-pm="${id}"><option value="">Elige</option>${ops.map(o => `<option value="${o.id}">${esc(o.nombre)}</option>`).join('')}</select></label>
+      if (ops.length === 1) return `<div class="pk-s"><b>${esc(nomMod(ops[0]))}</b>${ops[0].tallas.length ? `<label class="f" for="pt${id}"><span class="sr">Talla de ${esc(nomMod(ops[0]))}</span><select id="pt${id}" data-pt="${p.id}" data-i="${i}" data-pz="${ops[0].id}">${tallaOpts(ops[0])}</select></label>` : '<small class="muted">Talla única</small>'}</div>`;
+      return `<div class="pk-s"><b>${esc(ops.map(o => nomMod(o)).join(' o '))}</b><div class="pk-f">
+        <label class="f" for="pm${id}">Modelo<select id="pm${id}" data-pm="${id}"><option value="">Elige</option>${ops.map(o => `<option value="${o.id}">${esc(nomMod(o))}</option>`).join('')}</select></label>
         <label class="f" for="pt${id}">Talla<select id="pt${id}" data-pt="${p.id}" data-i="${i}" disabled><option value="">Elige antes el modelo</option></select></label></div></div>`;
     }).join('')}</div>`;
   }
   function prodCard(p) {
     const pk = esPack(p), roto = pk && p.componentes.some(sl => !sl.some(prodId));
     return `<section class="card pr" aria-labelledby="pr${p.id}">${prFoto(p)}
-      <div class="pr-b"><h2 id="pr${p.id}">${esc(p.nombre)}</h2>${p.descripcion ? `<p>${esc(p.descripcion)}</p>` : ''}<b class="pr-p">${euro(p.precio)}</b></div>
+      <div class="pr-b"><h2 id="pr${p.id}">${esc(p.nombre)}</h2>${modTxt(p) ? `<p class="pr-m">${esc(modTxt(p))}</p>` : ''}${p.descripcion ? `<p>${esc(p.descripcion)}</p>` : ''}<b class="pr-p">${euro(p.precio)}</b></div>
       ${pk ? packCampos(p) : ''}
       <div class="pr-c">${!pk && p.tallas.length ? `<label class="f" for="t${p.id}">Talla<select id="t${p.id}"><option value="">Elige</option>${p.tallas.map(t => `<option>${esc(t)}</option>`).join('')}</select></label>` : ''}
         <div class="f"><span id="ql${p.id}">Cantidad</span><div class="qty" role="group" aria-labelledby="ql${p.id}"><button type="button" class="iconbtn" data-qty="${p.id}" data-d="-1" aria-label="Uno menos">${ic('minus')}</button>
@@ -286,7 +288,7 @@
         <div class="btn-row ped-btns"><button type="button" class="btn blue" id="xls" ${os.length ? '' : 'disabled'}>${ic('list')} Exportar a Excel</button><button type="button" class="btn blue" id="pr-new">${ic('plus')} Añadir producto</button></div>
         ${os.length ? `<div class="cards-grid">${os.map(o => orderCard(o, true)).join('')}</div>` : emptyPage('box', 'Todavía no hay pedidos', 'Cuando una familia haga un pedido en la tienda, aparecerá aquí.')}
         ${card('h-prs', `Productos de la tienda · ${(S.products || []).length}`, (S.products || []).length ? (S.products || []).map(p => `<div class="tm pr-row">${prFoto(p, 'pr-th')}
-            <div class="grow"><b>${esc(p.nombre)}</b><small>${euro(p.precio)}${esPack(p) ? ' · Pack: ' + esc(p.componentes.map(slotNombre).join(' + ')) : p.tallas.length ? ' · Tallas ' + esc(p.tallas.join(', ')) : ' · Talla única'}</small></div>
+            <div class="grow"><b>${esc(p.nombre)}</b><small>${euro(p.precio)}${modTxt(p) ? ' · ' + esc(modTxt(p)) : ''}${esPack(p) ? ' · Pack: ' + esc(p.componentes.map(slotNombre).join(' + ')) : p.tallas.length ? ' · Tallas ' + esc(p.tallas.join(', ')) : ' · Talla única'}</small></div>
             ${p.activo ? '' : '<span class="pill grey">Oculto</span>'}<button type="button" class="btn ghost sm" data-pr="${p.id}">${ic('pen')} Editar</button></div>`).join('')
           : '<p class="muted" style="margin:0">Añade el primer producto con el botón “Añadir producto”.</p>')}`;
       return { body: `<div class="stack">${inboxSeg()}${body}</div>`, bind() { bindInboxSeg(); bindOrders(true); traerFotos();
@@ -369,6 +371,8 @@
         ${S.packOff ? '' : `<div class="opts-row"><div class="grow"><b id="prk-l">Es un pack</b><small>Junta varias prendas de la tienda. La familia elige la talla de cada una.</small></div>
           <button type="button" class="tgl" role="switch" id="prk" aria-checked="${st.pack}" aria-labelledby="prk-l"><span></span></button></div>`}
         <label class="f" for="prn">Nombre<input type="text" id="prn" maxlength="80" value="${esc(x.nombre)}" placeholder="${st.pack ? 'Por ejemplo: Pack de entrenamiento' : 'Por ejemplo: Camiseta Rigel'}"></label>
+        ${S.modOff ? '' : `<div class="row2" id="prmc" ${st.pack ? 'hidden' : ''}><label class="f" for="prmo">Modelo<input type="text" id="prmo" maxlength="60" value="${esc(x.modelo || '')}" placeholder="Por ejemplo: Rigel"></label>
+          <label class="f" for="prco">Color<input type="text" id="prco" maxlength="60" value="${esc(x.color || '')}" placeholder="Por ejemplo: Azul y blanco"></label></div>`}
         <label class="f" for="prd">Descripción<span class="hint">Opcional. Qué incluye</span><textarea id="prd" maxlength="300" rows="2">${esc(x.descripcion)}</textarea></label>
         <label class="f" for="prp">Precio en euros<input type="text" id="prp" inputmode="decimal" value="${x.precio === '' ? '' : String(x.precio).replace('.', ',')}" placeholder="35,00"></label>
         <label class="f" for="prt" id="prt-w" ${st.pack ? 'hidden' : ''}>Tallas disponibles<span class="hint">Separadas por comas. Déjalo vacío si es talla única</span><input type="text" id="prt" value="${esc(x.tallas.join(', '))}" placeholder="6, 8, 10, 12, 14, S, M, L, XL"></label>
@@ -402,7 +406,7 @@
     if (st.pack) drawPk();
     if ($('#prk')) $('#prk').onclick = () => {
       st.pack = !st.pack; $('#prk').setAttribute('aria-checked', st.pack);
-      $('#prt-w').hidden = st.pack; $('#pk-ed').hidden = !st.pack;
+      $('#prt-w').hidden = st.pack; $('#pk-ed').hidden = !st.pack; if ($('#prmc')) $('#prmc').hidden = st.pack;
       if (st.pack) { if (!st.slots.length) st.slots = [[null]]; drawPk(); }
     };
     $('#prfo').onchange = async () => { const fl = $('#prfo').files[0]; if (!fl) return;
@@ -428,7 +432,8 @@
         if (st.slots.some(sl => new Set(sl).size !== sl.length)) return err('Hay un modelo repetido dentro de la misma prenda.');
         componentes = st.slots.map(sl => sl.slice()); tallas = [];
       }
-      const fila = { id: p && p.id, nombre, descripcion: $('#prd').value.trim(), precio: Math.round(precio * 100) / 100, tallas, componentes, activo: x.activo, foto: st.foto || null };
+      const fila = { id: p && p.id, nombre, descripcion: $('#prd').value.trim(), precio: Math.round(precio * 100) / 100, tallas, componentes, activo: x.activo, foto: st.foto || null,
+        modelo: !st.pack && $('#prmo') ? $('#prmo').value.trim() : '', color: !st.pack && $('#prco') ? $('#prco').value.trim() : '' };
       try { await API().producto(fila); } catch (_) { return err(S.shopOff ? 'Falta un paso en Supabase para poder guardar productos.' : 'No se ha podido guardar. Revisa la conexión.'); }
       await window.cargarTienda(); m.close(); render(); say(p ? 'Producto guardado.' : 'Producto añadido a la tienda.');
     };
@@ -443,16 +448,18 @@
     const sel = v === '0' ? nuevos : v === '1' ? abiertos : os;
     if (!sel.length) return say('No hay pedidos de ese tipo.');
     const lin = sel.flatMap(o => (o.lineas || []).map(l => ({ o, l })));
+    /* Modelo y color: los de la ficha del producto (si la prenda ya no existe, se dejan en blanco) */
+    const mc = id => { const pr = prodId(id); return [pr ? pr.modelo || '' : '', pr ? pr.color || '' : '']; };
     const sum = {};
     /* Para el proveedor, un pack cuenta como sus prendas: una unidad de cada una */
-    for (const { l } of lin) for (const z of l.piezas || [l]) { const k = `${z.nombre}\u0000${z.talla || ''}`; sum[k] = (sum[k] || 0) + l.cantidad; }
-    const hoja1 = [['Producto', 'Talla', 'Cantidad'], ...Object.entries(sum).sort().map(([k, n]) => { const [a, b] = k.split('\u0000'); return [a, b || 'Única', n]; }),
-      [], ['Total de prendas', '', Object.values(sum).reduce((a, b) => a + b, 0)]];
-    const hoja2 = [['Pedido', 'Fecha', 'Familia', 'Teléfono', 'Jugador', 'Equipo', 'Producto', 'Talla', 'Cantidad', 'Precio', 'Importe', 'Estado', 'Nota'],
+    for (const { l } of lin) for (const z of l.piezas || [l]) { const k = [z.nombre, ...mc(z.producto), z.talla || ''].join('\u0000'); sum[k] = (sum[k] || 0) + l.cantidad; }
+    const hoja1 = [['Producto', 'Modelo', 'Color', 'Talla', 'Cantidad'], ...Object.entries(sum).sort().map(([k, n]) => { const [a, m, c, t] = k.split('\u0000'); return [a, m, c, t || 'Única', n]; }),
+      [], ['Total de prendas', '', '', '', Object.values(sum).reduce((a, b) => a + b, 0)]];
+    const hoja2 = [['Pedido', 'Fecha', 'Familia', 'Teléfono', 'Jugador', 'Equipo', 'Producto', 'Modelo', 'Color', 'Talla', 'Cantidad', 'Precio', 'Importe', 'Estado', 'Nota'],
       ...lin.map(({ o, l }) => { const [nom, tel] = (o.contacto || '').split(' · '); const d = new Date(o.creado);
-        const fila = [o.id, `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`, nom || '', tel || '', o.jugador, o.equipo, l.nombre, l.piezas ? 'Pack' : l.talla || 'Única', l.cantidad, { m: +l.precio }, { m: Math.round(l.cantidad * l.precio * 100) / 100 }, ESTADOS_PED[o.estado], o.nota || ''];
-        return [fila, ...(l.piezas || []).map(z => [o.id, '', '', '', '', '', '   · ' + z.nombre, z.talla || 'Única', l.cantidad, '', '', '', ''])]; }).flat(),
-      [], ['', '', '', '', '', '', '', '', '', 'Total', { m: sel.reduce((a, o) => a + o.total, 0) }]];
+        const fila = [o.id, `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`, nom || '', tel || '', o.jugador, o.equipo, l.nombre, ...(l.piezas ? ['', ''] : mc(l.producto)), l.piezas ? 'Pack' : l.talla || 'Única', l.cantidad, { m: +l.precio }, { m: Math.round(l.cantidad * l.precio * 100) / 100 }, ESTADOS_PED[o.estado], o.nota || ''];
+        return [fila, ...(l.piezas || []).map(z => [o.id, '', '', '', '', '', '   · ' + z.nombre, ...mc(z.producto), z.talla || 'Única', l.cantidad, '', '', '', ''])]; }).flat(),
+      [], ['', '', '', '', '', '', '', '', '', '', '', 'Total', { m: sel.reduce((a, o) => a + o.total, 0) }]];
     const blob = xlsx([['Para el proveedor', hoja1], ['Pedidos', hoja2]]);
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `pedidos-cd-aznalcollar-${TODAY}.xlsx`;
     document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);

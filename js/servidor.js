@@ -86,6 +86,7 @@
     async producto(x) {
       const fila = { nombre: x.nombre, descripcion: x.descripcion, precio: x.precio, tallas: x.tallas, activo: x.activo, foto: x.foto || null };
       if (!S.packOff) fila.componentes = x.componentes || [];
+      if (!S.modOff) { fila.modelo = x.modelo || ''; fila.color = x.color || ''; }
       if (x.id) { ok(await sb.from('productos').update(fila).eq('id', x.id)); return x.id; }
       return ok(await sb.from('productos').insert(fila).select('id').single()).id;
     },
@@ -249,14 +250,15 @@
   async function cargarTienda() {
     const cols = 'id, nombre, descripcion, precio, tallas, activo, orden, foto_hash';
     let [pr, pe] = await Promise.all([
-      sb.from('productos').select(cols + ', componentes').order('orden').order('id'),
+      sb.from('productos').select(cols + ', componentes, modelo, color').order('orden').order('id'),
       sb.from('pedidos').select('id, familia, jugador, equipo, lineas, total, nota, contacto, estado, creado').order('creado', { ascending: false })
     ]);
-    /* Sin el Paso 11 (packs) la columna "componentes" no existe: se sigue sin packs */
-    S.packOff = !!pr.error;
-    if (pr.error) pr = await sb.from('productos').select(cols).order('orden').order('id');
+    /* Sin el Paso 12 no hay modelo ni color, y sin el Paso 11 no hay packs: se sigue sin ellos */
+    S.modOff = !!pr.error; S.packOff = false;
+    if (pr.error) pr = await sb.from('productos').select(cols + ', componentes').order('orden').order('id');
+    if (pr.error) { S.packOff = true; pr = await sb.from('productos').select(cols).order('orden').order('id'); }
     S.shopOff = !!pr.error;
-    S.products = (pr.data || []).map(x => ({ ...x, precio: +x.precio, componentes: Array.isArray(x.componentes) ? x.componentes : [] }));
+    S.products = (pr.data || []).map(x => ({ ...x, precio: +x.precio, componentes: Array.isArray(x.componentes) ? x.componentes : [], modelo: x.modelo || '', color: x.color || '' }));
     S.orders = (pe.data || []).map(x => ({ ...x, total: +x.total }));
   }
   window.cargarTienda = cargarTienda;

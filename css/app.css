@@ -1427,3 +1427,4 @@ small.pk-z { display: block; white-space: pre-line !important; overflow: visible
 .pk-or { font-weight: 700; font-size: 1rem; color: var(--muted); flex: none; }
 .pk-del { width: 44px; height: 44px; border-radius: 14px; border: 0; background: var(--bad-soft); color: var(--bad-ink); display: grid; place-items: center; cursor: pointer; flex: none; }
 .pk-es > .btn.sm { align-self: flex-start; }
+.pr-b .pr-m { margin: 2px 0 0; font-weight: 600; color: var(--ink); }
