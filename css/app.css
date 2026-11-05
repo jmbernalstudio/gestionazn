@@ -1496,3 +1496,5 @@ small.pk-z { display: block; white-space: pre-line !important; overflow: visible
 .pr-c:has(> label.f + label.f) > div.f { grid-column: 1 / -1; }
 .pr-c:has(> label.f + label.f) > div.f .qty { align-self: flex-start; }
 .ped-x { margin: 0; font-size: .92rem; }
+.mail-prev { background: #fff; color: #111; border: 1px solid var(--line); border-radius: 14px; padding: 16px; overflow-x: auto; }
+@media (max-width: 600px) { .ped-btns .btn { flex: 1 1 100%; } }
