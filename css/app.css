@@ -1428,3 +1428,27 @@ small.pk-z { display: block; white-space: pre-line !important; overflow: visible
 .pk-del { width: 44px; height: 44px; border-radius: 14px; border: 0; background: var(--bad-soft); color: var(--bad-ink); display: grid; place-items: center; cursor: pointer; flex: none; }
 .pk-es > .btn.sm { align-self: flex-start; }
 .pr-b .pr-m { margin: 2px 0 0; font-weight: 600; color: var(--ink); }
+/* Tienda: las fotos se ven enteras y centradas, sin recortar (cuadradas, sobre blanco) */
+.pr-f { aspect-ratio: 1; background: #fff; border: 1px solid var(--line); }
+.pr-f img, .pr-th img { object-fit: contain; }
+.pr-th:has(img) { background: #fff; border: 1px solid var(--line); }
+/* Tarjeta de la tienda: se toca entera y se abre la ficha */
+.pr-pick { width: 100%; font: inherit; color: var(--ink); text-align: left; cursor: pointer; border: 0; align-items: stretch; }
+.pr-pick:focus-visible { outline: 3px solid var(--club); outline-offset: 2px; }
+.pr-pick .pr-b { display: block; min-width: 0; }
+.pr-pick .pr-n { display: block; font-size: 1.1rem; font-weight: 700; overflow-wrap: anywhere; }
+.pr-pick .pr-m { display: block; margin-top: 4px; color: var(--muted); font-size: .92rem; font-weight: 500; }
+.pr-pick > .btn { margin-top: auto; pointer-events: none; }
+.sh-kind { align-self: flex-start; }
+/* Ficha del producto */
+.pr-d { display: grid; gap: 14px; }
+.pr-d .pr-f { max-width: 22rem; width: 100%; justify-self: center; }
+.pr-d .pr-m { color: var(--ink); font-weight: 600; margin: 0; }
+.pr-d .pr-b p { margin: 4px 0 0; }
+@media (min-width: 720px) { .pr-d { grid-template-columns: minmax(0, 16rem) minmax(0, 1fr); align-items: start; } .pr-d .pr-f { justify-self: stretch; } }
+.pr-mdl .pr-c { margin-top: 0; }
+/* En la lista, todas las fotos con la misma altura (la foto entera, centrada) y las tarjetas llenan el ancho */
+.pr-grid:has(.pr-pick) { grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+.pr-pick .pr-f, .pr-pick .pr-f:not(:has(img)) { aspect-ratio: auto; height: 220px; }
+.pr-d .pr-f { max-width: 16rem; }
+@media (min-width: 720px) { .pr-d .pr-f { max-width: none; } }
