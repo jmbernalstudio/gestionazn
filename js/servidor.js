@@ -89,8 +89,10 @@
       if (!S.modOff) { fila.modelo = x.modelo || ''; fila.color = x.color || ''; }
       if (!S.oblOff) fila.obligatorio = !!x.obligatorio;
       if (x.id) { ok(await sb.from('productos').update(fila).eq('id', x.id)); return x.id; }
+      fila.orden = Math.max(0, ...(S.products || []).map(p => p.orden || 0)) + 1; /* los nuevos, al final */
       return ok(await sb.from('productos').insert(fila).select('id').single()).id;
     },
+    async ordenProductos(l) { (await Promise.all(l.map(x => sb.from('productos').update({ orden: x.orden }).eq('id', x.id)))).forEach(ok); },
     async borrarProducto(id) { ok(await sb.from('productos').delete().eq('id', id)); },
     async fotosProductos(ids) { return ids.length ? ok(await sb.from('productos').select('id, foto, foto_hash').in('id', ids)) : []; },
     async hacerPedido(jugador, lineas, nota) { return ok(await sb.rpc('hacer_pedido', { p_jugador: jugador, p_lineas: lineas, p_nota: nota })); },

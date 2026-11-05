@@ -1460,3 +1460,8 @@ small.pk-z { display: block; white-space: pre-line !important; overflow: visible
 .pr-pick { position: relative; }
 .pr-ya { position: absolute; top: 28px; left: 28px; z-index: 1; background: var(--ok-soft, #E3F6EA); color: var(--ok-ink, #146C34); display: inline-flex; align-items: center; gap: 4px; font-weight: 700; }
 .pr-ya .i { width: 16px; height: 16px; }
+/* Ordenar productos (junta): flechas subir / bajar */
+.pr-ord { display: flex; flex-direction: column; gap: 4px; flex: none; }
+.pr-mv { width: 40px; height: 34px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); color: var(--ink); display: grid; place-items: center; cursor: pointer; padding: 0; }
+.pr-mv:disabled { opacity: .35; cursor: default; }
+.pr-mv svg { width: 18px; height: 18px; }
