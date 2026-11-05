@@ -90,3 +90,6 @@ begin
 end $f$;
 revoke all on function public.hacer_pedido(bigint, jsonb, text) from public, anon;
 grant execute on function public.hacer_pedido(bigint, jsonb, text) to authenticated;
+
+-- Que la app vea ya las columnas nuevas
+notify pgrst, $$reload schema$$;
