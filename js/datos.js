@@ -1,6 +1,6 @@
 /* Generado por herramientas/actualizar.py desde rfaf.es y educationleague.es. No editar a mano. */
 window.DATOS = {
- "actualizado": "2026-11-05T13:07:05+00:00",
+ "actualizado": "2026-11-06T13:07:07+00:00",
  "equipos": [
   {
    "id": "senior",
@@ -1133,12 +1133,6 @@ window.DATOS = {
      "fecha": "2026-11-08",
      "partidos": [
       {
-       "l": "CLUB DEPORTIVO GALEONES",
-       "v": "U.D. SOLEA",
-       "f": "2026-11-07",
-       "h": "19:00"
-      },
-      {
        "l": "C.D. CASTILBLANCO F.C.",
        "v": "U.D. LORETO",
        "f": "2026-11-07",
@@ -1173,6 +1167,12 @@ window.DATOS = {
        "v": "C.D. AZNALCOLLAR FUTBOL BASE",
        "f": "2026-11-08",
        "h": "17:00"
+      },
+      {
+       "l": "CLUB DEPORTIVO GALEONES",
+       "v": "U.D. SOLEA",
+       "f": "2026-11-08",
+       "h": "18:00"
       }
      ],
      "descansa": [
@@ -4959,11 +4959,6 @@ window.DATOS = {
        "f": "2026-11-15"
       },
       {
-       "l": "SEVILLA F.C., S.A.D. \"A\"",
-       "v": "ATCO. ALGABEÑO \"B\"",
-       "f": "2026-11-15"
-      },
-      {
        "l": "A.D. SAN JOSE \"B\"",
        "v": "C.D. VENTAS DE LAS PAJANOSAS",
        "f": "2026-11-15"
@@ -4976,6 +4971,11 @@ window.DATOS = {
       {
        "l": "GUILLENA C.F.",
        "v": "C.D. CASTILBLANCO F.C.",
+       "f": "2026-11-15"
+      },
+      {
+       "l": "SEVILLA F.C., S.A.D. \"A\"",
+       "v": "ATCO. ALGABEÑO \"B\"",
        "f": "2026-11-15"
       }
      ],
@@ -11879,6 +11879,16 @@ window.DATOS = {
    "tabla": [
     {
      "pos": 1,
+     "equipo": "CD Estrella Aljarafe",
+     "pts": 10,
+     "j": 4,
+     "g": 3,
+     "e": 1,
+     "p": 0,
+     "dif": 10
+    },
+    {
+     "pos": 2,
      "equipo": "CD Atco. Maribañez",
      "pts": 9,
      "j": 3,
@@ -11888,7 +11898,7 @@ window.DATOS = {
      "dif": 10
     },
     {
-     "pos": 2,
+     "pos": 3,
      "equipo": "EF Ayto. Gines",
      "pts": 9,
      "j": 3,
@@ -11896,16 +11906,6 @@ window.DATOS = {
      "e": 0,
      "p": 0,
      "dif": 9
-    },
-    {
-     "pos": 3,
-     "equipo": "CD Estrella Aljarafe",
-     "pts": 7,
-     "j": 3,
-     "g": 2,
-     "e": 1,
-     "p": 0,
-     "dif": 8
     },
     {
      "pos": 4,
@@ -11939,7 +11939,7 @@ window.DATOS = {
     },
     {
      "pos": 7,
-     "equipo": "CD Híspalis",
+     "equipo": "CF Comarca los Alcores \"A\"",
      "pts": 6,
      "j": 3,
      "g": 2,
@@ -11949,6 +11949,16 @@ window.DATOS = {
     },
     {
      "pos": 8,
+     "equipo": "CD Híspalis",
+     "pts": 6,
+     "j": 4,
+     "g": 2,
+     "e": 0,
+     "p": 2,
+     "dif": 3
+    },
+    {
+     "pos": 9,
      "equipo": "CD Dani Triana Ar-Rabad",
      "pts": 6,
      "j": 3,
@@ -11958,7 +11968,7 @@ window.DATOS = {
      "dif": 1
     },
     {
-     "pos": 9,
+     "pos": 10,
      "equipo": "CD Aznalcóllar FB",
      "pts": 4,
      "j": 2,
@@ -11966,16 +11976,6 @@ window.DATOS = {
      "e": 1,
      "p": 0,
      "dif": 1
-    },
-    {
-     "pos": 10,
-     "equipo": "CF Comarca los Alcores \"A\"",
-     "pts": 3,
-     "j": 2,
-     "g": 1,
-     "e": 0,
-     "p": 1,
-     "dif": 3
     },
     {
      "pos": 11,
@@ -11989,17 +11989,17 @@ window.DATOS = {
     },
     {
      "pos": 12,
-     "equipo": "CD Tor del Rey de Pilas",
+     "equipo": "EF Rio Grande",
      "pts": 3,
-     "j": 2,
+     "j": 3,
      "g": 1,
      "e": 0,
-     "p": 1,
-     "dif": 1
+     "p": 2,
+     "dif": -1
     },
     {
      "pos": 13,
-     "equipo": "EF Rio Grande",
+     "equipo": "CD Tor del Rey de Pilas",
      "pts": 3,
      "j": 3,
      "g": 1,
@@ -12421,6 +12421,10 @@ window.DATOS = {
       {
        "l": "CD Tor del Rey de Pilas",
        "v": "CF Comarca los Alcores \"A\"",
+       "g": [
+        3,
+        5
+       ],
        "f": "2026-11-05",
        "h": "18:00"
       }
@@ -12433,6 +12437,10 @@ window.DATOS = {
       {
        "l": "CD Estrella Aljarafe",
        "v": "CD Híspalis",
+       "g": [
+        4,
+        2
+       ],
        "f": "2026-11-05",
        "h": "19:00"
       },
