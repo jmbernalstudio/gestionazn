@@ -2852,7 +2852,7 @@ const BOARD = {
       const team = S.sub.slice(3);
       S.teams[team] = S.teams[team] || { cat: (EQ[team] || {}).cat || '', train: null, players: [] };
       return { kicker: `Equipos · ${EQ[team] ? EQ[team].cat : ''}`, title: esc(team), back: () => go('team'),
-        body: `<div class="stack"><div class="team-top">${trainCard(team)}${addPlayerCard(team)}</div><div class="team-top">${modCard(team)}${durCard(team)}</div>${rosterCard(team)}${statsView(team)}</div>`, bind: () => { bindTrain(team); bindRoster(team); bindDur(team); bindMod(team); bindStats(team); } };
+        body: `<div class="stack"><div class="team-top">${trainCard(team)}${addPlayerCard(team)}</div><div class="team-top">${modCard(team)}${durCard(team)}</div>${EQ[team] && EQ[team].tabla.length ? card('h-tbj', 'Clasificación', tableHTML(EQ[team]), '', `<span class="tag src">${EQ[team].fuente}</span>`) : ''}${rosterCard(team)}${statsView(team)}</div>`, bind: () => { bindTrain(team); bindRoster(team); bindDur(team); bindMod(team); bindStats(team); } };
     }
     const view = S.eqView === 'train' ? 'train' : 'teams';
     const vseg = `<div class="seg g-scope" role="group" aria-label="Qué ver"><button type="button" data-eqv="teams" aria-pressed="${view === 'teams'}">Equipos</button><button type="button" data-eqv="train" aria-pressed="${view === 'train'}">Calendario</button></div>`;
