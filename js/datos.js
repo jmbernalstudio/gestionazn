@@ -1,6 +1,6 @@
 /* Generado por herramientas/actualizar.py desde rfaf.es y educationleague.es. No editar a mano. */
 window.DATOS = {
- "actualizado": "2026-11-10T13:09:17+00:00",
+ "actualizado": "2026-11-11T13:06:43+00:00",
  "equipos": [
   {
    "id": "senior",
@@ -1215,15 +1215,16 @@ window.DATOS = {
      "fecha": "2026-11-15",
      "partidos": [
       {
-       "l": "REAL BETIS BALOMPIE S.A.D.",
-       "v": "C.D. UNIÓN GERENA",
-       "f": "2026-11-15"
-      },
-      {
        "l": "C.D. ATLÉTICO SAN JUAN",
        "v": "EL RONQUILLO C.F.",
        "f": "2026-11-15",
        "h": "10:00"
+      },
+      {
+       "l": "REAL BETIS BALOMPIE S.A.D.",
+       "v": "C.D. UNIÓN GERENA",
+       "f": "2026-11-15",
+       "h": "11:00"
       },
       {
        "l": "U.D. SOLEA",
