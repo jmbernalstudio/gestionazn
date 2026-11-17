@@ -1,6 +1,6 @@
 /* Generado por herramientas/actualizar.py desde rfaf.es y educationleague.es. No editar a mano. */
 window.DATOS = {
- "actualizado": "2026-11-16T13:04:56+00:00",
+ "actualizado": "2026-11-17T13:31:16+00:00",
  "equipos": [
   {
    "id": "senior",
@@ -148,7 +148,7 @@ window.DATOS = {
     {
      "j": 10,
      "fecha": "2026-11-22",
-     "hora": null,
+     "hora": "17:30",
      "casa": false,
      "rival": "EL RONQUILLO C.F.",
      "campo": "Ronquillo (El) - LOS ENCINARES ESTADIO (F11-F7)",
@@ -1297,39 +1297,46 @@ window.DATOS = {
      "fecha": "2026-11-22",
      "partidos": [
       {
-       "l": "CLUB DEPORTIVO GALEONES",
-       "v": "GUILLENA C.F.",
-       "f": "2026-11-22"
-      },
-      {
-       "l": "C.D. SANTIPONCE",
-       "v": "U.D. SOLEA",
-       "f": "2026-11-22"
-      },
-      {
        "l": "AA.AA. COLSPE",
        "v": "J.D. BORMUJOS",
-       "f": "2026-11-22"
-      },
-      {
-       "l": "C.D. UNIÓN GERENA",
-       "v": "C.D. ATLÉTICO SAN JUAN",
-       "f": "2026-11-22"
+       "f": "2026-11-22",
+       "h": "12:00"
       },
       {
        "l": "C.D. SAN JERONIMO",
        "v": "C.D.TORRE REINA",
-       "f": "2026-11-22"
+       "f": "2026-11-22",
+       "h": "13:00"
+      },
+      {
+       "l": "C.D. UNIÓN GERENA",
+       "v": "C.D. ATLÉTICO SAN JUAN",
+       "f": "2026-11-22",
+       "h": "17:00"
       },
       {
        "l": "EL RONQUILLO C.F.",
        "v": "C.D. AZNALCOLLAR FUTBOL BASE",
-       "f": "2026-11-22"
+       "f": "2026-11-22",
+       "h": "17:30"
       },
       {
        "l": "C.D. CASTILBLANCO F.C.",
        "v": "REAL BETIS BALOMPIE S.A.D.",
-       "f": "2026-11-22"
+       "f": "2026-11-22",
+       "h": "18:00"
+      },
+      {
+       "l": "C.D. SANTIPONCE",
+       "v": "U.D. SOLEA",
+       "f": "2026-11-22",
+       "h": "18:15"
+      },
+      {
+       "l": "CLUB DEPORTIVO GALEONES",
+       "v": "GUILLENA C.F.",
+       "f": "2026-11-22",
+       "h": "19:00"
       }
      ],
      "descansa": [
@@ -3277,34 +3284,40 @@ window.DATOS = {
      "fecha": "2026-11-22",
      "partidos": [
       {
-       "l": "IBARBURU C.F. \"A\"",
-       "v": "SAN ROQUE BALOMPIE \"A\"",
-       "f": "2026-11-22"
-      },
-      {
-       "l": "S.D. CLUB RÍO GRANDE",
-       "v": "J.D. BORMUJOS \"B\"",
-       "f": "2026-11-22"
-      },
-      {
        "l": "ESPARTINAS C.F. \"B\"",
        "v": "CASTILLEJA C.F.",
-       "f": "2026-11-22"
-      },
-      {
-       "l": "P.D. ROCIERA \"A\"",
-       "v": "C.D. MOSQUITO \"C\"",
-       "f": "2026-11-22"
+       "f": "2026-11-22",
+       "h": "10:00"
       },
       {
        "l": "U.D. CONSOLACION",
        "v": "C.D. TORRE REINA",
-       "f": "2026-11-22"
+       "f": "2026-11-22",
+       "h": "10:30"
+      },
+      {
+       "l": "IBARBURU C.F. \"A\"",
+       "v": "SAN ROQUE BALOMPIE \"A\"",
+       "f": "2026-11-22",
+       "h": "11:30"
+      },
+      {
+       "l": "P.D. ROCIERA \"A\"",
+       "v": "C.D. MOSQUITO \"C\"",
+       "f": "2026-11-22",
+       "h": "11:30"
+      },
+      {
+       "l": "S.D. CLUB RÍO GRANDE",
+       "v": "J.D. BORMUJOS \"B\"",
+       "f": "2026-11-22",
+       "h": "12:30"
       },
       {
        "l": "U.D. MAIRENA DEL ALJARAFE \"B\"",
        "v": "C.D. ISIDRO REGUERA",
-       "f": "2026-11-22"
+       "f": "2026-11-22",
+       "h": "18:30"
       }
      ],
      "descansa": [
@@ -4100,8 +4113,8 @@ window.DATOS = {
     },
     {
      "j": 9,
-     "fecha": "2026-11-22",
-     "hora": null,
+     "fecha": "2026-11-21",
+     "hora": "12:30",
      "casa": true,
      "rival": "GUILLENA C.F.",
      "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
@@ -5188,37 +5201,44 @@ window.DATOS = {
       {
        "l": "C.D. VENTAS DE LAS PAJANOSAS",
        "v": "LORA C.F. \"B\"",
-       "f": "2026-11-22"
+       "f": "2026-11-20",
+       "h": "19:45"
       },
       {
        "l": "SAN ROQUE BALOMPIE \"A\"",
        "v": "C.D. TORO TOCINA LOS ROSALES \"B\"",
-       "f": "2026-11-22"
+       "f": "2026-11-20",
+       "h": "21:15"
       },
       {
        "l": "C.D. AZNALCOLLAR FUTBOL BASE",
        "v": "GUILLENA C.F.",
-       "f": "2026-11-22"
+       "f": "2026-11-21",
+       "h": "12:30"
       },
       {
        "l": "CD. ASOC. DVA. NERVION \"C\"",
        "v": "ALCALA DEL RIO C.F. \"B\"",
-       "f": "2026-11-22"
+       "f": "2026-11-22",
+       "h": "11:00"
       },
       {
        "l": "SECCION DEPORTIVA FUNDACION REAL BETIS BALOMPIE",
        "v": "C.D. CASTILBLANCO F.C.",
-       "f": "2026-11-22"
+       "f": "2026-11-22",
+       "h": "14:30"
       },
       {
        "l": "BRENES BALOMPIE \"B\"",
        "v": "SEVILLA F.C., S.A.D. \"A\"",
-       "f": "2026-11-22"
+       "f": "2026-11-22",
+       "h": "15:30"
       },
       {
        "l": "ATCO. ALGABEÑO \"B\"",
        "v": "A.D. SAN JOSE \"B\"",
-       "f": "2026-11-22"
+       "f": "2026-11-22",
+       "h": "16:00"
       }
      ],
      "descansa": [
@@ -5229,6 +5249,11 @@ window.DATOS = {
      "j": 10,
      "fecha": "2026-11-29",
      "partidos": [
+      {
+       "l": "GUILLENA C.F.",
+       "v": "C.D. VENTAS DE LAS PAJANOSAS",
+       "f": "2026-11-29"
+      },
       {
        "l": "ALCALA DEL RIO C.F. \"B\"",
        "v": "SECCION DEPORTIVA FUNDACION REAL BETIS BALOMPIE",
@@ -5252,11 +5277,6 @@ window.DATOS = {
       {
        "l": "LORA C.F. \"B\"",
        "v": "ATCO. ALGABEÑO \"B\"",
-       "f": "2026-11-29"
-      },
-      {
-       "l": "GUILLENA C.F.",
-       "v": "C.D. VENTAS DE LAS PAJANOSAS",
        "f": "2026-11-29"
       },
       {
@@ -6239,8 +6259,8 @@ window.DATOS = {
     },
     {
      "j": 6,
-     "fecha": "2026-11-22",
-     "hora": null,
+     "fecha": "2026-11-20",
+     "hora": "18:00",
      "casa": true,
      "rival": "BRENES BALOMPIE \"B\"",
      "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
@@ -6934,32 +6954,38 @@ window.DATOS = {
       {
        "l": "C.D. CASTILBLANCO F.C.",
        "v": "LORA C.F. \"B\"",
-       "f": "2026-11-22"
-      },
-      {
-       "l": "ATCO. ALGABEÑO \"B\"",
-       "v": "C.D. TORO TOCINA LOS ROSALES \"B\"",
-       "f": "2026-11-22"
-      },
-      {
-       "l": "U.D. VILLAVERDE \"B\"",
-       "v": "ALCALA DEL RIO C.F. \"B\"",
-       "f": "2026-11-22"
-      },
-      {
-       "l": "A.D. SAN JOSE \"B\"",
-       "v": "CENTRO HISTORICO AA.VV. \"C\"",
-       "f": "2026-11-22"
-      },
-      {
-       "l": "GUILLENA C.F. \"B\"",
-       "v": "U.D. RINCONADA \"B\"",
-       "f": "2026-11-22"
+       "f": "2026-11-20",
+       "h": "17:30"
       },
       {
        "l": "C.D. AZNALCOLLAR FUTBOL BASE",
        "v": "BRENES BALOMPIE \"B\"",
-       "f": "2026-11-22"
+       "f": "2026-11-20",
+       "h": "18:00"
+      },
+      {
+       "l": "GUILLENA C.F. \"B\"",
+       "v": "U.D. RINCONADA \"B\"",
+       "f": "2026-11-20",
+       "h": "19:15"
+      },
+      {
+       "l": "U.D. VILLAVERDE \"B\"",
+       "v": "ALCALA DEL RIO C.F. \"B\"",
+       "f": "2026-11-21",
+       "h": "10:00"
+      },
+      {
+       "l": "A.D. SAN JOSE \"B\"",
+       "v": "CENTRO HISTORICO AA.VV. \"C\"",
+       "f": "2026-11-21",
+       "h": "12:00"
+      },
+      {
+       "l": "ATCO. ALGABEÑO \"B\"",
+       "v": "C.D. TORO TOCINA LOS ROSALES \"B\"",
+       "f": "2026-11-21",
+       "h": "13:00"
       }
      ]
     },
@@ -7642,8 +7668,8 @@ window.DATOS = {
     },
     {
      "j": 7,
-     "fecha": "2026-11-22",
-     "hora": null,
+     "fecha": "2026-11-21",
+     "hora": "13:00",
      "casa": false,
      "rival": "PALOMARES C.F. \"C\"",
      "campo": "Palomares Del Río - PALOMARES POLIDPTVO. MUNICIPAL (F11-F7)",
@@ -8458,32 +8484,38 @@ window.DATOS = {
       {
        "l": "C.D. MONITORES GERENA",
        "v": "ATCO. ALGABEÑO \"B\"",
-       "f": "2026-11-22"
-      },
-      {
-       "l": "LORA C.F. \"B\"",
-       "v": "ALCALA DEL RIO C.F. \"B\"",
-       "f": "2026-11-22"
-      },
-      {
-       "l": "C.D. CASTILBLANCO F.C.",
-       "v": "SAN ROQUE BALOMPIE \"D\"",
-       "f": "2026-11-22"
-      },
-      {
-       "l": "PALOMARES C.F. \"C\"",
-       "v": "C.D. AZNALCOLLAR FUTBOL BASE \"A\"",
-       "f": "2026-11-22"
-      },
-      {
-       "l": "U.D. VILLAVERDE \"B\"",
-       "v": "CAMAS C.F. \"A\"",
-       "f": "2026-11-22"
+       "f": "2026-11-20",
+       "h": "17:30"
       },
       {
        "l": "C.D. ESFUBASA \"B\"",
        "v": "C.D. SANTIPONCE \"A\"",
-       "f": "2026-11-22"
+       "f": "2026-11-20",
+       "h": "17:30"
+      },
+      {
+       "l": "U.D. VILLAVERDE \"B\"",
+       "v": "CAMAS C.F. \"A\"",
+       "f": "2026-11-21",
+       "h": "10:00"
+      },
+      {
+       "l": "LORA C.F. \"B\"",
+       "v": "ALCALA DEL RIO C.F. \"B\"",
+       "f": "2026-11-21",
+       "h": "12:00"
+      },
+      {
+       "l": "C.D. CASTILBLANCO F.C.",
+       "v": "SAN ROQUE BALOMPIE \"D\"",
+       "f": "2026-11-21",
+       "h": "12:00"
+      },
+      {
+       "l": "PALOMARES C.F. \"C\"",
+       "v": "C.D. AZNALCOLLAR FUTBOL BASE \"A\"",
+       "f": "2026-11-21",
+       "h": "13:00"
       }
      ],
      "descansa": [
@@ -9331,8 +9363,8 @@ window.DATOS = {
     },
     {
      "j": 7,
-     "fecha": "2026-11-22",
-     "hora": null,
+     "fecha": "2026-11-20",
+     "hora": "17:30",
      "casa": true,
      "rival": "CLUB ATLÉTICO CENTRAL \"B\"",
      "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
@@ -10178,38 +10210,44 @@ window.DATOS = {
      "fecha": "2026-11-22",
      "partidos": [
       {
-       "l": "C.D. COLEGIO CLARET \"B\"",
-       "v": "ATCO. ALGABEÑO \"C\"",
-       "f": "2026-11-22"
-      },
-      {
-       "l": "C.D. ATLETICO SUMI \"B\"",
-       "v": "CD. ASOC. DVA. NERVION",
-       "f": "2026-11-22"
+       "l": "SAN ROQUE BALOMPIE \"B\"",
+       "v": "C.F. POLIDEPORTIVO ALCOSA \"B\"",
+       "f": "2026-11-20",
+       "h": "17:15"
       },
       {
        "l": "C.D. AZNALCOLLAR FUTBOL BASE \"B\"",
        "v": "CLUB ATLÉTICO CENTRAL \"B\"",
-       "f": "2026-11-22"
-      },
-      {
-       "l": "SAN ROQUE BALOMPIE \"B\"",
-       "v": "C.F. POLIDEPORTIVO ALCOSA \"B\"",
-       "f": "2026-11-22"
-      },
-      {
-       "l": "C.D. ALTAIR \"B\"",
-       "v": "C.D.ATLÉTICO MACARENO"
+       "f": "2026-11-20",
+       "h": "17:30"
       },
       {
        "l": "ANDALUCIA ESTE C.F. \"B\"",
        "v": "C.D. S.P. PINO MONTANO \"B\"",
-       "f": "2026-11-22"
+       "f": "2026-11-20",
+       "h": "17:30"
+      },
+      {
+       "l": "C.D. COLEGIO CLARET \"B\"",
+       "v": "ATCO. ALGABEÑO \"C\"",
+       "f": "2026-11-20",
+       "h": "19:00"
+      },
+      {
+       "l": "C.D. ATLETICO SUMI \"B\"",
+       "v": "CD. ASOC. DVA. NERVION",
+       "f": "2026-11-21",
+       "h": "10:00"
       },
       {
        "l": "C.D. ALL SPORTS BERMEJALES",
        "v": "C.D. EL PILAR \"B\"",
-       "f": "2026-11-22"
+       "f": "2026-11-21",
+       "h": "12:00"
+      },
+      {
+       "l": "C.D. ALTAIR \"B\"",
+       "v": "C.D.ATLÉTICO MACARENO"
       }
      ]
     },
@@ -11060,8 +11098,8 @@ window.DATOS = {
     },
     {
      "j": 6,
-     "fecha": "2026-11-20",
-     "hora": null,
+     "fecha": "2026-11-21",
+     "hora": "11:00",
      "casa": false,
      "rival": "CD Toro Tocina Los Rosales (Fem)",
      "campo": "C. GARCILASO DE LA VEGA Nº 14, 41340, TOCINA LOS ROSALES",
@@ -11601,24 +11639,28 @@ window.DATOS = {
      "fecha": "2026-11-20",
      "partidos": [
       {
+       "l": "RCD Nueva Sevilla",
+       "v": "CD Atco. San Martín",
+       "f": "2026-11-18",
+       "h": "18:00"
+      },
+      {
        "l": "JD Gines",
        "v": "Club Náutico Sevilla",
-       "f": "2026-11-20"
+       "f": "2026-11-20",
+       "h": "17:00"
       },
       {
        "l": "CA Aznalcázar",
        "v": "CF Comarca los Alcores",
-       "f": "2026-11-20"
-      },
-      {
-       "l": "RCD Nueva Sevilla",
-       "v": "CD Atco. San Martín",
-       "f": "2026-11-20"
+       "f": "2026-11-21",
+       "h": "10:30"
       },
       {
        "l": "CD Toro Tocina Los Rosales (Fem)",
        "v": "CD Aznalcóllar FB",
-       "f": "2026-11-20"
+       "f": "2026-11-21",
+       "h": "11:00"
       }
      ]
     },
@@ -12086,10 +12128,10 @@ window.DATOS = {
     {
      "j": 6,
      "fecha": "2026-11-20",
-     "hora": null,
+     "hora": "18:15",
      "casa": false,
      "rival": "Camino Viejo CF",
-     "campo": "ESTADIO JOSE MORENO \"PEPILLO\", AVDA. REINA SOFIA S/N, TOMARES",
+     "campo": "Polideportivo Municipal José Moreno \"Pepillo\", Tomares",
      "estado": null,
      "goles": null,
      "equipacion": {
@@ -13069,10 +13111,28 @@ window.DATOS = {
      "fecha": "2026-11-20",
      "partidos": [
       {
+       "l": "EDM Bormujos",
+       "v": "CD Estrella Aljarafe",
+       "f": "2026-11-19",
+       "h": "17:45"
+      },
+      {
+       "l": "CD Dani Triana Ar-Rabad",
+       "v": "EEMM Villamanrique",
+       "f": "2026-11-20",
+       "h": "17:30"
+      },
+      {
        "l": "Espartinas CF",
        "v": "CD Mairena",
        "f": "2026-11-20",
        "h": "18:00"
+      },
+      {
+       "l": "Camino Viejo CF",
+       "v": "CD Aznalcóllar FB",
+       "f": "2026-11-20",
+       "h": "18:15"
       },
       {
        "l": "EF Ayto. Gines",
@@ -13081,45 +13141,34 @@ window.DATOS = {
        "h": "18:15"
       },
       {
+       "l": "Real Betis Academy \"Antony\"",
+       "v": "UD Mairena del Aljarafe",
+       "f": "2026-11-21",
+       "h": "10:00"
+      },
+      {
        "l": "CD Tor del Rey de Pilas",
        "v": "La Moneda CF \"Compañerismo\"",
        "f": "2026-11-21",
        "h": "10:00"
       },
       {
-       "l": "Camino Viejo CF",
-       "v": "CD Aznalcóllar FB",
-       "f": "2026-11-20"
-      },
-      {
        "l": "FBJD Puebla",
        "v": "CD Atco. Maribañez",
-       "f": "2026-11-20"
-      },
-      {
-       "l": "Real Betis Academy \"Abde\"",
-       "v": "CD Híspalis",
-       "f": "2026-11-20"
+       "f": "2026-11-21",
+       "h": "11:00"
       },
       {
        "l": "CF Comarca los Alcores \"B\"",
        "v": "CD Isidro Reguera",
-       "f": "2026-11-20"
+       "f": "2026-11-21",
+       "h": "11:00"
       },
       {
-       "l": "Real Betis Academy \"Antony\"",
-       "v": "UD Mairena del Aljarafe",
-       "f": "2026-11-20"
-      },
-      {
-       "l": "CD Dani Triana Ar-Rabad",
-       "v": "EEMM Villamanrique",
-       "f": "2026-11-20"
-      },
-      {
-       "l": "EDM Bormujos",
-       "v": "CD Estrella Aljarafe",
-       "f": "2026-11-20"
+       "l": "Real Betis Academy \"Abde\"",
+       "v": "CD Híspalis",
+       "f": "2026-11-21",
+       "h": "11:15"
       }
      ]
     },
@@ -14038,10 +14087,10 @@ window.DATOS = {
     {
      "j": 5,
      "fecha": "2026-11-20",
-     "hora": null,
+     "hora": "17:30",
      "casa": false,
      "rival": "Alcalá del Río CF (Fem)",
-     "campo": "ESTADIO MUNICIPAL ALCALÁ DEL RÍO , CAMINO SAN IGNACIO S/N",
+     "campo": "Estadio Municipal Alcalá del Río",
      "estado": null,
      "goles": null,
      "equipacion": {
@@ -14668,6 +14717,24 @@ window.DATOS = {
        "h": "17:00"
       },
       {
+       "l": "CD Santiponce",
+       "v": "Círculo del Porvenir CD",
+       "f": "2026-11-20",
+       "h": "17:30"
+      },
+      {
+       "l": "Alcalá del Río CF (Fem)",
+       "v": "CD Aznalcóllar FB",
+       "f": "2026-11-20",
+       "h": "17:30"
+      },
+      {
+       "l": "Club Atco. Libertad",
+       "v": "CDM Gerena",
+       "f": "2026-11-21",
+       "h": "10:00"
+      },
+      {
        "l": "CD San Roque Balompié (Fem)",
        "v": "CD Mairena",
        "f": "2026-11-21",
@@ -14678,21 +14745,6 @@ window.DATOS = {
        "v": "Club Atco. Algabeño",
        "f": "2026-11-21",
        "h": "11:45"
-      },
-      {
-       "l": "Club Atco. Libertad",
-       "v": "CDM Gerena",
-       "f": "2026-11-20"
-      },
-      {
-       "l": "CD Santiponce",
-       "v": "Círculo del Porvenir CD",
-       "f": "2026-11-20"
-      },
-      {
-       "l": "Alcalá del Río CF (Fem)",
-       "v": "CD Aznalcóllar FB",
-       "f": "2026-11-20"
       }
      ]
     },
@@ -15180,11 +15232,11 @@ window.DATOS = {
     },
     {
      "j": 5,
-     "fecha": "2026-11-20",
-     "hora": null,
+     "fecha": "2026-11-21",
+     "hora": "10:45",
      "casa": true,
      "rival": "Umbrete CF",
-     "campo": null,
+     "campo": "Estadio Alfredo Librero",
      "estado": null,
      "goles": null
     },
@@ -15541,17 +15593,20 @@ window.DATOS = {
       {
        "l": "RCD Nueva Sevilla",
        "v": "UD Loreto",
-       "f": "2026-11-20"
-      },
-      {
-       "l": "CD Aznalcóllar FB",
-       "v": "Umbrete CF",
-       "f": "2026-11-20"
+       "f": "2026-11-20",
+       "h": "17:00"
       },
       {
        "l": "Atco. Olivarense \"B\"",
        "v": "FB Coria",
-       "f": "2026-11-20"
+       "f": "2026-11-20",
+       "h": "17:00"
+      },
+      {
+       "l": "CD Aznalcóllar FB",
+       "v": "Umbrete CF",
+       "f": "2026-11-21",
+       "h": "10:45"
       }
      ]
     },
@@ -15938,7 +15993,7 @@ window.DATOS = {
     {
      "j": 12,
      "fecha": "2026-11-22",
-     "hora": null,
+     "hora": "12:00",
      "casa": true,
      "rival": "RAYO SANLUQUEÑO C.D.",
      "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
@@ -17591,47 +17646,56 @@ window.DATOS = {
       {
        "l": "ISLA CRISTINA C.F.",
        "v": "MONTILLA C.F.",
-       "f": "2026-11-22"
+       "f": "2026-11-22",
+       "h": "12:00"
       },
       {
        "l": "C.D. INTERNACIONAL DE SEVILLA",
        "v": "RAYO SANLUQUEÑO C.D.",
-       "f": "2026-11-22"
-      },
-      {
-       "l": "PALMA DEL RIO ATLETICO C.F.",
-       "v": "ALMODOVAR DEL RIO C.F.",
-       "f": "2026-11-22"
+       "f": "2026-11-22",
+       "h": "12:00"
       },
       {
        "l": "U.P. VISO",
        "v": "C.D. MONTALBEÑO",
-       "f": "2026-11-22"
-      },
-      {
-       "l": "C.D. CABECENSE",
-       "v": "U.D. RINCONADA",
-       "f": "2026-11-22"
-      },
-      {
-       "l": "ARCOS C.F.",
-       "v": "CASTILLEJA C.F.",
-       "f": "2026-11-22"
-      },
-      {
-       "l": "CADIZ C.F., S.A.D.",
-       "v": "C.D. MOGUER",
-       "f": "2026-11-22"
+       "f": "2026-11-22",
+       "h": "12:00"
       },
       {
        "l": "CORIA C.F.",
        "v": "LA PALMA C.F.",
-       "f": "2026-11-22"
+       "f": "2026-11-22",
+       "h": "12:00"
+      },
+      {
+       "l": "C.D. CABECENSE",
+       "v": "U.D. RINCONADA",
+       "f": "2026-11-22",
+       "h": "12:00"
+      },
+      {
+       "l": "CADIZ C.F., S.A.D.",
+       "v": "C.D. MOGUER",
+       "f": "2026-11-22",
+       "h": "12:15"
+      },
+      {
+       "l": "PALMA DEL RIO ATLETICO C.F.",
+       "v": "ALMODOVAR DEL RIO C.F.",
+       "f": "2026-11-22",
+       "h": "17:00"
+      },
+      {
+       "l": "ARCOS C.F.",
+       "v": "CASTILLEJA C.F.",
+       "f": "2026-11-22",
+       "h": "17:00"
       },
       {
        "l": "UNION BALOMPEDICA LEBRIJANA",
        "v": "AROCHE C.F.",
-       "f": "2026-11-22"
+       "f": "2026-11-22",
+       "h": "17:30"
       }
      ],
      "descansa": [
