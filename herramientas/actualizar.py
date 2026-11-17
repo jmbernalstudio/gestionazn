@@ -77,7 +77,9 @@ def bajar(url, binario=False, minimo=0):
 
 
 def limpio(s):
-    return re.sub(r'\s+', ' ', s or '').strip()
+    # Comillas tipográficas de Windows (0x93/0x94) que llegan como caracteres de control
+    s = (s or '').translate({0x91: "'", 0x92: "'", 0x93: '"', 0x94: '"'})
+    return re.sub(r'\s+', ' ', s).strip()
 
 
 def fecha_iso(dmy):
