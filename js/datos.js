@@ -1,6 +1,6 @@
 /* Generado por herramientas/actualizar.py desde rfaf.es y educationleague.es. No editar a mano. */
 window.DATOS = {
- "actualizado": "2026-11-17T13:31:16+00:00",
+ "actualizado": "2026-11-19T13:36:09+00:00",
  "equipos": [
   {
    "id": "senior",
@@ -11325,15 +11325,25 @@ window.DATOS = {
     {
      "pos": 2,
      "equipo": "RCD Nueva Sevilla",
-     "pts": 10,
-     "j": 5,
+     "pts": 11,
+     "j": 6,
      "g": 3,
-     "e": 1,
+     "e": 2,
      "p": 1,
      "dif": 3
     },
     {
      "pos": 3,
+     "equipo": "CD Atco. San Martín",
+     "pts": 10,
+     "j": 6,
+     "g": 3,
+     "e": 1,
+     "p": 2,
+     "dif": 3
+    },
+    {
+     "pos": 4,
      "equipo": "CA Aznalcázar",
      "pts": 9,
      "j": 5,
@@ -11341,16 +11351,6 @@ window.DATOS = {
      "e": 3,
      "p": 0,
      "dif": 7
-    },
-    {
-     "pos": 4,
-     "equipo": "CD Atco. San Martín",
-     "pts": 9,
-     "j": 5,
-     "g": 3,
-     "e": 0,
-     "p": 2,
-     "dif": 3
     },
     {
      "pos": 5,
@@ -11641,6 +11641,10 @@ window.DATOS = {
       {
        "l": "RCD Nueva Sevilla",
        "v": "CD Atco. San Martín",
+       "g": [
+        3,
+        3
+       ],
        "f": "2026-11-18",
        "h": "18:00"
       },
@@ -17766,13 +17770,13 @@ window.DATOS = {
        "f": "2026-12-06"
       },
       {
-       "l": "C.D. INTERNACIONAL DE SEVILLA",
-       "v": "MONTILLA C.F.",
+       "l": "UNION BALOMPEDICA LEBRIJANA",
+       "v": "ISLA CRISTINA C.F.",
        "f": "2026-12-06"
       },
       {
-       "l": "UNION BALOMPEDICA LEBRIJANA",
-       "v": "ISLA CRISTINA C.F.",
+       "l": "C.D. INTERNACIONAL DE SEVILLA",
+       "v": "MONTILLA C.F.",
        "f": "2026-12-06"
       },
       {
