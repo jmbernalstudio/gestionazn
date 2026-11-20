@@ -1,6 +1,6 @@
 /* Generado por herramientas/actualizar.py desde rfaf.es y educationleague.es. No editar a mano. */
 window.DATOS = {
- "actualizado": "2026-11-19T13:36:09+00:00",
+ "actualizado": "2026-11-20T13:36:00+00:00",
  "equipos": [
   {
    "id": "senior",
@@ -5255,6 +5255,11 @@ window.DATOS = {
        "f": "2026-11-29"
       },
       {
+       "l": "SEVILLA F.C., S.A.D. \"A\"",
+       "v": "SAN ROQUE BALOMPIE \"A\"",
+       "f": "2026-11-29"
+      },
+      {
        "l": "ALCALA DEL RIO C.F. \"B\"",
        "v": "SECCION DEPORTIVA FUNDACION REAL BETIS BALOMPIE",
        "f": "2026-11-29"
@@ -5262,11 +5267,6 @@ window.DATOS = {
       {
        "l": "CLUB DEPORTIVO ODUCIAROSAL \"B\"",
        "v": "CD. ASOC. DVA. NERVION \"C\"",
-       "f": "2026-11-29"
-      },
-      {
-       "l": "SEVILLA F.C., S.A.D. \"A\"",
-       "v": "SAN ROQUE BALOMPIE \"A\"",
        "f": "2026-11-29"
       },
       {
@@ -12348,12 +12348,12 @@ window.DATOS = {
     {
      "pos": 1,
      "equipo": "CD Estrella Aljarafe",
-     "pts": 13,
-     "j": 5,
-     "g": 4,
+     "pts": 16,
+     "j": 6,
+     "g": 5,
      "e": 1,
      "p": 0,
-     "dif": 11
+     "dif": 16
     },
     {
      "pos": 2,
@@ -12497,16 +12497,6 @@ window.DATOS = {
     },
     {
      "pos": 16,
-     "equipo": "EDM Bormujos",
-     "pts": 3,
-     "j": 4,
-     "g": 1,
-     "e": 0,
-     "p": 3,
-     "dif": -8
-    },
-    {
-     "pos": 17,
      "equipo": "EF Rio Grande",
      "pts": 3,
      "j": 5,
@@ -12516,7 +12506,7 @@ window.DATOS = {
      "dif": -10
     },
     {
-     "pos": 18,
+     "pos": 17,
      "equipo": "CD Tor del Rey de Pilas",
      "pts": 3,
      "j": 5,
@@ -12526,7 +12516,7 @@ window.DATOS = {
      "dif": -11
     },
     {
-     "pos": 19,
+     "pos": 18,
      "equipo": "Camino Viejo CF",
      "pts": 3,
      "j": 4,
@@ -12534,6 +12524,16 @@ window.DATOS = {
      "e": 0,
      "p": 3,
      "dif": -12
+    },
+    {
+     "pos": 19,
+     "equipo": "EDM Bormujos",
+     "pts": 3,
+     "j": 5,
+     "g": 1,
+     "e": 0,
+     "p": 4,
+     "dif": -13
     },
     {
      "pos": 20,
@@ -13117,6 +13117,10 @@ window.DATOS = {
       {
        "l": "EDM Bormujos",
        "v": "CD Estrella Aljarafe",
+       "g": [
+        0,
+        5
+       ],
        "f": "2026-11-19",
        "h": "17:45"
       },
@@ -17736,11 +17740,6 @@ window.DATOS = {
        "f": "2026-11-29"
       },
       {
-       "l": "LA PALMA C.F.",
-       "v": "C.D. CABECENSE",
-       "f": "2026-11-29"
-      },
-      {
        "l": "U.D. RINCONADA",
        "v": "ARCOS C.F.",
        "f": "2026-11-29"
@@ -17753,6 +17752,11 @@ window.DATOS = {
       {
        "l": "MONTILLA C.F.",
        "v": "C.D. MOGUER",
+       "f": "2026-11-29"
+      },
+      {
+       "l": "LA PALMA C.F.",
+       "v": "C.D. CABECENSE",
        "f": "2026-11-29"
       }
      ],
