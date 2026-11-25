@@ -1,6 +1,6 @@
 /* Generado por herramientas/actualizar.py desde rfaf.es y educationleague.es. No editar a mano. */
 window.DATOS = {
- "actualizado": "2026-11-24T13:36:19+00:00",
+ "actualizado": "2026-11-25T16:35:13+00:00",
  "equipos": [
   {
    "id": "senior",
@@ -165,8 +165,8 @@ window.DATOS = {
     },
     {
      "j": 11,
-     "fecha": "2026-11-29",
-     "hora": null,
+     "fecha": "2026-11-28",
+     "hora": "19:00",
      "casa": true,
      "rival": "C.D. UNIÓN GERENA",
      "campo": "Aznalcóllar - ALFREDO LIBRERO CAMPO MUNICIPAL (F11-F7)",
@@ -1379,15 +1379,16 @@ window.DATOS = {
      "fecha": "2026-11-29",
      "partidos": [
       {
+       "l": "C.D. AZNALCOLLAR FUTBOL BASE",
+       "v": "C.D. UNIÓN GERENA",
+       "f": "2026-11-28",
+       "h": "19:00"
+      },
+      {
        "l": "J.D. BORMUJOS",
        "v": "EL RONQUILLO C.F.",
        "f": "2026-11-28",
        "h": "20:00"
-      },
-      {
-       "l": "C.D. AZNALCOLLAR FUTBOL BASE",
-       "v": "C.D. UNIÓN GERENA",
-       "f": "2026-11-29"
       },
       {
        "l": "C.D.TORRE REINA",
@@ -10500,6 +10501,11 @@ window.DATOS = {
      "fecha": "2026-12-06",
      "partidos": [
       {
+       "l": "C.D. COLEGIO CLARET \"B\"",
+       "v": "C.D. S.P. PINO MONTANO \"B\"",
+       "f": "2026-12-06"
+      },
+      {
        "l": "CLUB ATLÉTICO CENTRAL \"B\"",
        "v": "C.F. POLIDEPORTIVO ALCOSA \"B\"",
        "f": "2026-12-06"
@@ -10517,11 +10523,6 @@ window.DATOS = {
       {
        "l": "C.D. ALTAIR \"B\"",
        "v": "CD. ASOC. DVA. NERVION"
-      },
-      {
-       "l": "C.D. COLEGIO CLARET \"B\"",
-       "v": "C.D. S.P. PINO MONTANO \"B\"",
-       "f": "2026-12-06"
       },
       {
        "l": "C.D. ATLETICO SUMI \"B\"",
@@ -18118,7 +18119,7 @@ window.DATOS = {
        "l": "C.D. MONTALBEÑO",
        "v": "CORIA C.F.",
        "f": "2026-11-29",
-       "h": "17:00"
+       "h": "16:30"
       },
       {
        "l": "MONTILLA C.F.",
@@ -18141,6 +18142,11 @@ window.DATOS = {
      "j": 14,
      "fecha": "2026-12-06",
      "partidos": [
+      {
+       "l": "ARCOS C.F.",
+       "v": "LA PALMA C.F.",
+       "f": "2026-12-06"
+      },
       {
        "l": "C.D. CABECENSE",
        "v": "C.D. MONTALBEÑO",
@@ -18169,11 +18175,6 @@ window.DATOS = {
       {
        "l": "CORIA C.F.",
        "v": "ALMODOVAR DEL RIO C.F.",
-       "f": "2026-12-06"
-      },
-      {
-       "l": "ARCOS C.F.",
-       "v": "LA PALMA C.F.",
        "f": "2026-12-06"
       },
       {
