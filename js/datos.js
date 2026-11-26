@@ -1,6 +1,6 @@
 /* Generado por herramientas/actualizar.py desde rfaf.es y educationleague.es. No editar a mano. */
 window.DATOS = {
- "actualizado": "2026-11-25T16:35:13+00:00",
+ "actualizado": "2026-11-26T13:15:49+00:00",
  "equipos": [
   {
    "id": "senior",
@@ -1430,6 +1430,11 @@ window.DATOS = {
      "fecha": "2026-12-06",
      "partidos": [
       {
+       "l": "C.D. UNIÓN GERENA",
+       "v": "J.D. BORMUJOS",
+       "f": "2026-12-06"
+      },
+      {
        "l": "C.D. SAN JERONIMO",
        "v": "GUILLENA C.F.",
        "f": "2026-12-06"
@@ -1447,11 +1452,6 @@ window.DATOS = {
       {
        "l": "EL RONQUILLO C.F.",
        "v": "U.D. SOLEA",
-       "f": "2026-12-06"
-      },
-      {
-       "l": "C.D. UNIÓN GERENA",
-       "v": "J.D. BORMUJOS",
        "f": "2026-12-06"
       },
       {
@@ -3436,6 +3436,11 @@ window.DATOS = {
      "fecha": "2026-12-06",
      "partidos": [
       {
+       "l": "IBARBURU C.F. \"A\"",
+       "v": "J.D. BORMUJOS \"B\"",
+       "f": "2026-12-06"
+      },
+      {
        "l": "C.D. ISIDRO REGUERA",
        "v": "SAN ROQUE BALOMPIE \"A\"",
        "f": "2026-12-06"
@@ -3443,11 +3448,6 @@ window.DATOS = {
       {
        "l": "U.D. MAIRENA DEL ALJARAFE \"B\"",
        "v": "C.D. TORRE REINA",
-       "f": "2026-12-06"
-      },
-      {
-       "l": "IBARBURU C.F. \"A\"",
-       "v": "J.D. BORMUJOS \"B\"",
        "f": "2026-12-06"
       },
       {
@@ -6580,6 +6580,17 @@ window.DATOS = {
    "tabla": [
     {
      "pos": 1,
+     "equipo": "U.D. VILLAVERDE \"B\"",
+     "pts": 21,
+     "j": 7,
+     "g": 7,
+     "e": 0,
+     "p": 0,
+     "gf": 41,
+     "gc": 16
+    },
+    {
+     "pos": 2,
      "equipo": "C.D. CASTILBLANCO F.C.",
      "pts": 18,
      "j": 6,
@@ -6590,7 +6601,7 @@ window.DATOS = {
      "gc": 5
     },
     {
-     "pos": 2,
+     "pos": 3,
      "equipo": "C.D. TORO TOCINA LOS ROSALES \"B\"",
      "pts": 18,
      "j": 6,
@@ -6599,17 +6610,6 @@ window.DATOS = {
      "p": 0,
      "gf": 38,
      "gc": 9
-    },
-    {
-     "pos": 3,
-     "equipo": "U.D. VILLAVERDE \"B\"",
-     "pts": 18,
-     "j": 6,
-     "g": 6,
-     "e": 0,
-     "p": 0,
-     "gf": 39,
-     "gc": 15
     },
     {
      "pos": 4,
@@ -6626,12 +6626,12 @@ window.DATOS = {
      "pos": 5,
      "equipo": "ATCO. ALGABEÑO \"B\"",
      "pts": 12,
-     "j": 6,
+     "j": 7,
      "g": 4,
      "e": 0,
-     "p": 2,
-     "gf": 28,
-     "gc": 16
+     "p": 3,
+     "gf": 29,
+     "gc": 18
     },
     {
      "pos": 6,
@@ -7129,6 +7129,10 @@ window.DATOS = {
       {
        "l": "ATCO. ALGABEÑO \"B\"",
        "v": "U.D. VILLAVERDE \"B\"",
+       "g": [
+        1,
+        2
+       ],
        "f": "2026-11-25",
        "h": "19:30"
       },
@@ -10501,6 +10505,11 @@ window.DATOS = {
      "fecha": "2026-12-06",
      "partidos": [
       {
+       "l": "C.D. ALL SPORTS BERMEJALES",
+       "v": "ANDALUCIA ESTE C.F. \"B\"",
+       "f": "2026-12-06"
+      },
+      {
        "l": "C.D. COLEGIO CLARET \"B\"",
        "v": "C.D. S.P. PINO MONTANO \"B\"",
        "f": "2026-12-06"
@@ -10527,11 +10536,6 @@ window.DATOS = {
       {
        "l": "C.D. ATLETICO SUMI \"B\"",
        "v": "C.D. EL PILAR \"B\"",
-       "f": "2026-12-06"
-      },
-      {
-       "l": "C.D. ALL SPORTS BERMEJALES",
-       "v": "ANDALUCIA ESTE C.F. \"B\"",
        "f": "2026-12-06"
       }
      ]
@@ -16705,6 +16709,17 @@ window.DATOS = {
     },
     {
      "pos": 5,
+     "equipo": "UNION BALOMPEDICA LEBRIJANA",
+     "pts": 21,
+     "j": 11,
+     "g": 6,
+     "e": 3,
+     "p": 2,
+     "gf": 18,
+     "gc": 9
+    },
+    {
+     "pos": 6,
      "equipo": "C.D. CABECENSE",
      "pts": 20,
      "j": 11,
@@ -16715,7 +16730,7 @@ window.DATOS = {
      "gc": 13
     },
     {
-     "pos": 6,
+     "pos": 7,
      "equipo": "CORIA C.F.",
      "pts": 19,
      "j": 11,
@@ -16724,17 +16739,6 @@ window.DATOS = {
      "p": 2,
      "gf": 15,
      "gc": 10
-    },
-    {
-     "pos": 7,
-     "equipo": "UNION BALOMPEDICA LEBRIJANA",
-     "pts": 18,
-     "j": 10,
-     "g": 5,
-     "e": 3,
-     "p": 2,
-     "gf": 16,
-     "gc": 8
     },
     {
      "pos": 8,
@@ -16828,12 +16832,12 @@ window.DATOS = {
      "pos": 16,
      "equipo": "C.D. MOGUER",
      "pts": 10,
-     "j": 11,
+     "j": 12,
      "g": 3,
      "e": 1,
-     "p": 7,
-     "gf": 16,
-     "gc": 24
+     "p": 8,
+     "gf": 17,
+     "gc": 26
     },
     {
      "pos": 17,
@@ -17374,6 +17378,10 @@ window.DATOS = {
       {
        "l": "C.D. MOGUER",
        "v": "UNION BALOMPEDICA LEBRIJANA",
+       "g": [
+        1,
+        2
+       ],
        "f": "2026-11-25",
        "h": "20:30"
       }
