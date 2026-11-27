@@ -1,6 +1,6 @@
 /* Generado por herramientas/actualizar.py desde rfaf.es y educationleague.es. No editar a mano. */
 window.DATOS = {
- "actualizado": "2026-11-26T13:15:49+00:00",
+ "actualizado": "2026-11-27T13:14:14+00:00",
  "equipos": [
   {
    "id": "senior",
@@ -2640,17 +2640,6 @@ window.DATOS = {
     },
     {
      "pos": 4,
-     "equipo": "C.D. ISIDRO REGUERA",
-     "pts": 19,
-     "j": 8,
-     "g": 6,
-     "e": 1,
-     "p": 1,
-     "gf": 34,
-     "gc": 14
-    },
-    {
-     "pos": 5,
      "equipo": "P.D. ROCIERA \"A\"",
      "pts": 18,
      "j": 9,
@@ -2659,6 +2648,17 @@ window.DATOS = {
      "p": 1,
      "gf": 45,
      "gc": 11
+    },
+    {
+     "pos": 5,
+     "equipo": "C.D. ISIDRO REGUERA",
+     "pts": 16,
+     "j": 8,
+     "g": 6,
+     "e": 1,
+     "p": 1,
+     "gf": 34,
+     "gc": 14
     },
     {
      "pos": 6,
@@ -10510,6 +10510,11 @@ window.DATOS = {
        "f": "2026-12-06"
       },
       {
+       "l": "C.D. ATLETICO SUMI \"B\"",
+       "v": "C.D. EL PILAR \"B\"",
+       "f": "2026-12-06"
+      },
+      {
        "l": "C.D. COLEGIO CLARET \"B\"",
        "v": "C.D. S.P. PINO MONTANO \"B\"",
        "f": "2026-12-06"
@@ -10532,11 +10537,6 @@ window.DATOS = {
       {
        "l": "C.D. ALTAIR \"B\"",
        "v": "CD. ASOC. DVA. NERVION"
-      },
-      {
-       "l": "C.D. ATLETICO SUMI \"B\"",
-       "v": "C.D. EL PILAR \"B\"",
-       "f": "2026-12-06"
       }
      ]
     },
@@ -18161,6 +18161,11 @@ window.DATOS = {
        "f": "2026-12-06"
       },
       {
+       "l": "C.D. INTERNACIONAL DE SEVILLA",
+       "v": "MONTILLA C.F.",
+       "f": "2026-12-06"
+      },
+      {
        "l": "U.P. VISO",
        "v": "AROCHE C.F.",
        "f": "2026-12-06"
@@ -18168,11 +18173,6 @@ window.DATOS = {
       {
        "l": "UNION BALOMPEDICA LEBRIJANA",
        "v": "ISLA CRISTINA C.F.",
-       "f": "2026-12-06"
-      },
-      {
-       "l": "C.D. INTERNACIONAL DE SEVILLA",
-       "v": "MONTILLA C.F.",
        "f": "2026-12-06"
       },
       {
