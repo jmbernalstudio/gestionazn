@@ -1,6 +1,6 @@
 /* Generado por herramientas/actualizar.py desde rfaf.es y educationleague.es. No editar a mano. */
 window.DATOS = {
- "actualizado": "2026-11-27T13:14:14+00:00",
+ "actualizado": "2026-11-28T13:19:15+00:00",
  "equipos": [
   {
    "id": "senior",
@@ -4451,6 +4451,17 @@ window.DATOS = {
    "tabla": [
     {
      "pos": 1,
+     "equipo": "LORA C.F. \"B\"",
+     "pts": 27,
+     "j": 10,
+     "g": 9,
+     "e": 0,
+     "p": 1,
+     "gf": 85,
+     "gc": 4
+    },
+    {
+     "pos": 2,
      "equipo": "SECCION DEPORTIVA FUNDACION REAL BETIS BALOMPIE",
      "pts": 24,
      "j": 8,
@@ -4461,40 +4472,40 @@ window.DATOS = {
      "gc": 5
     },
     {
-     "pos": 2,
-     "equipo": "LORA C.F. \"B\"",
+     "pos": 3,
+     "equipo": "SAN ROQUE BALOMPIE \"A\"",
      "pts": 24,
      "j": 9,
      "g": 8,
      "e": 0,
      "p": 1,
-     "gf": 73,
-     "gc": 4
-    },
-    {
-     "pos": 3,
-     "equipo": "SAN ROQUE BALOMPIE \"A\"",
-     "pts": 21,
-     "j": 8,
-     "g": 7,
-     "e": 0,
-     "p": 1,
-     "gf": 47,
+     "gf": 50,
      "gc": 6
     },
     {
      "pos": 4,
-     "equipo": "SEVILLA F.C., S.A.D. \"A\"",
-     "pts": 17,
+     "equipo": "C.D. VENTAS DE LAS PAJANOSAS",
+     "pts": 19,
      "j": 9,
-     "g": 5,
-     "e": 2,
+     "g": 6,
+     "e": 1,
      "p": 2,
-     "gf": 33,
+     "gf": 45,
      "gc": 13
     },
     {
      "pos": 5,
+     "equipo": "SEVILLA F.C., S.A.D. \"A\"",
+     "pts": 17,
+     "j": 10,
+     "g": 5,
+     "e": 2,
+     "p": 3,
+     "gf": 33,
+     "gc": 16
+    },
+    {
+     "pos": 6,
      "equipo": "ALCALA DEL RIO C.F. \"B\"",
      "pts": 16,
      "j": 8,
@@ -4505,7 +4516,7 @@ window.DATOS = {
      "gc": 10
     },
     {
-     "pos": 6,
+     "pos": 7,
      "equipo": "A.D. SAN JOSE \"B\"",
      "pts": 16,
      "j": 9,
@@ -4513,17 +4524,6 @@ window.DATOS = {
      "e": 1,
      "p": 3,
      "gf": 33,
-     "gc": 13
-    },
-    {
-     "pos": 7,
-     "equipo": "C.D. VENTAS DE LAS PAJANOSAS",
-     "pts": 16,
-     "j": 8,
-     "g": 5,
-     "e": 1,
-     "p": 2,
-     "gf": 30,
      "gc": 13
     },
     {
@@ -4585,12 +4585,12 @@ window.DATOS = {
      "pos": 13,
      "equipo": "ATCO. ALGABEÑO \"B\"",
      "pts": 3,
-     "j": 8,
+     "j": 9,
      "g": 1,
      "e": 0,
-     "p": 7,
+     "p": 8,
      "gf": 16,
-     "gc": 41
+     "gc": 53
     },
     {
      "pos": 14,
@@ -4607,12 +4607,12 @@ window.DATOS = {
      "pos": 15,
      "equipo": "GUILLENA C.F.",
      "pts": 0,
-     "j": 9,
+     "j": 10,
      "g": 0,
      "e": 0,
-     "p": 9,
+     "p": 10,
      "gf": 7,
-     "gc": 95
+     "gc": 110
     }
    ],
    "escudos": {
@@ -5351,18 +5351,30 @@ window.DATOS = {
       {
        "l": "GUILLENA C.F.",
        "v": "C.D. VENTAS DE LAS PAJANOSAS",
+       "g": [
+        0,
+        15
+       ],
        "f": "2026-11-27",
        "h": "18:30"
       },
       {
        "l": "SEVILLA F.C., S.A.D. \"A\"",
        "v": "SAN ROQUE BALOMPIE \"A\"",
+       "g": [
+        0,
+        3
+       ],
        "f": "2026-11-28",
        "h": "10:00"
       },
       {
        "l": "LORA C.F. \"B\"",
        "v": "ATCO. ALGABEÑO \"B\"",
+       "g": [
+        12,
+        0
+       ],
        "f": "2026-11-28",
        "h": "10:00"
       },
@@ -6384,7 +6396,10 @@ window.DATOS = {
      "rival": "U.D. RINCONADA \"B\"",
      "campo": "Rinconada (La) - Anexo Leonardo Ramos",
      "superficie": "Hierba Artificial",
-     "goles": null,
+     "goles": [
+      5,
+      6
+     ],
      "equipacion": {
       "camiseta": "Azul royal / blanco",
       "pantalon": "Azul royal",
@@ -6592,13 +6607,13 @@ window.DATOS = {
     {
      "pos": 2,
      "equipo": "C.D. CASTILBLANCO F.C.",
-     "pts": 18,
-     "j": 6,
+     "pts": 19,
+     "j": 7,
      "g": 6,
-     "e": 0,
+     "e": 1,
      "p": 0,
-     "gf": 40,
-     "gc": 5
+     "gf": 42,
+     "gc": 7
     },
     {
      "pos": 3,
@@ -6614,16 +6629,38 @@ window.DATOS = {
     {
      "pos": 4,
      "equipo": "ALCALA DEL RIO C.F. \"B\"",
-     "pts": 12,
-     "j": 6,
+     "pts": 13,
+     "j": 7,
      "g": 4,
-     "e": 0,
+     "e": 1,
      "p": 2,
-     "gf": 27,
-     "gc": 15
+     "gf": 29,
+     "gc": 17
     },
     {
      "pos": 5,
+     "equipo": "C.D. AZNALCOLLAR FUTBOL BASE",
+     "pts": 12,
+     "j": 7,
+     "g": 4,
+     "e": 0,
+     "p": 3,
+     "gf": 39,
+     "gc": 24
+    },
+    {
+     "pos": 6,
+     "equipo": "A.D. SAN JOSE \"B\"",
+     "pts": 12,
+     "j": 7,
+     "g": 4,
+     "e": 0,
+     "p": 3,
+     "gf": 37,
+     "gc": 26
+    },
+    {
+     "pos": 7,
      "equipo": "ATCO. ALGABEÑO \"B\"",
      "pts": 12,
      "j": 7,
@@ -6634,70 +6671,48 @@ window.DATOS = {
      "gc": 18
     },
     {
-     "pos": 6,
-     "equipo": "C.D. AZNALCOLLAR FUTBOL BASE",
-     "pts": 9,
-     "j": 6,
-     "g": 3,
-     "e": 0,
-     "p": 3,
-     "gf": 33,
-     "gc": 19
-    },
-    {
-     "pos": 7,
-     "equipo": "A.D. SAN JOSE \"B\"",
-     "pts": 9,
-     "j": 6,
-     "g": 3,
-     "e": 0,
-     "p": 3,
-     "gf": 31,
-     "gc": 21
-    },
-    {
      "pos": 8,
      "equipo": "U.D. RINCONADA \"B\"",
      "pts": 6,
-     "j": 6,
+     "j": 7,
      "g": 2,
      "e": 0,
-     "p": 4,
-     "gf": 13,
-     "gc": 16
+     "p": 5,
+     "gf": 18,
+     "gc": 22
     },
     {
      "pos": 9,
      "equipo": "CENTRO HISTORICO AA.VV. \"C\"",
-     "pts": 1,
-     "j": 6,
+     "pts": 2,
+     "j": 7,
      "g": 0,
-     "e": 1,
+     "e": 2,
      "p": 5,
-     "gf": 18,
-     "gc": 37
+     "gf": 22,
+     "gc": 41
     },
     {
      "pos": 10,
      "equipo": "GUILLENA C.F. \"B\"",
-     "pts": 1,
-     "j": 6,
+     "pts": 2,
+     "j": 7,
      "g": 0,
-     "e": 1,
+     "e": 2,
      "p": 5,
-     "gf": 7,
-     "gc": 39
+     "gf": 11,
+     "gc": 43
     },
     {
      "pos": 11,
      "equipo": "LORA C.F. \"B\"",
      "pts": 1,
-     "j": 6,
+     "j": 7,
      "g": 0,
      "e": 1,
-     "p": 5,
-     "gf": 4,
-     "gc": 40
+     "p": 6,
+     "gf": 9,
+     "gc": 46
     },
     {
      "pos": 12,
@@ -7139,24 +7154,40 @@ window.DATOS = {
       {
        "l": "ALCALA DEL RIO C.F. \"B\"",
        "v": "C.D. CASTILBLANCO F.C.",
+       "g": [
+        2,
+        2
+       ],
        "f": "2026-11-27",
        "h": "17:30"
       },
       {
        "l": "LORA C.F. \"B\"",
        "v": "A.D. SAN JOSE \"B\"",
+       "g": [
+        5,
+        6
+       ],
        "f": "2026-11-27",
        "h": "17:30"
       },
       {
        "l": "CENTRO HISTORICO AA.VV. \"C\"",
        "v": "GUILLENA C.F. \"B\"",
+       "g": [
+        4,
+        4
+       ],
        "f": "2026-11-27",
        "h": "18:45"
       },
       {
        "l": "U.D. RINCONADA \"B\"",
        "v": "C.D. AZNALCOLLAR FUTBOL BASE",
+       "g": [
+        5,
+        6
+       ],
        "f": "2026-11-28",
        "h": "12:00"
       },
@@ -8051,61 +8082,72 @@ window.DATOS = {
    "tabla": [
     {
      "pos": 1,
-     "equipo": "C.D. CASTILBLANCO F.C.",
-     "pts": 19,
-     "j": 7,
-     "g": 6,
-     "e": 1,
-     "p": 0,
-     "gf": 38,
-     "gc": 7
-    },
-    {
-     "pos": 2,
      "equipo": "C.D. ESFUBASA \"B\"",
-     "pts": 18,
-     "j": 6,
-     "g": 6,
+     "pts": 21,
+     "j": 7,
+     "g": 7,
      "e": 0,
      "p": 0,
-     "gf": 39,
-     "gc": 9
-    },
-    {
-     "pos": 3,
-     "equipo": "C.D. MONITORES GERENA",
-     "pts": 14,
-     "j": 6,
-     "g": 4,
-     "e": 2,
-     "p": 0,
-     "gf": 37,
+     "gf": 46,
      "gc": 10
     },
     {
+     "pos": 2,
+     "equipo": "C.D. CASTILBLANCO F.C.",
+     "pts": 20,
+     "j": 8,
+     "g": 6,
+     "e": 2,
+     "p": 0,
+     "gf": 41,
+     "gc": 10
+    },
+    {
+     "pos": 3,
+     "equipo": "CAMAS C.F. \"A\"",
+     "pts": 14,
+     "j": 8,
+     "g": 4,
+     "e": 2,
+     "p": 2,
+     "gf": 29,
+     "gc": 17
+    },
+    {
      "pos": 4,
-     "equipo": "C.D. SANTIPONCE \"A\"",
-     "pts": 12,
+     "equipo": "C.D. MONITORES GERENA",
+     "pts": 14,
      "j": 7,
      "g": 4,
-     "e": 0,
-     "p": 3,
-     "gf": 24,
-     "gc": 22
+     "e": 2,
+     "p": 1,
+     "gf": 38,
+     "gc": 19
     },
     {
      "pos": 5,
-     "equipo": "CAMAS C.F. \"A\"",
-     "pts": 11,
-     "j": 7,
-     "g": 3,
-     "e": 2,
-     "p": 2,
-     "gf": 20,
-     "gc": 16
+     "equipo": "C.D. SANTIPONCE \"A\"",
+     "pts": 13,
+     "j": 8,
+     "g": 4,
+     "e": 1,
+     "p": 3,
+     "gf": 27,
+     "gc": 25
     },
     {
      "pos": 6,
+     "equipo": "ATCO. ALGABEÑO \"B\"",
+     "pts": 11,
+     "j": 8,
+     "g": 3,
+     "e": 2,
+     "p": 3,
+     "gf": 34,
+     "gc": 27
+    },
+    {
+     "pos": 7,
      "equipo": "C.D. AZNALCOLLAR FUTBOL BASE \"A\"",
      "pts": 11,
      "j": 7,
@@ -8116,7 +8158,7 @@ window.DATOS = {
      "gc": 11
     },
     {
-     "pos": 7,
+     "pos": 8,
      "equipo": "U.D. VILLAVERDE \"B\"",
      "pts": 10,
      "j": 6,
@@ -8125,17 +8167,6 @@ window.DATOS = {
      "p": 2,
      "gf": 21,
      "gc": 17
-    },
-    {
-     "pos": 8,
-     "equipo": "ATCO. ALGABEÑO \"B\"",
-     "pts": 8,
-     "j": 7,
-     "g": 2,
-     "e": 2,
-     "p": 3,
-     "gf": 24,
-     "gc": 27
     },
     {
      "pos": 9,
@@ -8152,45 +8183,45 @@ window.DATOS = {
      "pos": 10,
      "equipo": "ALCALA DEL RIO C.F. \"B\"",
      "pts": 6,
-     "j": 6,
+     "j": 7,
      "g": 2,
      "e": 0,
-     "p": 4,
-     "gf": 18,
-     "gc": 19
+     "p": 5,
+     "gf": 19,
+     "gc": 26
     },
     {
      "pos": 11,
-     "equipo": "PALOMARES C.F. \"C\"",
-     "pts": 1,
-     "j": 6,
-     "g": 0,
-     "e": 1,
+     "equipo": "LORA C.F. \"B\"",
+     "pts": 3,
+     "j": 7,
+     "g": 2,
+     "e": 0,
      "p": 5,
-     "gf": 4,
-     "gc": 47
+     "gf": 27,
+     "gc": 27
     },
     {
      "pos": 12,
-     "equipo": "GUILLENA C.F.",
+     "equipo": "PALOMARES C.F. \"C\"",
      "pts": 1,
-     "j": 6,
+     "j": 7,
      "g": 0,
      "e": 1,
-     "p": 5,
+     "p": 6,
      "gf": 4,
-     "gc": 51
+     "gc": 57
     },
     {
      "pos": 13,
-     "equipo": "LORA C.F. \"B\"",
-     "pts": 0,
-     "j": 6,
-     "g": 1,
-     "e": 0,
-     "p": 5,
-     "gf": 15,
-     "gc": 25
+     "equipo": "GUILLENA C.F.",
+     "pts": 1,
+     "j": 7,
+     "g": 0,
+     "e": 1,
+     "p": 6,
+     "gf": 6,
+     "gc": 63
     }
    ],
    "escudos": {
@@ -8699,30 +8730,50 @@ window.DATOS = {
       {
        "l": "ATCO. ALGABEÑO \"B\"",
        "v": "PALOMARES C.F. \"C\"",
+       "g": [
+        10,
+        0
+       ],
        "f": "2026-11-27",
        "h": "17:30"
       },
       {
        "l": "ALCALA DEL RIO C.F. \"B\"",
        "v": "C.D. ESFUBASA \"B\"",
+       "g": [
+        1,
+        7
+       ],
        "f": "2026-11-28",
        "h": "10:30"
       },
       {
        "l": "GUILLENA C.F.",
        "v": "LORA C.F. \"B\"",
+       "g": [
+        2,
+        12
+       ],
        "f": "2026-11-28",
        "h": "12:00"
       },
       {
        "l": "C.D. SANTIPONCE \"A\"",
        "v": "C.D. CASTILBLANCO F.C.",
+       "g": [
+        3,
+        3
+       ],
        "f": "2026-11-28",
        "h": "12:00"
       },
       {
        "l": "CAMAS C.F. \"A\"",
        "v": "C.D. MONITORES GERENA",
+       "g": [
+        9,
+        1
+       ],
        "f": "2026-11-28",
        "h": "12:15"
       },
@@ -9558,7 +9609,10 @@ window.DATOS = {
      "rival": "C.F. POLIDEPORTIVO ALCOSA \"B\"",
      "campo": "Sevilla - ALCOSA CD (F11-F7)",
      "superficie": "Hierba Artificial",
-     "goles": null,
+     "goles": [
+      5,
+      3
+     ],
      "equipacion": {
       "camiseta": "Amarilla y negra",
       "pantalon": "Negro",
@@ -9795,13 +9849,13 @@ window.DATOS = {
     {
      "pos": 1,
      "equipo": "C.D. EL PILAR \"B\"",
-     "pts": 19,
-     "j": 7,
-     "g": 6,
+     "pts": 22,
+     "j": 8,
+     "g": 7,
      "e": 1,
      "p": 0,
-     "gf": 54,
-     "gc": 7
+     "gf": 66,
+     "gc": 9
     },
     {
      "pos": 2,
@@ -9816,6 +9870,17 @@ window.DATOS = {
     },
     {
      "pos": 3,
+     "equipo": "C.D. COLEGIO CLARET \"B\"",
+     "pts": 15,
+     "j": 7,
+     "g": 5,
+     "e": 0,
+     "p": 2,
+     "gf": 33,
+     "gc": 34
+    },
+    {
+     "pos": 4,
      "equipo": "C.D. ALL SPORTS BERMEJALES",
      "pts": 13,
      "j": 6,
@@ -9826,26 +9891,15 @@ window.DATOS = {
      "gc": 22
     },
     {
-     "pos": 4,
-     "equipo": "C.D. COLEGIO CLARET \"B\"",
-     "pts": 12,
-     "j": 6,
-     "g": 4,
-     "e": 0,
-     "p": 2,
-     "gf": 28,
-     "gc": 30
-    },
-    {
      "pos": 5,
      "equipo": "ANDALUCIA ESTE C.F. \"B\"",
      "pts": 11,
-     "j": 7,
+     "j": 8,
      "g": 3,
      "e": 2,
-     "p": 2,
-     "gf": 23,
-     "gc": 30
+     "p": 3,
+     "gf": 25,
+     "gc": 42
     },
     {
      "pos": 6,
@@ -9883,13 +9937,13 @@ window.DATOS = {
     {
      "pos": 9,
      "equipo": "C.F. POLIDEPORTIVO ALCOSA \"B\"",
-     "pts": 5,
-     "j": 6,
-     "g": 1,
+     "pts": 8,
+     "j": 7,
+     "g": 2,
      "e": 2,
      "p": 3,
-     "gf": 16,
-     "gc": 33
+     "gf": 21,
+     "gc": 36
     },
     {
      "pos": 10,
@@ -9906,23 +9960,23 @@ window.DATOS = {
      "pos": 11,
      "equipo": "CD. ASOC. DVA. NERVION",
      "pts": 4,
-     "j": 7,
+     "j": 8,
      "g": 1,
      "e": 1,
-     "p": 5,
-     "gf": 16,
-     "gc": 33
+     "p": 6,
+     "gf": 20,
+     "gc": 38
     },
     {
      "pos": 12,
      "equipo": "C.D. AZNALCOLLAR FUTBOL BASE \"B\"",
      "pts": 3,
-     "j": 6,
+     "j": 7,
      "g": 1,
      "e": 0,
-     "p": 5,
-     "gf": 15,
-     "gc": 38
+     "p": 6,
+     "gf": 18,
+     "gc": 43
     },
     {
      "pos": 13,
@@ -10461,18 +10515,30 @@ window.DATOS = {
       {
        "l": "C.D. EL PILAR \"B\"",
        "v": "ANDALUCIA ESTE C.F. \"B\"",
+       "g": [
+        12,
+        2
+       ],
        "f": "2026-11-27",
        "h": "17:00"
       },
       {
        "l": "C.F. POLIDEPORTIVO ALCOSA \"B\"",
        "v": "C.D. AZNALCOLLAR FUTBOL BASE \"B\"",
+       "g": [
+        5,
+        3
+       ],
        "f": "2026-11-27",
        "h": "19:00"
       },
       {
        "l": "CD. ASOC. DVA. NERVION",
        "v": "C.D. COLEGIO CLARET \"B\"",
+       "g": [
+        4,
+        5
+       ],
        "f": "2026-11-28",
        "h": "11:00"
       },
@@ -11332,7 +11398,10 @@ window.DATOS = {
      "rival": "CD Atco. San Martín",
      "campo": "CAMPO MUNICIPAL SAN MARTIN. C. CAMILO JOSE CELA, 12. BOLLULLOS DE LA MITACIÓN",
      "estado": null,
-     "goles": null,
+     "goles": [
+      1,
+      6
+     ],
      "equipacion": {
       "camiseta": "Rayas roja y blanca",
       "pantalon": "Azul",
@@ -11527,22 +11596,22 @@ window.DATOS = {
     {
      "pos": 1,
      "equipo": "CD Aznalcóllar FB",
-     "pts": 16,
-     "j": 6,
-     "g": 5,
+     "pts": 19,
+     "j": 7,
+     "g": 6,
      "e": 1,
      "p": 0,
-     "dif": 18
+     "dif": 23
     },
     {
      "pos": 2,
      "equipo": "RCD Nueva Sevilla",
-     "pts": 11,
-     "j": 6,
-     "g": 3,
+     "pts": 14,
+     "j": 7,
+     "g": 4,
      "e": 2,
      "p": 1,
-     "dif": 3
+     "dif": 4
     },
     {
      "pos": 3,
@@ -11558,28 +11627,28 @@ window.DATOS = {
      "pos": 4,
      "equipo": "Club Náutico Sevilla",
      "pts": 10,
-     "j": 6,
+     "j": 7,
      "g": 3,
      "e": 1,
-     "p": 2,
-     "dif": 5
+     "p": 3,
+     "dif": 4
     },
     {
      "pos": 5,
-     "equipo": "CD Atco. San Martín",
+     "equipo": "CF Comarca los Alcores",
      "pts": 10,
-     "j": 6,
+     "j": 7,
      "g": 3,
      "e": 1,
-     "p": 2,
+     "p": 3,
      "dif": 3
     },
     {
      "pos": 6,
-     "equipo": "CF Comarca los Alcores",
-     "pts": 7,
-     "j": 6,
-     "g": 2,
+     "equipo": "CD Atco. San Martín",
+     "pts": 10,
+     "j": 7,
+     "g": 3,
      "e": 1,
      "p": 3,
      "dif": -2
@@ -11598,11 +11667,11 @@ window.DATOS = {
      "pos": 8,
      "equipo": "CD Toro Tocina Los Rosales (Fem)",
      "pts": 0,
-     "j": 6,
+     "j": 7,
      "g": 0,
      "e": 0,
-     "p": 6,
-     "dif": -30
+     "p": 7,
+     "dif": -35
     }
    ],
    "escudos": {
@@ -11899,18 +11968,30 @@ window.DATOS = {
       {
        "l": "Club Náutico Sevilla",
        "v": "RCD Nueva Sevilla",
+       "g": [
+        1,
+        2
+       ],
        "f": "2026-11-27",
        "h": "17:00"
       },
       {
        "l": "CF Comarca los Alcores",
        "v": "CD Toro Tocina Los Rosales (Fem)",
+       "g": [
+        5,
+        0
+       ],
        "f": "2026-11-27",
        "h": "18:30"
       },
       {
        "l": "CD Atco. San Martín",
        "v": "CD Aznalcóllar FB",
+       "g": [
+        1,
+        6
+       ],
        "f": "2026-11-27",
        "h": "18:30"
       },
@@ -12579,35 +12660,45 @@ window.DATOS = {
     {
      "pos": 1,
      "equipo": "CD Estrella Aljarafe",
-     "pts": 16,
-     "j": 6,
-     "g": 5,
+     "pts": 19,
+     "j": 7,
+     "g": 6,
      "e": 1,
      "p": 0,
-     "dif": 16
+     "dif": 21
     },
     {
      "pos": 2,
      "equipo": "Real Betis Academy \"Abde\"",
-     "pts": 15,
-     "j": 6,
-     "g": 5,
+     "pts": 18,
+     "j": 7,
+     "g": 6,
      "e": 0,
      "p": 1,
-     "dif": 22
+     "dif": 24
     },
     {
      "pos": 3,
-     "equipo": "CD Atco. Maribañez",
-     "pts": 13,
-     "j": 6,
+     "equipo": "CD Dani Triana Ar-Rabad",
+     "pts": 14,
+     "j": 7,
      "g": 4,
-     "e": 1,
+     "e": 2,
      "p": 1,
-     "dif": 12
+     "dif": 7
     },
     {
      "pos": 4,
+     "equipo": "CD Atco. Maribañez",
+     "pts": 13,
+     "j": 7,
+     "g": 4,
+     "e": 1,
+     "p": 2,
+     "dif": 10
+    },
+    {
+     "pos": 5,
      "equipo": "CD Aznalcóllar FB",
      "pts": 13,
      "j": 5,
@@ -12615,16 +12706,6 @@ window.DATOS = {
      "e": 1,
      "p": 0,
      "dif": 9
-    },
-    {
-     "pos": 5,
-     "equipo": "CD Dani Triana Ar-Rabad",
-     "pts": 13,
-     "j": 6,
-     "g": 4,
-     "e": 1,
-     "p": 1,
-     "dif": 7
     },
     {
      "pos": 6,
@@ -12648,6 +12729,16 @@ window.DATOS = {
     },
     {
      "pos": 8,
+     "equipo": "CD Híspalis",
+     "pts": 12,
+     "j": 7,
+     "g": 4,
+     "e": 0,
+     "p": 3,
+     "dif": 6
+    },
+    {
+     "pos": 9,
      "equipo": "La Moneda CF \"Compañerismo\"",
      "pts": 12,
      "j": 6,
@@ -12657,7 +12748,7 @@ window.DATOS = {
      "dif": 4
     },
     {
-     "pos": 9,
+     "pos": 10,
      "equipo": "EEMM Villamanrique",
      "pts": 11,
      "j": 6,
@@ -12667,7 +12758,7 @@ window.DATOS = {
      "dif": 9
     },
     {
-     "pos": 10,
+     "pos": 11,
      "equipo": "Espartinas CF",
      "pts": 9,
      "j": 5,
@@ -12677,27 +12768,27 @@ window.DATOS = {
      "dif": 9
     },
     {
-     "pos": 11,
-     "equipo": "CD Híspalis",
-     "pts": 9,
-     "j": 6,
-     "g": 3,
-     "e": 0,
-     "p": 3,
-     "dif": 2
-    },
-    {
      "pos": 12,
      "equipo": "CF Comarca los Alcores \"B\"",
      "pts": 7,
-     "j": 6,
+     "j": 7,
      "g": 2,
      "e": 1,
-     "p": 3,
-     "dif": 0
+     "p": 4,
+     "dif": -4
     },
     {
      "pos": 13,
+     "equipo": "EF Rio Grande",
+     "pts": 7,
+     "j": 7,
+     "g": 2,
+     "e": 1,
+     "p": 4,
+     "dif": -9
+    },
+    {
+     "pos": 14,
      "equipo": "CD Mairena",
      "pts": 6,
      "j": 5,
@@ -12705,16 +12796,6 @@ window.DATOS = {
      "e": 0,
      "p": 3,
      "dif": 0
-    },
-    {
-     "pos": 14,
-     "equipo": "EF Rio Grande",
-     "pts": 6,
-     "j": 6,
-     "g": 2,
-     "e": 0,
-     "p": 4,
-     "dif": -9
     },
     {
      "pos": 15,
@@ -12730,11 +12811,11 @@ window.DATOS = {
      "pos": 16,
      "equipo": "FBJD Puebla",
      "pts": 4,
-     "j": 6,
+     "j": 7,
      "g": 1,
      "e": 1,
-     "p": 4,
-     "dif": -8
+     "p": 5,
+     "dif": -13
     },
     {
      "pos": 17,
@@ -13454,24 +13535,40 @@ window.DATOS = {
       {
        "l": "CD Híspalis",
        "v": "CF Comarca los Alcores \"B\"",
+       "g": [
+        6,
+        2
+       ],
        "f": "2026-11-27",
        "h": "17:30"
       },
       {
        "l": "EF Rio Grande",
        "v": "CD Dani Triana Ar-Rabad",
+       "g": [
+        5,
+        5
+       ],
        "f": "2026-11-27",
        "h": "17:30"
       },
       {
        "l": "CD Estrella Aljarafe",
        "v": "FBJD Puebla",
+       "g": [
+        5,
+        0
+       ],
        "f": "2026-11-27",
        "h": "19:30"
       },
       {
        "l": "CD Atco. Maribañez",
        "v": "Real Betis Academy \"Abde\"",
+       "g": [
+        1,
+        3
+       ],
        "f": "2026-11-27",
        "h": "19:30"
       },
@@ -14396,7 +14493,10 @@ window.DATOS = {
      "rival": "CD San Roque Balompié (Fem)",
      "campo": "Estadio Alfredo Librero",
      "estado": null,
-     "goles": null
+     "goles": [
+      5,
+      1
+     ]
     },
     {
      "j": 7,
@@ -14518,32 +14618,32 @@ window.DATOS = {
     {
      "pos": 1,
      "equipo": "Círculo del Porvenir CD",
-     "pts": 15,
-     "j": 5,
-     "g": 5,
+     "pts": 18,
+     "j": 6,
+     "g": 6,
      "e": 0,
      "p": 0,
-     "dif": 22
+     "dif": 27
     },
     {
      "pos": 2,
      "equipo": "CD Aznalcóllar FB",
-     "pts": 15,
-     "j": 5,
-     "g": 5,
+     "pts": 18,
+     "j": 6,
+     "g": 6,
      "e": 0,
      "p": 0,
-     "dif": 19
+     "dif": 23
     },
     {
      "pos": 3,
      "equipo": "Club Náutico Sevilla",
      "pts": 15,
-     "j": 5,
+     "j": 6,
      "g": 5,
      "e": 0,
-     "p": 0,
-     "dif": 17
+     "p": 1,
+     "dif": 12
     },
     {
      "pos": 4,
@@ -14559,14 +14659,24 @@ window.DATOS = {
      "pos": 5,
      "equipo": "CDM Gerena",
      "pts": 12,
-     "j": 5,
+     "j": 6,
      "g": 4,
      "e": 0,
-     "p": 1,
-     "dif": 10
+     "p": 2,
+     "dif": 5
     },
     {
      "pos": 6,
+     "equipo": "CMD San Juan",
+     "pts": 9,
+     "j": 5,
+     "g": 3,
+     "e": 0,
+     "p": 2,
+     "dif": 10
+    },
+    {
+     "pos": 7,
      "equipo": "Alcalá del Río CF (Fem)",
      "pts": 9,
      "j": 5,
@@ -14574,16 +14684,6 @@ window.DATOS = {
      "e": 0,
      "p": 2,
      "dif": 2
-    },
-    {
-     "pos": 7,
-     "equipo": "CMD San Juan",
-     "pts": 6,
-     "j": 4,
-     "g": 2,
-     "e": 0,
-     "p": 2,
-     "dif": 5
     },
     {
      "pos": 8,
@@ -14599,11 +14699,11 @@ window.DATOS = {
      "pos": 9,
      "equipo": "CD San Roque Balompié (Fem)",
      "pts": 4,
-     "j": 5,
+     "j": 6,
      "g": 1,
      "e": 1,
-     "p": 3,
-     "dif": -7
+     "p": 4,
+     "dif": -11
     },
     {
      "pos": 10,
@@ -15071,18 +15171,30 @@ window.DATOS = {
       {
        "l": "CD Aznalcóllar FB",
        "v": "CD San Roque Balompié (Fem)",
+       "g": [
+        5,
+        1
+       ],
        "f": "2026-11-27",
        "h": "17:30"
       },
       {
        "l": "CMD San Juan",
        "v": "Club Náutico Sevilla",
+       "g": [
+        8,
+        3
+       ],
        "f": "2026-11-27",
        "h": "18:30"
       },
       {
        "l": "CDM Gerena",
        "v": "Círculo del Porvenir CD",
+       "g": [
+        2,
+        7
+       ],
        "f": "2026-11-27",
        "h": "18:40"
       },
